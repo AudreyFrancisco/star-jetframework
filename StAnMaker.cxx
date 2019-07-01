@@ -171,23 +171,27 @@ Int_t StAnMaker::Init() {
         break;
 
     case StJetFrameworkPicoBase::Run16_AuAu200 : // Run16 AuAu (200 GeV)
-        switch(fCentralityDef) {      
+        switch(fCentralityDef) {
           case StJetFrameworkPicoBase::kgrefmult :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx : 
+          case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_VpdMB30 : 
+          case StJetFrameworkPicoBase::kgrefmult_VpdMB30 :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
               break;
           default:
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
         }
         break;
+
+    case StJetFrameworkPicoBase::RunIsobar : // Run18 Isobar
+        grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+  break;
 
     case StJetFrameworkPicoBase::Run17_pp510 : // Run17: 510 (500) GeV pp
         // this is the default for Run17 pp - don't set anything for pp
@@ -202,7 +206,7 @@ Int_t StAnMaker::Init() {
 //
 // Function:  write to output file and close
 //________________________________________________________________________
-Int_t StAnMaker::Finish() { 
+Int_t StAnMaker::Finish() {
   cout << "StAnMaker::Finish()\n";
 
   //  Write histos to file and close it.
@@ -240,7 +244,7 @@ void StAnMaker::WriteHistograms() {
   hJetCorrPt->Write();
 }
 //
-// OLD user code says: //  Called every event after Make(). 
+// OLD user code says: //  Called every event after Make().
 //_____________________________________________________________________________
 void StAnMaker::Clear(Option_t *opt) {
   fJets->Clear();
@@ -249,7 +253,7 @@ void StAnMaker::Clear(Option_t *opt) {
 //  Function: This method is called every event.
 //_____________________________________________________________________________
 Int_t StAnMaker::Make() {
-  // get PicoDstMaker 
+  // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) {
     LOG_WARN << " No PicoDstMaker! Skip! " << endm;
@@ -263,7 +267,7 @@ Int_t StAnMaker::Make() {
     return kStWarn;
   }
 
-  // create pointer to PicoEvent 
+  // create pointer to PicoEvent
   mPicoEvent = static_cast<StPicoEvent*>(mPicoDst->event());
   if(!mPicoEvent) {
     LOG_WARN << " No PicoEvent! Skip! " << endm;
@@ -295,12 +299,12 @@ Int_t StAnMaker::Make() {
   //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
 
   // get event B (magnetic) field
-  Bfield = mPicoEvent->bField(); 
+  Bfield = mPicoEvent->bField();
 
   // get vertex 3-vector and z-vertex component
   mVertex = mPicoEvent->primaryVertex();
   zVtx = mVertex.z();
-  
+
   // Z-vertex cut: the Aj analysis cut on (-40, 40) for reference
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
 
@@ -342,7 +346,7 @@ Int_t StAnMaker::Make() {
   }
 
   // cut on unset centrality, > 80%
-  if(cent16 == -1) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them 
+  if(cent16 == -1) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them
   fCentralityScaled = centbin*5.0;
 
   // cut on centrality for analysis before doing anything
@@ -398,9 +402,9 @@ Int_t StAnMaker::Make() {
   fRho = static_cast<StRhoParameter*>(RhoMaker->GetRho());
   if(!fRho) {
     LOG_WARN << Form("Couldn't get fRho object! ") << endm;
-    return kStWarn;    
-  } 
-  
+    return kStWarn;
+  }
+
   // get rho/area value from rho object     fRho->ls("");
   fRhoVal = fRho->GetVal();
 
@@ -486,7 +490,7 @@ void StAnMaker::RunJets()
 
     // get jet constituents: loop over constituent tracks
     for(int itrk = 0; itrk < jet->GetNumberOfTracks(); itrk++) {
-      int trackid = jet->TrackAt(itrk);      
+      int trackid = jet->TrackAt(itrk);
 
       // get jet track pointer
       StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track(trackid));
@@ -524,7 +528,7 @@ void StAnMaker::RunJets()
 
       // tower ID shifted by +1 from array index
       int towID = itow + 1;
-    
+
     } // tower constit loop
 
   } // jet loop
@@ -541,7 +545,7 @@ void StAnMaker::RunTracks()
   double pi0mass = Pico::mMass[0]; // GeV
   unsigned int ntracks = mPicoDst->numberOfTracks();
 
-  // loop over ALL tracks in PicoDst 
+  // loop over ALL tracks in PicoDst
   for(unsigned short iTracks = 0; iTracks < ntracks; iTracks++){
     // get track pointer
     StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track(iTracks));
@@ -673,7 +677,7 @@ Double_t StAnMaker::RelativePhi(Double_t mphi,Double_t vphi) const
   if( dphi < -0.5*pi || dphi > 1.5*pi )
     Form("%s: dPHI not in range [-0.5*Pi, 1.5*Pi]!", GetName());
 
-  return dphi; // dphi in [-0.5Pi, 1.5Pi]                                                                                   
+  return dphi; // dphi in [-0.5Pi, 1.5Pi]
 }
 
 //
@@ -683,12 +687,12 @@ Double_t StAnMaker::RelativeEPJET(Double_t jetAng, Double_t EPAng) const
 {
   Double_t pi = 1.0*TMath::Pi();
   Double_t dphi = 1.0*TMath::Abs(EPAng - jetAng);
-  
+
   // ran into trouble with a few dEP<-Pi so trying this...
   if( dphi < -pi ){
     dphi = dphi + pi;
-  } // this assumes we are doing full jets currently 
- 
+  } // this assumes we are doing full jets currently
+
   if(dphi > 1.5*pi) dphi -= 2.0*pi;
   if((dphi > 1.0*pi) && (dphi < 1.5*pi)) dphi -= 1.0*pi;
   if((dphi > 0.5*pi) && (dphi < 1.0*pi)) dphi -= 1.0*pi;
@@ -712,7 +716,7 @@ void StAnMaker::FillEmcTriggers() {
   Int_t nEmcTrigger = mPicoDst->numberOfEmcTriggers();
 
   // set kAny true to use of 'all' triggers
-  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted) 
+  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted)
 
   // loop over valid EmcalTriggers
   for(int i = 0; i < nEmcTrigger; i++) {

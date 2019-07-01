@@ -1,5 +1,5 @@
 //******************************************************************************
-//                                                                            
+//
 // StEmcPosition2.cxx
 //
 // Authors: Joel Mazer
@@ -17,19 +17,19 @@
 
 // StRoot includes
 #include "StEmcUtil/geometry/StEmcGeom.h"
- 
+
 // StMuDstMaker:
 #include "StMuDSTMaker/COMMON/StMuTrack.h"
- 
+
 ClassImp(StEmcPosition2)
- 
+
 //_______________________________________________________________________________________________
 StEmcPosition2::StEmcPosition2():TObject()
-{  
-  mGeom[0] = StEmcGeom::getEmcGeom("bemc");  
-  mGeom[1] = StEmcGeom::getEmcGeom("bprs");  
-  mGeom[2] = StEmcGeom::getEmcGeom("bsmde");  
-  mGeom[3] = StEmcGeom::getEmcGeom("bsmdp");  
+{
+  mGeom[0] = StEmcGeom::getEmcGeom("bemc");
+  mGeom[1] = StEmcGeom::getEmcGeom("bprs");
+  mGeom[2] = StEmcGeom::getEmcGeom("bsmde");
+  mGeom[3] = StEmcGeom::getEmcGeom("bsmdp");
 }
 //_______________________________________________________________________________________________
 StEmcPosition2::~StEmcPosition2()
@@ -173,13 +173,13 @@ TVector3 StEmcPosition2::getPosFromVertex( const TVector3& position, int TowerId
 {
   TVector3 Zero(0,0,0);
   if(TowerId < 1 || TowerId > 4800) return Zero;
-         
+
   float xTower, yTower, zTower;
   //TVector3 position = vertex->position(); //modified to work with StMuDst instead of StEvent
   mGeom[0]->getXYZ(TowerId, xTower, yTower, zTower);
   TVector3 towerPosition(xTower, yTower, zTower);
   TVector3 PositionFromVertex = towerPosition - position;
-         
+
   return PositionFromVertex;
 }
 //_______________________________________________________________________________________________

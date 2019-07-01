@@ -38,7 +38,7 @@
 ClassImp(StRhoBase)
 
 //________________________________________________________________________
-StRhoBase::StRhoBase() : 
+StRhoBase::StRhoBase() :
   StJetFrameworkPicoBase(),
   fCentralityScaled(0.0),
   ref16(-99),
@@ -194,7 +194,7 @@ Int_t StRhoBase::Init()
   // Create user objects.
   fJets = new TClonesArray("StJet");
   //fJets->SetName(fJetsName);
- 
+
   fBGJets = new TClonesArray("StJet");
   //fBGJets->SetName("fBGJetsName); // need too add name
 
@@ -240,7 +240,7 @@ Int_t StRhoBase::Finish() {
 //
 // Function: write histograms and objects to file
 //_________________________________________________________________________
-void StRhoBase::WriteHistograms() 
+void StRhoBase::WriteHistograms()
 {
   fHistRhovsCent->Write();
   fHistRhovsNtrackvsMult->Write();
@@ -270,7 +270,7 @@ void StRhoBase::WriteHistograms()
   fHistRhoScaledvsNcluster->Write();
   fHistDeltaRhoScalevsCent->Write();
   fHistDeltaRhoScalevsNtrack->Write();
-} 
+}
 //
 // Function: user create output objects, called at the beginning of the analysis
 //________________________________________________________________________
@@ -286,11 +286,11 @@ void StRhoBase::DeclareHistograms()
      Ntrackrange[1] = 200.;
      Mult[1] = 2000.;
   }
- 
+
   int fNbins = 1;
   double fMinBinPt = 0.0;
   double fMaxBinPt = 10.0;
- 
+
   fHistRhovsCent = new TH2F("fHistRhovsCent", "fHistRhovsCent", 101, -1,  100, fNbins, fMinBinPt, fMaxBinPt*2);
   fHistRhovsCent->GetXaxis()->SetTitle("Centrality (%)");
   fHistRhovsCent->GetYaxis()->SetTitle("#rho (GeV/c * rad^{-1})");
@@ -353,7 +353,7 @@ void StRhoBase::DeclareHistograms()
       }
     }
   //}
-  
+
   //if (!fCompareRhoName.IsNull()) {
     fHistDeltaRhovsCent = new TH2F("fHistDeltaRhovsCent", "fHistDeltaRhovsCent", 101, -1, 100, fNbins, -fMaxBinPt, fMaxBinPt);
     fHistDeltaRhovsCent->GetXaxis()->SetTitle("Centrality (%)");
@@ -382,7 +382,7 @@ void StRhoBase::DeclareHistograms()
       fHistDeltaRhoScalevsCent = new TH2F("fHistDeltaRhoScalevsCent", "fHistDeltaRhoScalevsCent", 101, -1, 100, fNbins, -fMaxBinPt, fMaxBinPt);
       fHistDeltaRhoScalevsCent->GetXaxis()->SetTitle("Centrality (%)");
       fHistDeltaRhoScalevsCent->GetYaxis()->SetTitle("#Delta#rho_{scaled} (GeV/c * rad^{-1})");
-      
+
       fHistDeltaRhoScalevsNtrack = new TH2F("fHistDeltaRhoScalevsNtrack", "fHistDeltaRhoScalevsNtrack", 150, Ntrackrange[0], Ntrackrange[1], fNbins, -fMaxBinPt, fMaxBinPt);
       fHistDeltaRhoScalevsNtrack->GetXaxis()->SetTitle("No. of tracks");
       fHistDeltaRhoScalevsNtrack->GetYaxis()->SetTitle("#Delta#rho_{scaled} (GeV/c * rad^{-1})");
@@ -392,14 +392,14 @@ void StRhoBase::DeclareHistograms()
 }
 
 //_______________________________________________________________________
-void StRhoBase::Clear(Option_t *opt) 
+void StRhoBase::Clear(Option_t *opt)
 {
 
 }
 //
 // Runs the analysis for each event
 //________________________________________________________________________
-Int_t StRhoBase::Make() 
+Int_t StRhoBase::Make()
 {
   // zero out these global variables
   fCentralityScaled = 0.0, ref9 = 0, ref16 = 0;
@@ -511,13 +511,13 @@ Int_t StRhoBase::Make()
 }
 
 //________________________________________________________________________
-Bool_t StRhoBase::FillHistograms() 
+Bool_t StRhoBase::FillHistograms()
 {
   // Fill histograms.
 
   // test for now FIXME
   double fCent = 0.0;
-  int fCentBin = 0; 
+  int fCentBin = 0;
 
   Int_t Ntracks   = 0;
   Int_t Nclusters = 0;
@@ -535,12 +535,12 @@ Bool_t StRhoBase::FillHistograms()
     Double_t rhoPlus3Sigma = fOutRho->GetVal() + 3*fInEventSigmaRho;
 
     // loop over jets
-    for (Int_t i = 0; i < Njets; ++i) { 
+    for (Int_t i = 0; i < Njets; ++i) {
       // get pointer to jet
       StJet *jet = static_cast<StJet*>(fJets->At(i));
-      if(!jet) { continue; } 
+      if(!jet) { continue; }
       //if (!AcceptJet(jet)) continue; //FIXME
-      
+
       fHistJetPtvsCent->Fill(fCent, jet->Pt());
       fHistJetAreavsCent->Fill(fCent, jet->Area());
       fHistJetRhovsCent->Fill(fCent, jet->Pt() / jet->Area());
@@ -556,7 +556,7 @@ Bool_t StRhoBase::FillHistograms()
       if (jet->Pt() < rhoPlus3Sigma * jet->Area()) NjetUE3Sigma++;
       NjetAcc++;
     }
-    
+
     if(NjetAcc > 0) {
       fHistNjUEoverNjVsNj[fCentBin*3  ]->Fill(NjetAcc,1.*NjetUE1Sigma/NjetAcc);
       fHistNjUEoverNjVsNj[fCentBin*3+1]->Fill(NjetAcc,1.*NjetUE2Sigma/NjetAcc);
@@ -566,7 +566,7 @@ Bool_t StRhoBase::FillHistograms()
     fHistNjetvsCent->Fill(fCent, NjetAcc);
     fHistNjetvsNtrack->Fill(Ntracks, NjetAcc);
   }
-  
+
   fHistRhovsCent->Fill(fCent, fOutRho->GetVal());
 
   //fHistRhovsNtrackvsMult->Fill(Ntracks, fOutRho->GetVal(), multA+multC);
@@ -588,7 +588,7 @@ Bool_t StRhoBase::FillHistograms()
   }
 
   return kTRUE;
-}      
+}
 
 //________________________________________________________________________
 Double_t StRhoBase::GetRhoFactor(Double_t cent)

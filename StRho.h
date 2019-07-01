@@ -46,7 +46,7 @@ class StRho : public StRhoBase {
 
   StRho(const StRho&);             // not implemented
   StRho& operator=(const StRho&);  // not implemented
-  
+
   ClassDef(StRho, 2); // Rho task
 };
 #endif

@@ -48,8 +48,8 @@ class StCentMaker;
 // centrality class
 class StRefMultCorr;
 
-/*  Used to store track & tower matching 
- *  information between computation steps     
+/*  Used to store track & tower matching
+ *  information between computation steps
  */
 struct BemcMatch {
   Int_t globalId;
@@ -58,11 +58,11 @@ struct BemcMatch {
   Double_t trackPhi;
   Double_t matchEta;
   Double_t matchPhi;
-  
+
   BemcMatch() : globalId(-1), trackId(-1), trackEta(0.0), trackPhi(0.0), matchEta(0.0), matchPhi(0.0) {};
   BemcMatch(int id, int trkId, double trackEta, double trackPhi, double matchEta, double matchPhi) :
   globalId(id), trackId(trkId), trackEta(trackEta), trackPhi(trackPhi), matchEta(matchEta), matchPhi(matchPhi) {};
-  
+
 };
 
 class StPicoTrackClusterQA : public StMaker {
@@ -100,7 +100,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void GetDimParamsTowers(Int_t iEntry,TString &label, Int_t &nbins, Double_t &xmin, Double_t &xmax);
 
   // switches
-  virtual void         SetUsePrimaryTracks(Bool_t P)    { doUsePrimTracks       = P; } 
+  virtual void         SetUsePrimaryTracks(Bool_t P)    { doUsePrimTracks       = P; }
   virtual void         SetDebugLevel(Int_t l)           { fDebugLevel           = l; }
   virtual void         SetRunFlag(Int_t f)              { fRunFlag              = f; }
   virtual void         SetdoppAnalysis(Bool_t pp)       { doppAnalysis          = pp;}
@@ -113,7 +113,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetMaxEventTowerEt(Double_t mxEt)  { fMaxEventTowerEt = mxEt; }
   virtual void         SetRejectBadRuns(Bool_t rj)        { doRejectBadRuns = rj; }
 
-  // track / cluster setters 
+  // track / cluster setters
   virtual void         SetTrackPtRange(Double_t ptmi, Double_t ptma) { fTrackPtMinCut = ptmi; fTrackPtMaxCut = ptma; }
   virtual void         SetTrackPhiRange(Double_t phimi, Double_t phima) { fTrackPhiMinCut = phimi; fTrackPhiMaxCut = phima; }
   virtual void         SetTrackEtaRange(Double_t etmi, Double_t etma) { fTrackEtaMinCut = etmi; fTrackEtaMaxCut = etma; }
@@ -130,7 +130,7 @@ class StPicoTrackClusterQA : public StMaker {
   // event selection
   virtual void         SetTriggerToUse(UInt_t ttu)        { fTriggerToUse = ttu; }
   virtual void         SetEmcTriggerEventType(UInt_t te)  { fEmcTriggerEventType = te; }
-  virtual void         SetMBEventType(UInt_t mbe)         { fMBEventType = mbe; }       
+  virtual void         SetMBEventType(UInt_t mbe)         { fMBEventType = mbe; }
   virtual void         SetDoTowerQAforHT(Bool_t m)        { fDoTowerQAforHT = m; }
 
   // efficiency correction setter
@@ -161,7 +161,7 @@ class StPicoTrackClusterQA : public StMaker {
   void                 RunTrackQA();
   void                 RunHadCorrTowerQA();
   void                 RunTowerQA();
-  void                 RunFiredTriggerQA();  
+  void                 RunFiredTriggerQA();
   Bool_t               AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 Vert);  // track accept cuts function
   Bool_t               AcceptTower(StPicoBTowHit *tower, Int_t towerID);         // tower accept cuts function
   Int_t                GetCentBin(Int_t cent, Int_t nBin) const;                 // centrality bin
@@ -171,7 +171,7 @@ class StPicoTrackClusterQA : public StMaker {
   Double_t             GetMaxTrackPt();               // find max track pt in event
   Double_t             GetMaxTowerEt();               // find max tower Et in event
   void                 FillTriggerIDs(TH1* h);
-  void                 SetSumw2(); // set errors weights 
+  void                 SetSumw2(); // set errors weights
   Int_t                GetRunNo(int runid);
 
   // switches
@@ -184,8 +184,8 @@ class StPicoTrackClusterQA : public StMaker {
   Bool_t               fDoTowerQAforHT;         // do tower QA for HT triggers (else do for MB) - temp
 
   // event cuts
-  Double_t             fMaxEventTrackPt;        // max track pt in the event (to cut on) 
-  Double_t             fMaxEventTowerEt;        // max tower Et in the event (to cut on)    
+  Double_t             fMaxEventTrackPt;        // max track pt in the event (to cut on)
+  Double_t             fMaxEventTowerE;         // max tower E in the event (to cut on)
   Bool_t               doRejectBadRuns;         // switch to reject bad runs and thus skip from analysis
   Double_t             fEventZVtxMinCut;        // min event z-vertex cut
   Double_t             fEventZVtxMaxCut;        // max event z-vertex cut
@@ -218,8 +218,8 @@ class StPicoTrackClusterQA : public StMaker {
   Double_t             fTowerPhiMinCut;         // min tower phi cut
   Double_t             fTowerPhiMaxCut;         // max tower phi cut
 
-  // centrality    
-  Double_t             fCentralityScaled;       // scaled by 5% centrality 
+  // centrality
+  Double_t             fCentralityScaled;       // scaled by 5% centrality
   Int_t                ref16;                   // multiplicity bin (16)
   Int_t                ref9;                    // multiplicity bin (9)
 
@@ -240,8 +240,8 @@ class StPicoTrackClusterQA : public StMaker {
 
   // Emc objects
   StEmcGeom           *mGeom;
-  StEmcCollection     *mEmcCol; 
-  StBemcTables        *mBemcTables; 
+  StEmcCollection     *mEmcCol;
+  StBemcTables        *mBemcTables;
   std::vector<BemcMatch> mBemcMatchedTracks;
 
   towerMode            mTowerStatusMode;
@@ -395,7 +395,10 @@ class StPicoTrackClusterQA : public StMaker {
   std::set<Int_t>        badTowers;
   std::set<Int_t>        deadTowers;
 
-  // bad run list 
+  // bad run list
+  void                   ResetBadRunList( );
+  Bool_t                 AddBadRuns(TString csvfile);
+  Bool_t                 IsRunOK( Int_t mRunId );
   std::set<Int_t>        badRuns;
 
   StPicoTrackClusterQA(const StPicoTrackClusterQA&);            // not implemented

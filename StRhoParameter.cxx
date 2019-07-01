@@ -11,7 +11,7 @@
 ClassImp(StRhoParameter)
 
 //________________________________________________________________________
-StRhoParameter::StRhoParameter() : 
+StRhoParameter::StRhoParameter() :
   TParameter<Double_t>()
 {
   // Dummy constructor.
@@ -25,8 +25,8 @@ StRhoParameter::StRhoParameter(const char *name, Double_t val) :
 }
 
 //________________________________________________________________________
-void StRhoParameter::Clear(Option_t * /*option*/) 
-{ 
+void StRhoParameter::Clear(Option_t * /*option*/)
+{
   // Clear.
   SetVal(0);
 }

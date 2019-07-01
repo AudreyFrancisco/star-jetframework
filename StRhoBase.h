@@ -87,7 +87,7 @@ class StRhoBase : public StJetFrameworkPicoBase {
   Double_t               fInEventSigmaRho;               // in-event sigma rho
   Bool_t                 fAttachToEvent;                 // whether or not attach rho to the event objects list
   Bool_t                 fIsAuAu;                        // different histogram ranges for pp/pAu and AuAu
-  
+
   StRhoParameter        *fOutRho;                        //!output rho object
   StRhoParameter        *fOutRhoScaled;                  //!output scaled rho object
   StRhoParameter        *fCompareRho;                    //!rho object to compare
@@ -112,7 +112,7 @@ class StRhoBase : public StJetFrameworkPicoBase {
   TH3F                  *fHistRhoScaledvsNtrackvsMult;   //!rhoscaled vs. no. of tracks vs mult
   TH2F                  *fHistDeltaRhovsNtrack;          //!delta rho vs. no. of tracks
   TH2F                  *fHistDeltaRhoScalevsNtrack;     //!delta rho scaled vs. no. of tracks
- 
+
   TH2F                  *fHistRhovsNcluster;             //!rho vs. no. of clusters
   TH2F                  *fHistRhoScaledvsNcluster;       //!rhoscaled vs. no. of clusters
 
@@ -135,7 +135,7 @@ class StRhoBase : public StJetFrameworkPicoBase {
 
   StRhoBase(const StRhoBase&);             // not implemented
   StRhoBase& operator=(const StRhoBase&);  // not implemented
-  
+
   ClassDef(StRhoBase, 2); // Rho base task
 };
 #endif

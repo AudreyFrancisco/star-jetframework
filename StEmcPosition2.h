@@ -1,5 +1,5 @@
 //******************************************************************************
-//                                                                            
+//
 // StEmcPosition2.h
 //
 // Authors: Joel Mazer
@@ -11,7 +11,7 @@
 #ifndef StEmcPosition2_H
 #define StEmcPosition2_H
 
-// ROOT includes 
+// ROOT includes
 #include "TObject.h"
 #include "TVector3.h"
 
@@ -21,8 +21,8 @@ class StEmcGeom;
 
 class StEmcPosition2 : public TObject
 {
-   public:            
- 
+   public:
+
              StEmcPosition2();
     virtual  ~StEmcPosition2();
 
@@ -40,10 +40,10 @@ class StEmcPosition2 : public TObject
     Float_t           getEtaFromVertex(const TVector3& vertex, Int_t TowerId) const; ///< Return eta of the tower considering the collision vertex
     Float_t           getPhiFromVertex(const TVector3& vertex, Int_t TowerId) const; ///< Return phi of the tower considering the collision vertex
 
-   protected:     
- 
-     StEmcGeom *mGeom[4];   
- 
+   protected:
+
+     StEmcGeom *mGeom[4];
+
    ClassDef(StEmcPosition2, 2)
 };
 #endif

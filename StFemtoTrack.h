@@ -57,11 +57,11 @@ class StFemtoTrack : public TObject
   /// track transverse momentum
   Double32_t        fPt;
   /// track pseudo-rapidity
-  Double32_t        fEta;           
+  Double32_t        fEta;
   /// track axis azimuthal angle
-  Double32_t        fPhi;               
+  Double32_t        fPhi;
   /// track charge
-  Short_t           fCharge;           
+  Short_t           fCharge;
 
  private:
   /// \cond CLASSIMP

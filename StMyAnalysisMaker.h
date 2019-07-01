@@ -62,13 +62,13 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
 
     StMyAnalysisMaker(const char *name, StPicoDstMaker *picoMaker, const char *outName, bool mDoComments, double minJetPtCut, double trkbias, const char *jetMakerName, const char *rhoMakerName);
     virtual ~StMyAnalysisMaker();
-   
+
     // class required functions
     virtual Int_t Init();
     virtual Int_t Make();
     virtual void  Clear(Option_t *opt="");
     virtual Int_t Finish();
-    
+
     // booking of histograms (optional)
     void    DeclareHistograms();
     void    WriteHistograms();
@@ -78,7 +78,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
 
     // ep stuff - Nov15
     void    InitParameters();
-   
+
     // THnSparse Setup
     virtual THnSparse*      NewTHnSparseF(const char* name, UInt_t entries);
     virtual void            GetDimParams(Int_t iEntry,TString &label, Int_t &nbins, Double_t &xmin, Double_t &xmax);
@@ -157,7 +157,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     // event plane
     virtual void            SetExcludeLeadingJetsFromFit(Float_t n)         {fExcludeLeadingJetsFromFit = n; }
     virtual void            SetEventPlaneTrackWeight(Int_t weight)          {fTrackWeight = weight; }
-    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          {fEventPlaneMaxTrackPtCut = m; }  
+    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          {fEventPlaneMaxTrackPtCut = m; }
     virtual void            SetTPCEventPlaneMethod(Int_t tm)                {fTPCEPmethod = tm; }
     virtual void            SetPhiShift(Bool_t ps)                          {phi_shift_switch = ps; }
     virtual void            SetTPCRecenterRead(Bool_t trc)                  {tpc_recenter_read_switch = trc; }
@@ -175,10 +175,10 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     virtual void            SetEPTPCptAssocBin(Int_t pb)                    {fTPCptAssocBin = pb; }
 
     // Where to read calib object with EP calibration if not default
-    void                    SetEPcalibFileName(TString filename)            {fEPcalibFileName = filename; } 
+    void                    SetEPcalibFileName(TString filename)            {fEPcalibFileName = filename; }
     void                    SetOutFileNameEP(TString epout)                 {mOutNameEP = epout; }
     void                    SetOutFileNameQA(TString QAout)                 {mOutNameQA = QAout; }
-    virtual void            SetdoReadCalibFilei(Bool_t rc)                  {doReadCalibFile = rc; } 
+    virtual void            SetdoReadCalibFilei(Bool_t rc)                  {doReadCalibFile = rc; }
     virtual void            SetEventPlaneMakerName(const char *epn)         {fEventPlaneMakerName = epn; }
 
   protected:
@@ -187,9 +187,9 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     Double_t                RelativeEPJET(Double_t jetAng, Double_t EPAng) const; // relative jet event plane angle
     TH1                    *FillEmcTriggersHist(TH1* h);                          // EmcTrigger counter histo
     Double_t                GetReactionPlane();                                   // get reaction plane angle
-    void                    GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, Double_t ptcut, Int_t ptbin);// get event plane / flatten and fill histos 
+    void                    GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, Double_t ptcut, Int_t ptbin);// get event plane / flatten and fill histos
     Bool_t                  DoComparison(int myarr[], int elems);
-    void                    SetSumw2(); // set errors weights 
+    void                    SetSumw2(); // set errors weights
     void                    SetEPSumw2(); // set errors weights for event plane histograms
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
     void                    CalculateEventPlaneResolution(Double_t bbc, Double_t zdc, Double_t tpc, Double_t tpcN, Double_t tpcP, Double_t bbc1, Double_t zdc1);
@@ -282,7 +282,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
   private:
     //void                   GetVZEROEventPlane(Bool_t isFlatten);
     Int_t                   fRunNumber;
-    TString                 fEPcalibFileName; 
+    TString                 fEPcalibFileName;
     Double_t                fEPTPCResolution;
     Double_t                fEPTPCn;
     Double_t                fEPTPCp;
@@ -295,13 +295,13 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     TClonesArray           *mTracks;
     TClonesArray           *mTowers;
     TClonesArray           *mParticles;
-   
+
     TFile                  *fCalibFile;
     TFile                  *fCalibFile2;
     TFile                  *fBBCcalibFile;
     TFile                  *fZDCcalibFile;
 
-/* 
+/*
     Int_t                   mEventCounter;//!
     Int_t                   mAllPVEventCounter;//!
     Int_t                   mInputEventCounter;//!
@@ -311,7 +311,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     bool                    doComments;
 
     // histograms
-    TH1F *hEventPlane;//!   
+    TH1F *hEventPlane;//!
     TH2F *fHistEPTPCnAlt;//!
     TH2F *fHistEPTPCpAlt;//!
     TH2F *fHistEPTPCn;//!
@@ -365,7 +365,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     TH2  *fHistJetHEtaPhi;//!
 
     // QA histos
-    TH1  *fHistEventSelectionQA;//! 
+    TH1  *fHistEventSelectionQA;//!
     TH1  *fHistEventSelectionQAafterCuts;//!
     TH1  *hTriggerIds;//!
     TH1  *hEmcTriggers;//!
@@ -481,7 +481,7 @@ class StMyAnalysisMaker : public StJetFrameworkPicoBase {
     Int_t GetAllPVEventCounter() {return mAllPVEventCounter;}
     Int_t GetInputEventCounter() {return mInputEventCounter;}
 */
-                
+
     ClassDef(StMyAnalysisMaker, 2)
 };
 /*

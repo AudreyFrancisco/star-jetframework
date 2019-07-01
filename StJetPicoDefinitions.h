@@ -13,20 +13,20 @@ class StJetPicoDefinitions : public TObject
   enum EVENT_FEATURES
   {
     _EVENT_WEIGHT          = 0, // this is for x-section weighting
-    
+
     _EVENT_MEDIAN_PT       = 1, // from fj for example
     _EVENT_MEDIAN_PT_4VECT = 2,
-    
+
     _EVENT_SIGMA           = 3,
     _EVENT_SIGMA_4VECT     = 4,
-    
+
     _EVENT_MEAN_AREA       = 5,
     _EVENT_MEAN_AREA_4VECT = 6
 
   };
-  
+
   static Int_t DebugLevel() {return gDebugLevel;}
-  static void SetDebugLevel(Int_t level) 
+  static void SetDebugLevel(Int_t level)
     {
       gDebugLevel = level;
     }
@@ -41,9 +41,9 @@ class StJetPicoDefinitions : public TObject
     {
       ;
     }
-  
+
   static Int_t gDebugLevel;
-    
+
   ClassDef(StJetPicoDefinitions, 0)
 };
 

@@ -61,13 +61,13 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
 
     StMyAnalysisMaker3(const char *name, StPicoDstMaker *picoMaker, const char *outName, bool mDoComments, double minJetPtCut, double trkbias, const char *jetMakerName, const char *rhoMakerName);
     virtual ~StMyAnalysisMaker3();
-   
+
     // class required functions
     virtual Int_t Init();
     virtual Int_t Make();
     virtual void  Clear(Option_t *opt="");
     virtual Int_t Finish();
-    
+
     // booking of histograms (optional)
     void    DeclareHistograms();
     void    WriteHistograms();
@@ -153,7 +153,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
     // event plane
     virtual void            SetExcludeLeadingJetsFromFit(Float_t n)         { fExcludeLeadingJetsFromFit = n; }
     virtual void            SetEventPlaneTrackWeight(Int_t weight)          { fTrackWeight = weight; }
-    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          { fEventPlaneMaxTrackPtCut = m; }  
+    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          { fEventPlaneMaxTrackPtCut = m; }
     virtual void            SetTPCEventPlaneMethod(Int_t tm)                { fTPCEPmethod = tm; }
     virtual void            SetHistBinLimitsCenZvert(Int_t cmin, Int_t cmax, Int_t zmin, Int_t zmax)   { fHistCentBinMin = cmin; fHistCentBinMax = cmax; fHistZvertBinMin = zmin; fHistZvertBinMax = zmax; }
     virtual void            SetdoEventPlaneRes(Bool_t depr)                 { doEventPlaneRes = depr; }
@@ -161,7 +161,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
     virtual void            SetEPTPCptAssocBin(Int_t pb)                    { fTPCptAssocBin = pb; }
 
     // Where to read calib object with EP calibration if not default
-    void                    SetEPcalibFileName(TString filename)            { fEPcalibFileName = filename; } 
+    void                    SetEPcalibFileName(TString filename)            { fEPcalibFileName = filename; }
     void                    SetOutFileNameEP(TString epout)                 { mOutNameEP = epout; }
     void                    SetOutFileNameQA(TString QAout)                 { mOutNameQA = QAout; }
     void                    SetOutFileNameMixEvt(TString MEout)             { mOutNameME = MEout; }
@@ -180,8 +180,8 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
   protected:
     TH1                    *FillEmcTriggersHist(TH1* h);                          // EmcTrigger counter histo
     Double_t                GetReactionPlane();                                   // get reaction plane angle
-    void                    GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, Double_t ptcut, Int_t ptbin);// get event plane / flatten and fill histos 
-    void                    SetSumw2(); // set errors weights 
+    void                    GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, Double_t ptcut, Int_t ptbin);// get event plane / flatten and fill histos
+    void                    SetSumw2(); // set errors weights
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
     void                    CalculateEventPlaneResolution(Double_t bbc, Double_t zdc, Double_t tpc, Double_t tpcN, Double_t tpcP, Double_t bbc1, Double_t zdc1);
     static Double_t         CalculateEventPlaneChi(Double_t res);
@@ -276,7 +276,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
 
   private:
     Int_t                   fRunNumber;
-    TString                 fEPcalibFileName; 
+    TString                 fEPcalibFileName;
     TString                 mOutNameME;
     Double_t                fEPTPCResolution;
     Double_t                fEPTPCn;
@@ -300,7 +300,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
     TH1F *hEventPlaneFnc2;//!
     TH1F *hEventPlaneClass;//!
 
-    TH1F *hEventPlane;//!   
+    TH1F *hEventPlane;//!
     TH2F *fHistEPTPCn;//!
     TH2F *fHistEPTPCp;//!
     TH2F *fHistEPBBC;//!
@@ -359,7 +359,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
     TH2  *fHistJetHEtaPhi;//!
 
     // QA histos
-    TH1  *fHistEventSelectionQA;//! 
+    TH1  *fHistEventSelectionQA;//!
     TH1  *fHistEventSelectionQAafterCuts;//!
     TH1  *hEmcTriggers;//!
     TH1  *hEventTriggerIDs;//!
@@ -410,7 +410,7 @@ class StMyAnalysisMaker3 : public StJetFrameworkPicoBase {
     TProfile              *fProfV5Resolution[9];//! resolution parameters for v5
 
     // jet vn measurement
-    TProfile              *fProfJetV2[4][4][4];//! jet v2 
+    TProfile              *fProfJetV2[4][4][4];//! jet v2
 
     // THn Sparse's jet sparse
     THnSparse             *fhnJH;//!           // jet hadron events matrix

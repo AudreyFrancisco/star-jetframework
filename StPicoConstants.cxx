@@ -113,7 +113,7 @@ Int_t Pico::mTriggerId[nTrigger] = {
 Int_t Pico::mTriggerIdMtd[nTriggerMtd] = {
   430103,    // dimuon
   430113,    // dimuon
-  430102,    // e-mu 
+  430102,    // e-mu
   430112,    // e-mu
   430122,    // e-mu
   430101,    // single-muon

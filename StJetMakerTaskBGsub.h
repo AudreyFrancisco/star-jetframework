@@ -75,7 +75,7 @@ class StJetMakerTaskBGsub : public StMaker {
   void    WriteHistograms();
 
   // switches
-  virtual void         SetUsePrimaryTracks(Bool_t P)    { doUsePrimTracks       = P; } 
+  virtual void         SetUsePrimaryTracks(Bool_t P)    { doUsePrimTracks       = P; }
   virtual void         SetDebugLevel(Int_t l)           { fDebugLevel           = l; }
   virtual void         SetRunFlag(Int_t f)              { fRunFlag              = f; }
   virtual void         SetdoppAnalysis(Bool_t pp)       { doppAnalysis          = pp;}
@@ -86,7 +86,7 @@ class StJetMakerTaskBGsub : public StMaker {
   // event setters
   virtual void         SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
   virtual void         SetEmcTriggerEventType(UInt_t te) { fEmcTriggerEventType = te; }
-  virtual void         SetMBEventType(UInt_t mbe)        { fMBEventType = mbe; }   
+  virtual void         SetMBEventType(UInt_t mbe)        { fMBEventType = mbe; }
   virtual void         SetTriggerToUse(UInt_t ttu)       { fTriggerToUse = ttu; }
   virtual void         SetMaxEventTrackPt(Double_t mxpt) { fMaxEventTrackPt = mxpt; }
   virtual void         SetMaxEventTowerEt(Double_t mxEt) { fMaxEventTowerEt = mxEt; }
@@ -109,7 +109,7 @@ class StJetMakerTaskBGsub : public StMaker {
   // track setters
   void                 SetTrackEtaRange(Double_t etmi, Double_t etma) { fTrackEtaMin = etmi; fTrackEtaMax = etma; }
   void                 SetTrackPhiRange(Double_t ptmi, Double_t ptma) { fTrackPhiMax = ptmi; fTrackPhiMax = ptma; }
-  
+
   // jet setters
   void                 SetMinJetTrackPt(Double_t min)             { fMinJetTrackPt = min;}
   void                 SetMaxJetTrackPt(Double_t max)             { fMaxJetTrackPt = max;}
@@ -138,7 +138,7 @@ class StJetMakerTaskBGsub : public StMaker {
   TClonesArray        *GetJets()                        { return fJets; }
   TClonesArray        *GetJetsBGsub()                   { return fJetsBGsub; }
   TClonesArray        *GetJetConstit()                  { return fJetsConstit; }
- 
+
   // getters
   Double_t             GetGhostArea()                   { return fGhostArea         ; }
   const char          *GetJetsName()                    { return fJetsName.Data()   ; }
@@ -185,7 +185,7 @@ class StJetMakerTaskBGsub : public StMaker {
   Double_t             GetMaxTowerEt();               // find max tower Et in event
   Int_t                FastJetBGsub();
 
-  void                 SetSumw2(); // set errors weights 
+  void                 SetSumw2(); // set errors weights
 
   // may not need any of these except fill jet branch if I want 2 different functions
   void                 FillJetBranch();
@@ -222,7 +222,7 @@ class StJetMakerTaskBGsub : public StMaker {
 
   // event selection types
   UInt_t               fEmcTriggerEventType;    // Physics selection of event used for signal - HT or JP
-  UInt_t               fMBEventType;            // MB selection  
+  UInt_t               fMBEventType;            // MB selection
   UInt_t               fTriggerToUse;           // trigger to use for analysis
   Int_t                fEmcTriggerArr[8];       // EMCal triggers array: used to select signal and do QA
 
@@ -302,14 +302,14 @@ class StJetMakerTaskBGsub : public StMaker {
   vector<fastjet::PseudoJet> fFull_Event;         //!jet input vectors
   vector<fastjet::PseudoJet> fConstituents;       //!jet constituents
   TClonesArray        *fJetsConstit;            //!jet constituents ClonesArray
-  TClonesArray        *fJetsConstitBGsub;       //!jet constituents background subtracted ClonesArray  
+  TClonesArray        *fJetsConstitBGsub;       //!jet constituents background subtracted ClonesArray
 
   // fastjet definitions
   // might add..
 
   // TEST ---
   StEmcGeom           *mGeom;
-  
+
   static const Int_t   fgkConstIndexShift;      //!contituent index shift
 
  private:

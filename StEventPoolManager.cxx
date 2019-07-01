@@ -15,7 +15,7 @@ ClassImp(StEventPool)
 void StEventPool::PrintInfo() const
 {
   cout << Form("%20s: %d events", "Pool capacity", fMixDepth) << endl;
-  cout << Form("%20s: %d events, %d tracks", "Current size", 
+  cout << Form("%20s: %d events, %d tracks", "Current size",
 	       GetCurrentNEvents(), NTracksInPool()) << endl;
   cout << Form("%20s: %.1f to %.1f", "Sub-event mult.", fMultMin, fMultMax) << endl;
   cout << Form("%20s: %.1f to %.1f", "Z-vtx range", fZvtxMin, fZvtxMax) << endl;
@@ -122,7 +122,7 @@ Int_t StEventPool::UpdatePool(TObjArray *trk)
     return fEvents.size();
   }
 
-  static Int_t iEvent = -1; 
+  static Int_t iEvent = -1;
   iEvent++;
 
   Int_t mult = trk->GetEntries();
@@ -142,7 +142,7 @@ Int_t StEventPool::UpdatePool(TObjArray *trk)
   if (removeFirstEvent) {
     TObjArray *fa = fEvents.front();
     delete fa;
-    fEvents.pop_front();         // remove first track array 
+    fEvents.pop_front();         // remove first track array
     fNTracksInEvent.pop_front(); // remove first int
     fEventIndex.pop_front();
   }
@@ -154,7 +154,7 @@ Int_t StEventPool::UpdatePool(TObjArray *trk)
   if (fNTimes == 1) {
     fFirstFilled = kTRUE;
     if (StEventPool::fDebug) {
-      cout << "\nPool " << MultBinIndex() << ", " << ZvtxBinIndex() 
+      cout << "\nPool " << MultBinIndex() << ", " << ZvtxBinIndex()
            << " ready at event "<< iEvent;
       PrintInfo();
       cout << endl;
@@ -168,7 +168,7 @@ Int_t StEventPool::UpdatePool(TObjArray *trk)
 
   if (StEventPool::fDebug) {
     cout << " Event " << fEventIndex.back();
-    cout << " PoolDepth = " << GetCurrentNEvents(); 
+    cout << " PoolDepth = " << GetCurrentNEvents();
     cout << " NTracksInCurrentEvent = " << NTracksInCurrentEvent();
   }
 
@@ -227,7 +227,7 @@ TObject* StEventPool::GetRandomTrack() const
 TObjArray* StEventPool::GetEvent(Int_t i) const
 {
   if (i < 0 || i >= (Int_t)fEvents.size()) {
-    cout << "StEventPool::GetEvent(" 
+    cout << "StEventPool::GetEvent("
 	 << i << "): Invalid index" << endl;
     return 0x0;
   }
@@ -271,7 +271,7 @@ ClassImp(StEventPoolManager)
 StEventPoolManager::StEventPoolManager(Int_t depth,     Int_t minNTracks,
 					 Int_t nMultBins, Double_t *multbins,
 					 Int_t nZvtxBins, Double_t *zvtxbins) :
-fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks) 
+fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks)
 {
   // Constructor.
   // without Event plane bins or pt bins
@@ -288,7 +288,7 @@ StEventPoolManager::StEventPoolManager(Int_t depth,     Int_t minNTracks,
 					 Int_t nMultBins, Double_t *multbins,
 					 Int_t nZvtxBins, Double_t *zvtxbins,
 					 Int_t nPsiBins, Double_t *psibins) :
-fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks) 
+fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks)
 {
   // Constructor.
   // without pt bins
@@ -304,7 +304,7 @@ StEventPoolManager::StEventPoolManager(Int_t depth,     Int_t minNTracks,
 					 Int_t nZvtxBins, Double_t *zvtxbins,
 					 Int_t nPsiBins, Double_t *psibins,
            Int_t nPtBins, Double_t *ptbins) :
-fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks) 
+fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks)
 {
   // Constructor.
 
@@ -313,7 +313,7 @@ fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(),
 }
 
 StEventPoolManager::StEventPoolManager(Int_t depth,     Int_t minNTracks, const char* binning) :
-fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks) 
+fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(), fZvtxBins(), fPsiBins(), fPtBins(), fEvPool(0), fTargetTrackDepth(minNTracks)
 {
   Double_t psidummy[2] = {-999.,999.};
   Double_t ptdummy[2] = {-9999.,9999.};
@@ -321,13 +321,13 @@ fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(),
   // Constructor.
   Double_t* multbins = GetBinning(binning, "multiplicity", fNMultBins);
   Double_t* zvtxbins = GetBinning(binning, "vertex", fNZvtxBins);
-  
+
   Double_t* psibins = GetBinning(binning, "psi", fNPsiBins); //optional
   if (!psibins) {
     psibins = psidummy;
     fNPsiBins = 1;
   }
-  
+
   Double_t* ptbins = GetBinning(binning, "pt", fNPtBins); //optional
   if (!ptbins) {
     ptbins = ptdummy;
@@ -339,9 +339,9 @@ fDebug(0), fNMultBins(0), fNZvtxBins(0), fNPsiBins(0), fNPtBins(0), fMultBins(),
   cout << "StEventPoolManager initialized." << endl;
 }
 
-Int_t StEventPoolManager::InitEventPools(Int_t depth, 
-					  Int_t nMultBins, Double_t *multbin, 
-					  Int_t nZvtxBins, Double_t *zvtxbin, 
+Int_t StEventPoolManager::InitEventPools(Int_t depth,
+					  Int_t nMultBins, Double_t *multbin,
+					  Int_t nZvtxBins, Double_t *zvtxbin,
 					  Int_t nPsiBins, Double_t *psibin,
             Int_t nPtBins, Double_t *ptbin)
 {
@@ -356,14 +356,14 @@ Int_t StEventPoolManager::InitEventPools(Int_t depth,
   fZvtxBins.assign(zvtxbin, zvtxbin+nZvtxBins+1);
   fPsiBins.assign(psibin, psibin+nPsiBins+1);
   fPtBins.assign(ptbin, ptbin+nPtBins+1);
-  
+
   for (Int_t iM = 0; iM < nMultBins; iM++) {
     for (Int_t iZ = 0; iZ < nZvtxBins; iZ++) {
       for (Int_t iP = 0; iP < nPsiBins; iP++) {
         for (Int_t iPt = 0; iPt < nPtBins; iPt++) {
 
-          fEvPool.push_back(new StEventPool(depth, 
-             multbin[iM], multbin[iM+1], 
+          fEvPool.push_back(new StEventPool(depth,
+             multbin[iM], multbin[iM+1],
              zvtxbin[iZ], zvtxbin[iZ+1],
              psibin[iP], psibin[iP+1],
              ptbin[iPt], ptbin[iPt+1] ));
@@ -371,7 +371,7 @@ Int_t StEventPoolManager::InitEventPools(Int_t depth,
       }
     }
   }
-  
+
   for (Int_t iM = 0; iM < nMultBins; iM++) {
     for (Int_t iZ = 0; iZ < nZvtxBins; iZ++) {
       for (Int_t iP = 0; iP < nPsiBins; iP++) {
@@ -385,7 +385,7 @@ Int_t StEventPoolManager::InitEventPools(Int_t depth,
       }
     }
   }
-    
+
   if (0) {
     cout << "fEvPool outer size: " << fEvPool.size() << endl;
     for (Int_t iM = 0; iM < nMultBins; iM++) {
@@ -404,7 +404,7 @@ Int_t StEventPoolManager::InitEventPools(Int_t depth,
       }
     }
   }
-  
+
   return fEvPool.size();
 }
 
@@ -413,7 +413,7 @@ Long64_t StEventPoolManager::Merge(TCollection* hlist)
 {
   if (!hlist)
   	return 0;
-  	
+
   StEventPoolManager *tmpObj = 0;
   TIter objIter(hlist);
 
@@ -442,7 +442,7 @@ void StEventPoolManager::SetTargetValues(Int_t trackDepth, Float_t fraction, Int
 {
   // sets target values (when a pool becomes ready) in all event pools
   fTargetTrackDepth = trackDepth;
-  
+
   for (Int_t iM = 0; iM < fNMultBins; iM++) {
     for (Int_t iZ = 0; iZ < fNZvtxBins; iZ++) {
       for (Int_t iP = 0; iP < fNPsiBins; iP++) {
@@ -518,14 +518,14 @@ void StEventPoolManager::SetSaveFlag(Double_t minCent, Double_t maxCent, Double_
               cout<<"A pool that was already imported is flagged to be saved. Is this really intended?"<<endl;
             pool->SetSaveFlag(kTRUE);
           }
-        }  
+        }
 }
 
 //_______________________________________________________________________________________________
 void StEventPoolManager::Validate()
 {
-  std::cout << "############## StEventPoolManager ##############\n"; 
-  std::cout << "== Binning ==\n"; 
+  std::cout << "############## StEventPoolManager ##############\n";
+  std::cout << "== Binning ==\n";
   TString tmpStr = "cent/mult: ";
   for(Int_t i = 0; i < (Int_t)fMultBins.size(); i++)
     tmpStr += Form("%4.3f ", fMultBins[i]);
@@ -547,7 +547,7 @@ void StEventPoolManager::Validate()
   for (Int_t iM = 0; iM < fNMultBins; iM++)
     for (Int_t iZ = 0; iZ < fNZvtxBins; iZ++)
       for (Int_t iP = 0; iP < fNPsiBins; iP++)
-        for (Int_t iPt = 0; iPt < fNPtBins; iPt++) 
+        for (Int_t iPt = 0; iPt < fNPtBins; iPt++)
         {
           StEventPool *pool = GetEventPool(iM, iZ, iP, iPt);
           if(!pool)
@@ -559,36 +559,36 @@ void StEventPoolManager::Validate()
   for (Int_t iM = 0; iM < fNMultBins; iM++)
     for (Int_t iZ = 0; iZ < fNZvtxBins; iZ++)
       for (Int_t iP = 0; iP < fNPsiBins; iP++)
-        for (Int_t iPt = 0; iPt < fNPtBins; iPt++) 
+        for (Int_t iPt = 0; iPt < fNPtBins; iPt++)
         {
           StEventPool *pool = GetEventPool(iM, iZ, iP, iPt);
           if(pool->GetSaveFlag())
             std::cout << Form(" Pool (mult=%4.3f-%4.3f, zvertex=%3.3f-%4.3f, psi=%4.3f-%4.3f, pt=%4.3f-%4.3f) will be saved", fMultBins[iM], fMultBins[iM+1], fZvtxBins[iZ], fZvtxBins[iZ+1], fPsiBins[iP], fPsiBins[iP+1], fPtBins[iPt], fPtBins[iPt+1]) << std::endl;
         }
 
-  std::cout << "############## StEventPoolManager ##############\n"; 
+  std::cout << "############## StEventPoolManager ##############\n";
 
 }
 
 //_______________________________________________________________________________________________
 StEventPool *StEventPoolManager::GetEventPool(Int_t iMult, Int_t iZvtx, Int_t iPsi, Int_t iPt) const
 {
-  if (iMult < 0 || iMult >= fNMultBins) 
+  if (iMult < 0 || iMult >= fNMultBins)
   {
     Form("Mult bin %i exceeds maximum of %i",iMult, fNMultBins);
     return 0x0;
   }
-  if (iZvtx < 0 || iZvtx >= fNZvtxBins) 
+  if (iZvtx < 0 || iZvtx >= fNZvtxBins)
   {
     Form("Zvtx bin %i exceeds maximum of %i",iZvtx, fNZvtxBins);
     return 0x0;
   }
-  if (iPsi < 0 || iPsi >= fNPsiBins) 
+  if (iPsi < 0 || iPsi >= fNPsiBins)
   {
     Form("Psi bin %i exceeds maximum of %i",iPsi, fNPsiBins);
     return 0x0;
   }
-  if (iPt < 0 || iPt >= fNPtBins) 
+  if (iPt < 0 || iPt >= fNPtBins)
   {
     Form("Pt bin %i exceeds maximum of %i",iPt, fNPtBins);
     return 0x0;
@@ -637,13 +637,13 @@ Int_t StEventPoolManager::UpdatePools(TObjArray *trk)
         }
       }
     }
-  }  
+  }
   return 0;
 }
 
 //_______________________________________________________________________________________________
 Double_t* StEventPoolManager::GetBinning(const char* configuration, const char* tag, Int_t& nBins) const
-{  
+{
   TString config(configuration);
   TObjArray *lines = config.Tokenize("\n");
   for (Int_t i = 0; i < lines->GetEntriesFast(); i++)
@@ -657,7 +657,7 @@ Double_t* StEventPoolManager::GetBinning(const char* configuration, const char* 
       Double_t *bins = new Double_t[binning->GetEntriesFast()];
       for (Int_t j = 0; j < binning->GetEntriesFast(); j++)
         bins[j] = TString(binning->At(j)->GetName()).Atof();
-      
+
       nBins = binning->GetEntriesFast() - 1;
 
       delete binning;
@@ -665,7 +665,7 @@ Double_t* StEventPoolManager::GetBinning(const char* configuration, const char* 
       return bins;
     }
   }
-  
+
   delete lines;
   return 0;
 }

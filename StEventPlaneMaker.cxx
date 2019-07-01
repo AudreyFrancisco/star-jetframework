@@ -10,9 +10,9 @@
 //      - Rho (underlying event) subtraction to jets
 //      - leading jet tag
 //      - general QA
-//      
+//
 // can get a pointer to:
-// 1) collection of jets  	
+// 1) collection of jets
 // 2) event wise rho parameter
 // ################################################################
 
@@ -61,10 +61,10 @@ StEventPlaneMaker::StEventPlaneMaker(const char* name, StPicoDstMaker *picoMaker
   : StJetFrameworkPicoBase(name)
 {
   fLeadingJet = 0x0; fSubLeadingJet = 0x0; fExcludeLeadingJetsFromFit = 1.0;
-  fTrackWeight = 1; //StJetFrameworkPicoBase::kPtLinear2Const5Weight; // see StJetFrameworkPicoBase::EPtrackWeightType 
+  fTrackWeight = 1; //StJetFrameworkPicoBase::kPtLinear2Const5Weight; // see StJetFrameworkPicoBase::EPtrackWeightType
   fEventPlaneMaxTrackPtCut = 5.0;
   fTPCEPmethod = 1;
-  phi_shift_switch = kFALSE;         // keep off! 
+  phi_shift_switch = kFALSE;         // keep off!
   tpc_recenter_read_switch = kFALSE; // TPC recenter switch
   tpc_shift_read_switch = kFALSE;    // TPC shift switch
   tpc_apply_corr_switch = kFALSE;    // TPC finall corrections
@@ -72,7 +72,7 @@ StEventPlaneMaker::StEventPlaneMaker(const char* name, StPicoDstMaker *picoMaker
   zdc_shift_read_switch = kFALSE;    // ZDC shift switch
   zdc_apply_corr_switch = kFALSE;    // ZDC final corrections
   bbc_recenter_read_switch = kFALSE; // BBC recenter switch
-  bbc_shift_read_switch = kFALSE;    // BBC shift switch 
+  bbc_shift_read_switch = kFALSE;    // BBC shift switch
   bbc_apply_corr_switch = kFALSE;    // BBC final corrections
   fHistCentBinMin = 0;
   fHistCentBinMax = 9;               // 0-5, 5-10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80
@@ -182,12 +182,12 @@ StEventPlaneMaker::~StEventPlaneMaker()
         if(Q2_m[i][j]) delete Q2_m[i][j];
       }
 
-      if(tpc_shift_read_switch) { 
+      if(tpc_shift_read_switch) {
         if(hTPC_shift_N[i][j]) delete hTPC_shift_N[i][j];
         if(hTPC_shift_P[i][j]) delete hTPC_shift_P[i][j];
       }
 
-      if(bbc_shift_read_switch) { 
+      if(bbc_shift_read_switch) {
         if(hBBC_shift_A[i][j]) delete hBBC_shift_A[i][j];
         if(hBBC_shift_B[i][j]) delete hBBC_shift_B[i][j];
       }
@@ -296,7 +296,7 @@ Int_t StEventPlaneMaker::Init() {
 //
 //
 //_______________________________________________________________________________________
-Int_t StEventPlaneMaker::Finish() { 
+Int_t StEventPlaneMaker::Finish() {
   // close event plane calibration files (if open)
   //if(fCalibFile->IsOpen())  fCalibFile->Close();
   //if(fCalibFile2->IsOpen()) fCalibFile2->Close();
@@ -440,6 +440,7 @@ void StEventPlaneMaker::DeclareHistograms() {
   Int_t nRunBins = 1; // - just a default
   if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
   if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 5;
   Double_t nRunBinsMax = (Double_t)nRunBins;
 
   // ZDC centering
@@ -461,7 +462,7 @@ void StEventPlaneMaker::DeclareHistograms() {
   bbc_psi_w = new TH1F("bbc_psi_w", "bbc psi2", 288, -0.5*pi, 1.5*pi); // TODO - check order
   bbc_psi_evw = new TH2F("bbc_psi_evw", "bbc psi2 east vs. bbc psi2 west", 288, -0.5*pi, 1.5*pi, 288, -0.5*pi, 1.5*pi);
   bbc_psi1_raw = new TH1F("bbc_psi1_raw", "bbc psi1 raw", 288, -0.5*pi, 2.5*pi);
-  bbc_psi_raw = new TH1F("bbc_psi_raw", "bbc psi2 raw", 288, -0.5*pi, 1.5*pi); 
+  bbc_psi_raw = new TH1F("bbc_psi_raw", "bbc psi2 raw", 288, -0.5*pi, 1.5*pi);
   bbc_psi_rcd = new TH1F("bbc_psi_rcd", "bbc psi2 centered", 288, -0.5*pi, 1.5*pi);  // TODO - check order
   bbc_psi_sft = new TH1F("bbc_psi_sft", "bbc psi2 shifted", 288, -0.5*pi, 1.5*pi);   // TODO - check order
   bbc_psi_fnl = new TH1F("bbc_psi_fnl", "bbc psi2 corrected", 288, -0.5*pi, 1.5*pi); // TODO - check order
@@ -636,7 +637,7 @@ void StEventPlaneMaker::WriteEventPlaneHistograms() {
 
       if(tpc_shift_read_switch) hTPC_shift_N[i][j]->Write();
       if(tpc_shift_read_switch) hTPC_shift_P[i][j]->Write();
-      
+
       if(bbc_shift_read_switch) hBBC_shift_A[i][j]->Write();
       if(bbc_shift_read_switch) hBBC_shift_B[i][j]->Write();
 
@@ -651,7 +652,7 @@ void StEventPlaneMaker::WriteEventPlaneHistograms() {
     hZDC_center_wx->Write();
     hZDC_center_wy->Write();
   }
- 
+
   if(bbc_recenter_read_switch){
     hBBC_center_ex->Write();
     hBBC_center_ey->Write();
@@ -718,7 +719,7 @@ void StEventPlaneMaker::WriteEventPlaneHistograms() {
 
 }
 //
-// OLD user code says: //  Called every event after Make(). 
+// OLD user code says: //  Called every event after Make().
 //_____________________________________________________________________________
 void StEventPlaneMaker::Clear(Option_t *opt) {
   //fJets->Clear();
@@ -733,7 +734,7 @@ Int_t StEventPlaneMaker::Make() {
   // just get out of Dodge if we are trying to run on pp collisions
   if(doppAnalysis) return kStOK; // use kStOK to not create tons of warning printouts
 
-  // get PicoDstMaker 
+  // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) {
     LOG_WARN << " No PicoDstMaker! Skip! " << endm;
@@ -747,7 +748,7 @@ Int_t StEventPlaneMaker::Make() {
     return kStWarn;
   }
 
-  // create pointer to PicoEvent 
+  // create pointer to PicoEvent
   mPicoEvent = static_cast<StPicoEvent*>(mPicoDst->event());
   if(!mPicoEvent) {
     LOG_WARN << " No PicoEvent! Skip! " << endm;
@@ -777,13 +778,13 @@ Int_t StEventPlaneMaker::Make() {
   //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
 
   // get event B (magnetic) field
-  Bfield = mPicoEvent->bField(); 
+  Bfield = mPicoEvent->bField();
 
   // get vertex 3-vector and z-vertex component
   mVertex = mPicoEvent->primaryVertex();
   zVtx = mVertex.z();
-  
-  // Z-vertex cut 
+
+  // Z-vertex cut
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
 
   // let me know the fill, and event ID
@@ -826,7 +827,7 @@ Int_t StEventPlaneMaker::Make() {
   // looking at the EMCal triggers - used for QA and deciding on HT triggers: fill Event Trigger QA
   FillEventTriggerQA(fHistEventSelectionQA);
   FillEmcTriggersHist(hEmcTriggers);
- 
+
   // check for MB and HT triggers - Type Flag corresponds to selected type of MB or EMC
   bool fHaveMBevent = CheckForMB(fRunFlag, fMBEventType);
   bool fHaveMB5event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB5);
@@ -909,7 +910,7 @@ Int_t StEventPlaneMaker::Make() {
   hTPCvsBBCep->Fill(BBC_PSI2, TPC_PSI2);
   hTPCvsZDCep->Fill(ZDC_PSI2, TPC_PSI2);
   hBBCvsZDCep->Fill(ZDC_PSI2, BBC_PSI2);
- 
+
   // test statements (debug)
   if(fDebugLevel == kDebugEventPlaneCalc) {
     cout<<"BBC = "<<BBC_PSI2<<"  ZDC = "<<ZDC_PSI2<<"  TPC_PSI2 = "<<TPC_PSI2<<"  TPCneg = "<<fEPTPCn<<"  TPCpos = "<<fEPTPCp<<"  Multiplicity = "<<refCorr2<<endl;
@@ -962,7 +963,7 @@ TH1* StEventPlaneMaker::FillEmcTriggersHist(TH1* h) {
   Int_t nEmcTrigger = mPicoDst->numberOfEmcTriggers();
 
   // set kAny true to use of 'all' triggers
-  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted) 
+  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted)
 
   //static StPicoEmcTrigger* emcTrigger(int i) { return (StPicoEmcTrigger*)picoArrays[picoEmcTrigger]->UncheckedAt(i); }
   // loop over valid EmcalTriggers
@@ -981,7 +982,7 @@ TH1* StEventPlaneMaker::FillEmcTriggersHist(TH1* h) {
     if(emcTrig->isJP2()) { h->Fill(7); fEmcTriggerArr[StJetFrameworkPicoBase::kIsJP2] = 1; }
   }
   // kAny trigger - filled once per event
-  h->Fill(10); 
+  h->Fill(10);
 
   h->GetXaxis()->SetBinLabel(1, "HT0");
   h->GetXaxis()->SetBinLabel(2, "HT1");
@@ -1037,7 +1038,7 @@ void StEventPlaneMaker::SetEPSumw2() {
       if(tpc_recenter_read_switch) Q2_m[i][j]->Sumw2();
       if(tpc_shift_read_switch) hTPC_shift_N[i][j]->Sumw2();
       if(tpc_shift_read_switch) hTPC_shift_P[i][j]->Sumw2();
-      
+
       if(bbc_shift_read_switch) hBBC_shift_A[i][j]->Sumw2();
       if(bbc_shift_read_switch) hBBC_shift_B[i][j]->Sumw2();
       if(zdc_shift_read_switch) hZDC_shift_A[i][j]->Sumw2();
@@ -1122,7 +1123,7 @@ void StEventPlaneMaker::SetEPSumw2() {
 //
 // ________________________________________________________________________________________
 void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, Double_t ptcut, Int_t ptbin)
-{ 
+{
   // local variables
   TVector2 mQtpcn, mQtpcp, mQtpc;
   double mQtpcnx = 0., mQtpcny = 0., mQtpcpx = 0., mQtpcpy = 0., mQtpcX = 0., mQtpcY = 0.;
@@ -1199,7 +1200,7 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
     // Method1: kRemoveEtaStrip
     //if(fTPCEPmethod == 1){
     if(method == 1){
-      if((fLeadingJet) && (fExcludeLeadingJetsFromFit > 0) && 
+      if((fLeadingJet) && (fExcludeLeadingJetsFromFit > 0) &&
         ((TMath::Abs(eta - excludeInEta) < fJetRad*fExcludeLeadingJetsFromFit ) ||
         ((TMath::Abs(eta) - fJetRad - 1.0 ) > 0) )) continue;
     //} else if(fTPCEPmethod == 2){
@@ -1210,7 +1211,7 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
       if((fLeadingJet) && (fExcludeLeadingJetsFromFit > 0) &&
         ((deltaR < fJetRad) || (TMath::Abs(eta) - fJetRad - 1.0 > 0 ) )) continue;
     //} else if(fTPCEPmethod == 3){
-    } else if(method == 3){ 
+    } else if(method == 3){
       // remove tracks above 2 GeV in cone around leading jet
       // Method3: kRemoveLeadingJetConstituents
       double deltaR = 1.0*TMath::Sqrt((eta - excludeInEta)*(eta - excludeInEta) + (phi - excludeInPhi)*(phi - excludeInPhi));
@@ -1237,7 +1238,7 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
       if((fSubLeadingJet) && (fExcludeLeadingJetsFromFit > 0) &&
         ((deltaRSub < fJetRad) || (TMath::Abs(eta) - fJetRad - 1.0 > 0 ) )) continue;
     //} else if(fTPCEPmethod == 6){
-    } else if(method == 6){ 
+    } else if(method == 6){
       // remove tracks above 2 GeV in cone around leading + subleading jet
       // Method6: kRemoveLeadingSubJetConstituents
       double deltaR = 1.0*TMath::Sqrt((eta - excludeInEta)*(eta - excludeInEta) + (phi - excludeInPhi)*(phi - excludeInPhi));
@@ -1299,7 +1300,7 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
         mQtpcpy += trackweight * sin(phi * order);
         ntracksPOS++;
       }
-    }  
+    }
 
     // combined TPC event plane q-vectors
     mQtpcX += trackweight * cos(phi * order);
@@ -1313,7 +1314,7 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
   //cout<<"mQtpcpx = "<<mQtpcpx<<"  mQtpcpy = "<<mQtpcpy<<"  mQtpcnx = "<<mQtpcnx<<"  mQtpcny = "<<mQtpcny<<endl;
   //cout<<"nTOT = "<<nTOT<<"  nA = "<<nA<<"  nB = "<<nB<<endl;
 
-  // set q-vector components 
+  // set q-vector components
   mQtpcn.Set(mQtpcnx, mQtpcny);
   mQtpcp.Set(mQtpcpx, mQtpcpy);
   mQtpc.Set(mQtpcX, mQtpcY);
@@ -1347,13 +1348,13 @@ void StEventPlaneMaker::GetEventPlane(Bool_t flattenEP, Int_t n, Int_t method, D
   fHistEPZDC->Fill(fCentralityScaled, fEPZDC);
 
 }
-// 
+//
 // BBC event plane calculation
 // ______________________________________________________________________
 Int_t StEventPlaneMaker::BBC_EP_Cal(int ref9, int region_vz, int n) { //refmult, the region of vz, and order of EP
   // constant
   double pi = 1.0*TMath::Pi();
-  
+
   // get run ID, transform to run order for filling histogram of corrections
   int RunId = mPicoEvent->runId();
   int RunId_Order = GetRunNo(RunId);// + 1;
@@ -1389,10 +1390,10 @@ Int_t StEventPlaneMaker::BBC_EP_Cal(int ref9, int region_vz, int n) { //refmult,
   for(int i = 0; i < N_B; i++){
     double phi_pE = BBC_GetPhi(0, i);
     double phi_pW = BBC_GetPhi(1, i);
-    sumsin_E += bbc_E[i]*sin(n*phi_pE); 
+    sumsin_E += bbc_E[i]*sin(n*phi_pE);
     sumcos_E += bbc_E[i]*cos(n*phi_pE);
-    sumsin_W += bbc_W[i]*sin(n*phi_pW); 
-    sumcos_W += bbc_W[i]*cos(n*phi_pW); 
+    sumsin_W += bbc_W[i]*sin(n*phi_pW);
+    sumcos_W += bbc_W[i]*cos(n*phi_pW);
   }
 
   // STEP1: for re-centering the BBC event plane angle
@@ -1404,21 +1405,21 @@ Int_t StEventPlaneMaker::BBC_EP_Cal(int ref9, int region_vz, int n) { //refmult,
   }
 
   // TEST - debug BBC
-  if(fabs(sumcos_E) < 1e-6) { //cout<<"BBC sumcos_E < 1e-6, "<<sumcos_E<<endl; 
+  if(fabs(sumcos_E) < 1e-6) { //cout<<"BBC sumcos_E < 1e-6, "<<sumcos_E<<endl;
     hBBCepDebug->Fill(1.); }
-  if(fabs(sumsin_E) < 1e-6) { //cout<<"BBC sumsin_E < 1e-6, "<<sumsin_E<<endl; 
+  if(fabs(sumsin_E) < 1e-6) { //cout<<"BBC sumsin_E < 1e-6, "<<sumsin_E<<endl;
     hBBCepDebug->Fill(2.); }
-  if(fabs(sumcos_W) < 1e-6) { //cout<<"BBC sumcos_W < 1e-6, "<<sumcos_W<<endl; 
+  if(fabs(sumcos_W) < 1e-6) { //cout<<"BBC sumcos_W < 1e-6, "<<sumcos_W<<endl;
     hBBCepDebug->Fill(3.); }
-  if(fabs(sumsin_W) < 1e-6) { //cout<<"BBC sumsin_W < 1e-6, "<<sumsin_W<<endl; 
+  if(fabs(sumsin_W) < 1e-6) { //cout<<"BBC sumsin_W < 1e-6, "<<sumsin_W<<endl;
     hBBCepDebug->Fill(4.); }
-  if(fabs(sum_E) < 1e-6) {    //cout<<"BBC sum_E < 1e-6, "<<sum_E<<endl; 
+  if(fabs(sum_E) < 1e-6) {    //cout<<"BBC sum_E < 1e-6, "<<sum_E<<endl;
     hBBCepDebug->Fill(6.); }
-  if(fabs(sum_W) < 1e-6) {    //cout<<"BBC sum_W < 1e-6, "<<sum_W<<endl; 
+  if(fabs(sum_W) < 1e-6) {    //cout<<"BBC sum_W < 1e-6, "<<sum_W<<endl;
     hBBCepDebug->Fill(7.); }
 
   // create Q-vectors
-  TVector2 bQE, bQW, bQ, bQ_raw, bQ_raw1; 
+  TVector2 bQE, bQW, bQ, bQ_raw, bQ_raw1;
   bQ_raw1.Set((sumcos_E - sumcos_W), (sumsin_E - sumsin_W)); // this is raw Q vector (1st order event plane)
   bQ_raw.Set((sumcos_E + sumcos_W), (sumsin_E + sumsin_W));  // raw Q vector (2nd order event plane)
 
@@ -1528,14 +1529,14 @@ Int_t StEventPlaneMaker::BBC_EP_Cal(int ref9, int region_vz, int n) { //refmult,
   }
 
   // STEP3: read shift correction for BBC event plane (read in from file)
-  double bbc_delta_psi = 0.;	
+  double bbc_delta_psi = 0.;
   double bbc_shift_Aval = 0., bbc_shift_Bval = 0.; // comment in with code chunk below
   if(bbc_apply_corr_switch) { // need to have ran recentering + shift prior
     for(int nharm = 1; nharm < 21; nharm++){
       // Method 1: load from *.h file function
       // perform 'shift' to BBC event plane angle
-      ////bbc_delta_psi += (bbc_shift_A[ref9][region_vz][z-1]*cos(2*z*bPhi_rcd) + bbc_shift_B[ref9][region_vz][z-1]*sin(2*z*bPhi_rcd)); 
-      ///bbc_delta_psi += (bbc_shift_A[ref9][region_vz][nharm-1] * cos(2*nharm*bPhi_rcd) + 
+      ////bbc_delta_psi += (bbc_shift_A[ref9][region_vz][z-1]*cos(2*z*bPhi_rcd) + bbc_shift_B[ref9][region_vz][z-1]*sin(2*z*bPhi_rcd));
+      ///bbc_delta_psi += (bbc_shift_A[ref9][region_vz][nharm-1] * cos(2*nharm*bPhi_rcd) +
       ///                  bbc_shift_B[ref9][region_vz][nharm-1] * sin(2*nharm*bPhi_rcd));
 
       // recentering procedure
@@ -1643,7 +1644,7 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
     zdc_EH[i] = mPicoEvent->ZdcSmdEastHorizontal(i); // y
     zdc_WH[i] = mPicoEvent->ZdcSmdWestHorizontal(i); // y
   }
-	
+
   // loop over vertical - read in the value of the adc deposition
   for(int i = 0; i < 7; i++){
     zdc_EV[i] = mPicoEvent->ZdcSmdEastVertical(i); // x
@@ -1654,7 +1655,7 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
   double eh = 0., wh = 0., ev = 0., wv = 0.;
   double w_eh = 0., w_wh = 0., w_ev = 0., w_wv = 0.;
 
-  // h: horizontal - Y, v: vertical - X     March 20, 2018: this is correct! 
+  // h: horizontal - Y, v: vertical - X     March 20, 2018: this is correct!
   // https://pdfs.semanticscholar.org/9499/5cee9e50bc55027a8b187681ce8d74c735af.pdf
   // loop over horizontal tiles for ZDCSMD
   for(int i = 0; i < 8; i++){ // y
@@ -1674,7 +1675,7 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
 
   double mQex, mQey, mQwx, mQwy;
   // written as:
-  // z = if(condition) then(?) <do this> else(:) <do this>  
+  // z = if(condition) then(?) <do this> else(:) <do this>
   mQex = (w_ev>0. && w_wv>0. && w_eh>0. && w_wh>0.) ? (ev/w_ev):0.;
   mQey = (w_ev>0. && w_wv>0. && w_eh>0. && w_wh>0.) ? (eh/w_eh):0.;
   mQwx = (w_ev>0. && w_wv>0. && w_eh>0. && w_wh>0.) ? (wv/w_wv):0.;
@@ -1697,21 +1698,21 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
 
   //cout<<"w_ev = "<<w_ev<<"  w_wv = "<<w_wv<<"  w_eh = "<<w_eh<<"  w_wh = "<<w_wh<<endl;
   // TEST - debug ZDC
-  if(fabs(mQey) < 1e-6) { //cout<<"ZDC mQey < 1e-6, "<<mQey<<endl; 
+  if(fabs(mQey) < 1e-6) { //cout<<"ZDC mQey < 1e-6, "<<mQey<<endl;
     hZDCepDebug->Fill(1.); }
-  if(fabs(mQex) < 1e-6) { //cout<<"ZDC mQex < 1e-6, "<<mQex<<endl; 
+  if(fabs(mQex) < 1e-6) { //cout<<"ZDC mQex < 1e-6, "<<mQex<<endl;
     hZDCepDebug->Fill(2.); }
-  if(fabs(mQwy) < 1e-6) { //cout<<"ZDC mQwy < 1e-6, "<<mQwy<<endl; 
+  if(fabs(mQwy) < 1e-6) { //cout<<"ZDC mQwy < 1e-6, "<<mQwy<<endl;
     hZDCepDebug->Fill(3.); }
-  if(fabs(mQwx) < 1e-6) { //cout<<"ZDC mQwx < 1e-6, "<<mQwx<<endl; 
+  if(fabs(mQwx) < 1e-6) { //cout<<"ZDC mQwx < 1e-6, "<<mQwx<<endl;
     hZDCepDebug->Fill(4.); }
-  if(fabs(w_ev) < 1e-6) { //cout<<"ZDC w_ev < 1e-6, "<<w_ev<<endl; 
+  if(fabs(w_ev) < 1e-6) { //cout<<"ZDC w_ev < 1e-6, "<<w_ev<<endl;
     hZDCepDebug->Fill(6.); }
-  if(fabs(w_wv) < 1e-6) { //cout<<"ZDC w_wv < 1e-6, "<<w_wv<<endl; 
+  if(fabs(w_wv) < 1e-6) { //cout<<"ZDC w_wv < 1e-6, "<<w_wv<<endl;
     hZDCepDebug->Fill(7.); }
-  if(fabs(w_eh) < 1e-6) { //cout<<"ZDC w_eh < 1e-6, "<<w_eh<<endl; 
+  if(fabs(w_eh) < 1e-6) { //cout<<"ZDC w_eh < 1e-6, "<<w_eh<<endl;
     hZDCepDebug->Fill(8.); }
-  if(fabs(w_wh) < 1e-6) { //cout<<"ZDC w_wh < 1e-6, "<<w_wh<<endl; 
+  if(fabs(w_wh) < 1e-6) { //cout<<"ZDC w_wh < 1e-6, "<<w_wh<<endl;
     hZDCepDebug->Fill(9.); }
 
   // initialize vectors
@@ -1746,7 +1747,7 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
   // get east and west ZDC phi - if weights are valid
   if(w_ev > 1e-6 && w_eh > 1e-6) zPhi_East = mQe.Phi();
   if(w_wv > 1e-6 && w_wh > 1e-6) zPhi_West = mQw.Phi();
-  
+
   // calculate full ZDC event plane - when east and west angles are set
   if(zPhi_East > -900. && zPhi_West > -900.) {
     double psi_full = mQ1.Phi(); // 1st order
@@ -1808,7 +1809,7 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
         // delete temp histos
         delete htempZDC_ShiftA;
         delete htempZDC_ShiftB;
-      }      
+      }
 */
 
     }
@@ -1840,11 +1841,11 @@ Int_t StEventPlaneMaker::ZDC_EP_Cal(int ref9, int region_vz, int n) {
 
 //  if(w_ev>0. && w_wv>0. && w_eh>0. && w_wh>0.){
     ZDC_PSI2 = zPhi_fnl;
-//  } else { 
+//  } else {
 //    ZDC_PSI2 = -999;
 //  }
 
-  // ============================================	
+  // ============================================
   //  cout<<"zdc phi="<< psi_full<<endl;
   //  PSI2 = psi_full;
 
@@ -1921,7 +1922,7 @@ Double_t StEventPlaneMaker::BBC_GetPhi(int e_w,int iTile){ //east == 0, (west ==
   return bbc_phi;
 }
 //
-// 
+//
 // get position of ZDCSMD
 // ______________________________________________________________________
 Double_t StEventPlaneMaker::ZDCSMD_GetPosition(int id_order, int eastwest, int verthori, int strip) {
@@ -1931,9 +1932,9 @@ Double_t StEventPlaneMaker::ZDCSMD_GetPosition(int id_order, int eastwest, int v
   // STEP2:
   // correct angles: re-centering ZDC event plane
   //TFile *fZDCcalibFile = new TFile("ZDC_recenter_calib_file.root", "READ");
-  double mZDCSMDCenterex = 0.0, mZDCSMDCenterey = 0.0, mZDCSMDCenterwx = 0.0, mZDCSMDCenterwy = 0.0; 
+  double mZDCSMDCenterex = 0.0, mZDCSMDCenterey = 0.0, mZDCSMDCenterwx = 0.0, mZDCSMDCenterwy = 0.0;
   if(zdc_shift_read_switch || zdc_apply_corr_switch){
-    // recentering procedure - read from a function in .h file 
+    // recentering procedure - read from a function in .h file
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) {
       mZDCSMDCenterex = zdc_center_ex_Run14[id_order];
       mZDCSMDCenterey = zdc_center_ey_Run14[id_order];
@@ -1983,7 +1984,7 @@ Double_t StEventPlaneMaker::ZDCSMD_GetPosition(int id_order, int eastwest, int v
     if(eastwest == 1 && verthori == 1) return (zdcsmd_y[strip])/(sqrt(2.)) - mZDCSMDCenterwy;
   }
 // } else {
-  if((zdc_recenter_read_switch) && (!zdc_shift_read_switch)){	
+  if((zdc_recenter_read_switch) && (!zdc_shift_read_switch)){
     if(strip < 7 && eastwest == 0 && verthori == 0) return zdcsmd_x[strip];
     if(strip < 7 && eastwest == 1 && verthori == 0) return -zdcsmd_x[strip];
     if(eastwest == 0 && verthori == 1) return zdcsmd_y[strip]/sqrt(2.);
@@ -2014,17 +2015,17 @@ Int_t StEventPlaneMaker::EventPlaneCal(int ref9, int region_vz, int n, int ptbin
   QvectorCal(ref9, region_vz, n, ptbin);
 
   // TEST - debug TPC
-  if(fabs(Q2x_m) < 1e-6) { cout<<"TPC Q2x_m < 1e-6, "<<Q2x_m<<endl; 
+  if(fabs(Q2x_m) < 1e-6) { cout<<"TPC Q2x_m < 1e-6, "<<Q2x_m<<endl;
     hTPCepDebug->Fill(1.); }
-  if(fabs(Q2y_m) < 1e-6) { cout<<"TPC Q2y_m < 1e-6, "<<Q2y_m<<endl; 
+  if(fabs(Q2y_m) < 1e-6) { cout<<"TPC Q2y_m < 1e-6, "<<Q2y_m<<endl;
     hTPCepDebug->Fill(2.); }
-  if(fabs(Q2x_p) < 1e-6) { cout<<"TPC Q2x_p < 1e-6, "<<Q2x_p<<endl; 
+  if(fabs(Q2x_p) < 1e-6) { cout<<"TPC Q2x_p < 1e-6, "<<Q2x_p<<endl;
     hTPCepDebug->Fill(3.); }
-  if(fabs(Q2y_p) < 1e-6) { cout<<"TPC Q2y_p < 1e-6, "<<Q2y_p<<endl; 
+  if(fabs(Q2y_p) < 1e-6) { cout<<"TPC Q2y_p < 1e-6, "<<Q2y_p<<endl;
     hTPCepDebug->Fill(4.); }
-  if(fabs(Q2x) < 1e-6) {   cout<<"TPC Q2x < 1e-6, "<<Q2x<<endl; 
+  if(fabs(Q2x) < 1e-6) {   cout<<"TPC Q2x < 1e-6, "<<Q2x<<endl;
     hTPCepDebug->Fill(5.); }
-  if(fabs(Q2y) < 1e-6) {   cout<<"TPC Q2y < 1e-6, "<<Q2y<<endl; 
+  if(fabs(Q2y) < 1e-6) {   cout<<"TPC Q2y < 1e-6, "<<Q2y<<endl;
     hTPCepDebug->Fill(6.); }
 
   if(fabs(Q2x_raw == 0.) && fabs(Q2y_raw == 0.)) { cout<<"Q2x_raw or Q2y_raw == 0"<<endl;  return kStOK; }
@@ -2064,7 +2065,7 @@ Int_t StEventPlaneMaker::EventPlaneCal(int ref9, int region_vz, int n, int ptbin
   Psi2_rcd->Fill(tPhi_rcd);      // recentered psi2
   Delta_Psi2->Fill(psi2m-psi2p); // raw delta psi2 - full range [-pi, pi]
   Delta_Psi2old->Fill(psi2m-psi2p); // raw delta psi2 - old
- 
+
   // sanity check when doing unfolding - create angular difference [-pi/2, pi/2] - this will restrict the max range when used for smearing
   double deltaPsi2 = psi2m-psi2p; // angles from [-pi, pi]
   if(deltaPsi2 >  0.5*pi) deltaPsi2 -= pi;
@@ -2076,7 +2077,7 @@ Int_t StEventPlaneMaker::EventPlaneCal(int ref9, int region_vz, int n, int ptbin
   res = 2.*(cos(2*(psi2m - psi2p)));
   RES = res;
 
-  // TODO - double check this! 
+  // TODO - double check this!
   if(fabs(Q2x_m) > 1e-6 || fabs(Q2y_m) > 1e-6) Psi2m->Fill(psi2m);
   if(fabs(Q2x_p) > 1e-6 || fabs(Q2y_p) > 1e-6) Psi2p->Fill(psi2p);
 
@@ -2090,7 +2091,7 @@ Int_t StEventPlaneMaker::EventPlaneCal(int ref9, int region_vz, int n, int ptbin
       double An = -(times*sin(2*s*tPhi_rcd));
       hTPC_shift_N[ref9][region_vz]->Fill(s - 0.5, An); // shift_A
       hTPC_shift_P[ref9][region_vz]->Fill(s - 0.5, Bn); // shift_B
-    }  
+    }
   }
 
   //=================================shift correction
@@ -2175,7 +2176,7 @@ Int_t StEventPlaneMaker::EventPlaneCal(int ref9, int region_vz, int n, int ptbin
   tpc_psi_rcd->Fill(tPhi_rcd);     // re-centered event plane
   tpc_psi_sft->Fill(tPhi_sft);     // shifted event plane
   tpc_psi_fnl->Fill(tPhi_fnl);     // final TPC event plane {0, pi}
-  //================   
+  //================
 
   //PSI2= tPhi_rcd;
   //PSI2= psi2;
@@ -2348,7 +2349,7 @@ void StEventPlaneMaker::QvectorCal(int ref9, int region_vz, int n, int ptbin) {
           Q2_p[ref9][region_vz]->Fill(0.5, x);
           Q2_p[ref9][region_vz]->Fill(1.5, y);
         }
-        if(randomNum < 0.5) { // subevent B 
+        if(randomNum < 0.5) { // subevent B
           Q2_m[ref9][region_vz]->Fill(0.5, x);
           Q2_m[ref9][region_vz]->Fill(1.5, y);
         }
@@ -2367,7 +2368,7 @@ void StEventPlaneMaker::QvectorCal(int ref9, int region_vz, int n, int ptbin) {
     //==================recentering procedure.
     // STEP2: read in recentering for TPC event plane
     //if(!tpc_recenter_read_switch){  // FIXME
-    if(tpc_shift_read_switch){ 
+    if(tpc_shift_read_switch){
       if(doTPCptassocBin) {
         //x -= GetTPCRecenterValue(randomNum, "x", ref9, region_vz);
         //y -= GetTPCRecenterValue(randomNum, "y", ref9, region_vz);
@@ -2469,7 +2470,7 @@ void StEventPlaneMaker::CalculateEventPlaneResolution(Double_t bbc, Double_t zdc
     fProfV2Resolution[ref9]->Fill(2., TMath::Cos(2.*(bbc - tpc)));
     fProfV2Resolution[ref9]->Fill(3., TMath::Cos(2.*(bbc - zdc)));
     fProfV2Resolution[ref9]->Fill(4., TMath::Cos(2.*(tpc - bbc)));  // bin2
-    fProfV2Resolution[ref9]->Fill(5., TMath::Cos(2.*(tpc - zdc)));  
+    fProfV2Resolution[ref9]->Fill(5., TMath::Cos(2.*(tpc - zdc)));
     fProfV2Resolution[ref9]->Fill(6., TMath::Cos(2.*(zdc - tpc)));  // bin6
     fProfV2Resolution[ref9]->Fill(7., TMath::Cos(2.*(zdc - bbc)));  // bin3
     fProfV2Resolution[ref9]->Fill(8., TMath::Cos(2.*(bbc - tpcN)));
@@ -2547,7 +2548,7 @@ void StEventPlaneMaker::CalculateEventPlaneResolution(Double_t bbc, Double_t zdc
   }
 
   // for the resolution of the combined vzero event plane, use two tpc halves as uncorrelated subdetectors
-} 
+}
 
 //
 //
@@ -2600,7 +2601,7 @@ THnSparse* StEventPlaneMaker::NewTHnSparseEP(const char* name, UInt_t entries) {
 } // end of NewTHnSparseEP
 
 //
-// 
+//
 //______________________________________________________________________________________________
 void StEventPlaneMaker::GetDimParamsEP(Int_t iEntry, TString &label, Int_t &nbins, Double_t &xmin, Double_t &xmax)
 {
@@ -2656,14 +2657,14 @@ Double_t StEventPlaneMaker::GetEventPlaneAngle(TString det, Int_t order, Int_t c
     if(det.Contains("BBC")) {
       if(order == 1) return BBC_PSI1;
       if(order == 2) return BBC_PSI2;
-    } else 
-    if(det.Contains("ZDC")) { 
+    } else
+    if(det.Contains("ZDC")) {
       if(order == 1) return ZDC_PSI1;
       if(order == 2) return ZDC_PSI2;
-    } else 
+    } else
     if(det.Contains("TPC")) {
       if(order == 2) {
-        if(subevt.Contains("A")) return TPCA_PSI2;       
+        if(subevt.Contains("A")) return TPCA_PSI2;
         if(subevt.Contains("B")) return TPCB_PSI2;
         return TPC_PSI2;
       }
@@ -2676,7 +2677,7 @@ Double_t StEventPlaneMaker::GetEventPlaneAngle(TString det, Int_t order, Int_t c
 //
 // return recentering value
 //____________________________________________________________________________________________________________________
-Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coordinate, Int_t ref9, Int_t region_vz) { 
+Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coordinate, Int_t ref9, Int_t region_vz) {
     //==================recentering procedure.
     // STEP2: read in recentering for TPC event plane
         if(randomNum >= 0.5) { // subevent A
@@ -2797,7 +2798,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coor
 
         }  // rand >= 0.5
 
-        if(randomNum < 0.5) { // subevent B             
+        if(randomNum < 0.5) { // subevent B
           switch(fTPCEPmethod) {
             case kRemoveEtaStrip:
               if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) {
@@ -2838,7 +2839,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coor
                       if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1_R03_Run14[ref9][region_vz];
                       if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1_R03_Run14[ref9][region_vz];
                     } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                  } // R=0.3  
+                  } // R=0.3
 
                   if(fJetRad == 0.2) { // Jet radius: R=0.2
                     if(fTPCptAssocBin == 0) {         // 0.20-0.50 GeV
@@ -2857,7 +2858,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coor
                       if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1_R02_Run14[ref9][region_vz];
                       if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1_R02_Run14[ref9][region_vz];
                     } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                  } // R=0.2  
+                  } // R=0.2
                 } // full jets
 
                 if(fJetType == kChargedJet) {
@@ -2877,7 +2878,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValue(Double_t randomNum, TString coor
                     if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1ch_Run14[ref9][region_vz];
                     if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1ch_Run14[ref9][region_vz];
                   } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                } // charged jets       
+                } // charged jets
               } // Run14
               break;
 
@@ -3022,7 +3023,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValueNEW(Double_t randomNum, TString c
 
         }  // rand >= 0.5
 
-        if(randomNum < 0.5) { // subevent B             
+        if(randomNum < 0.5) { // subevent B
           switch(fTPCEPmethod) {
             case kRemoveEtaStrip:
               if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) {
@@ -3066,7 +3067,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValueNEW(Double_t randomNum, TString c
                       if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1_R03_Run14_NEW[ref9][region_vz];
                       if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1_R03_Run14_NEW[ref9][region_vz];
                     } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                  } // R=0.3  
+                  } // R=0.3
 
 /*
                   if(fJetRad == 0.2) { // Jet radius: R=0.2
@@ -3086,7 +3087,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValueNEW(Double_t randomNum, TString c
                       if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1_R02_Run14[ref9][region_vz];
                       if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1_R02_Run14[ref9][region_vz];
                     } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                  } // R=0.2  
+                  } // R=0.2
 */
 
                 } // full jets
@@ -3109,7 +3110,7 @@ Double_t StEventPlaneMaker::GetTPCRecenterValueNEW(Double_t randomNum, TString c
                     if(coordinate.Contains("x")) return tpc_center_Qnx_bin4_Method1ch_Run14[ref9][region_vz];
                     if(coordinate.Contains("y")) return tpc_center_Qny_bin4_Method1ch_Run14[ref9][region_vz];
                   } else { cout<<"NOT CONFIGURED PROPERLY, please select pt assoc bin!"<<endl; }
-                } // charged jets       
+                } // charged jets
 */
 
               } // Run14

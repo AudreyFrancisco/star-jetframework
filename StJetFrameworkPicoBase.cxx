@@ -2,7 +2,7 @@
 // Author:  Joel Mazer for the STAR Collaboration
 // Affiliation: Rutgers University
 //
-// this class is a base-class for the jet framework used with 
+// this class is a base-class for the jet framework used with
 // analysis over PicoDst's
 // ################################################################
 
@@ -90,7 +90,7 @@ StJetFrameworkPicoBase::StJetFrameworkPicoBase() :
   fTowerEMinCut(0.2), fTowerEMaxCut(100.0),
   fTowerEtaMinCut(-1.0), fTowerEtaMaxCut(1.0),
   fTowerPhiMinCut(0.0), fTowerPhiMaxCut(2.0*TMath::Pi()),
-  fLeadingJet(0), 
+  fLeadingJet(0),
   fSubLeadingJet(0),
   fExcludeLeadingJetsFromFit(1.0), fTrackWeight(1),
   fTracksME(0x0),
@@ -168,11 +168,11 @@ StJetFrameworkPicoBase::StJetFrameworkPicoBase(const char* name) :
   fTrackPhiMinCut(0.0), fTrackPhiMaxCut(2.0*TMath::Pi()),
   fTrackEtaMinCut(-1.0), fTrackEtaMaxCut(1.0),
   fTrackDCAcut(3.0),
-  fTracknHitsFit(15), fTracknHitsRatio(0.52), 
+  fTracknHitsFit(15), fTracknHitsRatio(0.52),
   fTowerEMinCut(0.2), fTowerEMaxCut(100.0),
   fTowerEtaMinCut(-1.0), fTowerEtaMaxCut(1.0),
   fTowerPhiMinCut(0.0), fTowerPhiMaxCut(2.0*TMath::Pi()),
-  fLeadingJet(0), 
+  fLeadingJet(0),
   fSubLeadingJet(0),
   fExcludeLeadingJetsFromFit(1.0), fTrackWeight(1),
   fTracksME(0x0),
@@ -304,235 +304,6 @@ Int_t StJetFrameworkPicoBase::Init() {
 
   ///fJets = new TClonesArray("StJet"); // will have name correspond to the Maker which made it
   //fJets->SetName(fJetsName);
-
-  return kStOK;
-}
-//
-//
-//_________________________________________________________________________________________
-Int_t StJetFrameworkPicoBase::Finish() { 
-  return kStOK;
-}
-//
-// OLD user code says: //  Called every event after Make(). 
-//_________________________________________________________________________________________
-void StJetFrameworkPicoBase::Clear(Option_t *opt) {
-
-}
-// 
-//  Get the event-wise rho value
-//_________________________________________________________________________________________
-double StJetFrameworkPicoBase::GetRhoValue(TString fRhoMakerNametemp)
-{
-  // get RhoMaker from event: old names "StRho_JetsBG", "OutRho", "StMaker#0"
-  RhoMaker = static_cast<StRho*>(GetMaker(fRhoMakerNametemp));
-  const char *fRhoMakerNameCh = fRhoMakerNametemp;
-  if(!RhoMaker) {
-    LOG_WARN << Form(" No %s! Skip! ", fRhoMakerNameCh) << endm;
-    return kStWarn;
-  }
-
-  // set rho object, alt fRho = GetRhoFromEvent(fRhoName);
-  fRho = static_cast<StRhoParameter*>(RhoMaker->GetRho());
-  if(!fRho) {
-    LOG_WARN << Form("Couldn't get fRho object! ") << endm;
-    return kStWarn;
-  }
-
-  // get rho/area       fRho->ls("");
-  fRhoVal = fRho->GetVal();
-
-  return fRhoVal;
-}
-//
-// get centrality bin
-// - input is raw cent bin & nBins to re-order from
-//________________________________________________________________________
-Int_t StJetFrameworkPicoBase::GetCentBin(Int_t cent, Int_t nBin) const
-{
-  Int_t centbin = -1;
-
-  if(nBin == 16) { centbin = nBin - 1 - cent; }
-  if(nBin == 9)  { centbin = nBin - 1 - cent; }
-
-  return centbin;
-}
-//
-// get centrality bin in 4 different bins
-// - input is the scaled centrality
-//________________________________________________________________________
-Int_t StJetFrameworkPicoBase::Get4CentBin(Double_t scaledCent) const
-{
-  // initialize centrality bin
-  int centbin = -99;
-
-  // get centrality bin number
-  if(scaledCent >= 0 && scaledCent <  10.0)  { centbin = 0; }
-  else if(scaledCent <  20.0)                { centbin = 1; }
-  else if(scaledCent <  50.0)                { centbin = 2; }
-  else if(scaledCent <= 80.0)                { centbin = 3; }
-
-  return centbin;
-}
-//
-// function to get annuli bin
-//___________________________________________________________________________________________
-Int_t StJetFrameworkPicoBase::GetAnnuliBin(Double_t deltaR) const
-{
-  // initialize annuli bin
-  int annuliBin = -99;
-
-  // get annuli bin number
-  if(deltaR >= 0.00 && deltaR <= 0.05)     { annuliBin = 0; }
-  else if(deltaR > 0.05 && deltaR <= 0.10) { annuliBin = 1; }
-  else if(deltaR > 0.10 && deltaR <= 0.15) { annuliBin = 2; }
-  else if(deltaR > 0.15 && deltaR <= 0.20) { annuliBin = 3; } 
-  else if(deltaR > 0.20 && deltaR <= 0.25) { annuliBin = 4; }
-  else if(deltaR > 0.25 && deltaR <= 0.30) { annuliBin = 5; }
-  else if(deltaR > 0.30 && deltaR <= 0.35) { annuliBin = 6; }
-  else if(deltaR > 0.35 && deltaR <= 0.40) { annuliBin = 7; }
-  else if(deltaR > 0.40 && deltaR <= 0.45) { annuliBin = 8; }
-  else if(deltaR > 0.45 && deltaR <= 0.50) { annuliBin = 9; }
-
-  return annuliBin;
-}
-//
-// function to jet pt bin
-//___________________________________________________________________________________________
-Int_t StJetFrameworkPicoBase::GetJetPtBin(Double_t jetpt) const
-{
-  // initialize jet pt bin
-  int jetPtBin = -99;
-
-  // get jet pt bin number
-  if(jetpt >= 10.0 && jetpt < 15.0)      { jetPtBin = 0; } 
-  else if(jetpt >= 15.0 && jetpt < 20.0) { jetPtBin = 1; }
-  else if(jetpt >= 20.0 && jetpt < 40.0) { jetPtBin = 2; } 
-  else if(jetpt >= 40.0 && jetpt < 60.0) { jetPtBin = 3; }
-
-  return jetPtBin;
-}
-//
-// function to jet event plane bin
-//___________________________________________________________________________________________
-Int_t StJetFrameworkPicoBase::GetJetEPBin(Double_t dEP) const
-{
-  // constants
-  double pi = 1.0*TMath::Pi();
-
-  // initialize jet event plane bin
-  int jetEPBin = -99;
-
-  // get jet event plane bin number
-  if(dEP >= 0.0*pi/6.0 && dEP <= 1.0*pi/6.0)     { jetEPBin = 0; }
-  else if(dEP > 1.0*pi/6.0 && dEP <= 2.0*pi/6.0) { jetEPBin = 1; }
-  else if(dEP > 2.0*pi/6.0 && dEP <= 3.0*pi/6.0) { jetEPBin = 2; }
-
-  return jetEPBin;
-}
-//
-// this function generates a jet name based on input
-//___________________________________________________________________________________________
-TString StJetFrameworkPicoBase::GenerateJetName(EJetType_t jetType, EJetAlgo_t jetAlgo, ERecoScheme_t recoScheme, Double_t radius, TClonesArray* partCont, TClonesArray* clusCont, TString tag)
-{
-  TString algoString;
-  switch (jetAlgo) {
-      case kt_algorithm:
-        algoString = "KT";
-        break;
-      case antikt_algorithm:
-        algoString = "AKT";
-        break;
-      default:
-        ::Warning("StJetFrameworkPicoBase::GenerateJetName", "Unknown jet finding algorithm '%d'!", jetAlgo);
-        algoString = "";
-  }
-
-  TString typeString;
-  switch (jetType) {
-      case kFullJet:
-        typeString = "Full";
-        break;
-      case kChargedJet:
-        typeString = "Charged";
-        break;
-      case kNeutralJet:
-        typeString = "Neutral";
-        break;
-  }
-
-  TString radiusString = TString::Format("R%03.0f", radius*100.0);
-
-  TString trackString;
-  if (jetType != kNeutralJet && partCont) {
-    trackString = "_" + TString(partCont->GetTitle());
-  }
-
-  TString clusterString;
-  if (jetType != kChargedJet && clusCont) {
-    clusterString = "_" + TString(clusCont->GetTitle());
-  }
-
-  TString recombSchemeString;
-  switch (recoScheme) {
-      case E_scheme:
-        recombSchemeString = "E_scheme";
-        break;
-      case pt_scheme:
-        recombSchemeString = "pt_scheme";
-        break;
-      case pt2_scheme:
-        recombSchemeString = "pt2_scheme";
-        break;
-      case Et_scheme:
-        recombSchemeString = "Et_scheme";
-        break;
-      case Et2_scheme:
-        recombSchemeString = "Et2_scheme";
-        break;
-      case BIpt_scheme:
-        recombSchemeString = "BIpt_scheme";
-        break;
-      case BIpt2_scheme:
-        recombSchemeString = "BIpt2_scheme";
-        break;
-      case external_scheme:
-        recombSchemeString = "ext_scheme";
-        break;
-      default:
-        ::Error("StJetFrameworkPicoBase::GenerateJetName", "Recombination %d scheme not recognized.", recoScheme);
-  }
-
-  TString name = TString::Format("%s_%s%s%s%s%s_%s",
-      tag.Data(), algoString.Data(), typeString.Data(), radiusString.Data(), trackString.Data(), clusterString.Data(), recombSchemeString.Data());
-
-  return name;
-}
-//
-// Function: to calculate relative Phi
-// range: -pi/2 to 3pi/2
-//________________________________________________________________________
-Double_t StJetFrameworkPicoBase::RelativePhi(Double_t jphi, Double_t tphi) const
-{
-  // calculate relative phi
-  double dphi = jphi - tphi;
-
-  // set dphi to operate on adjusted scale
-  if(dphi < -0.5*TMath::Pi()) dphi += 2.*TMath::Pi();
-  if(dphi >  1.5*TMath::Pi()) dphi -= 2.*TMath::Pi();
-
-  // test check
-  if( dphi < -0.5*TMath::Pi() || dphi > 1.5*TMath::Pi() )
-    Form("%s: dPHI not in range [-0.5*Pi, 1.5*Pi]!", GetName());
-
-  return dphi; // dphi in [-0.5Pi, 1.5Pi]                                                                                   
-}
-//
-// Function: calculate angle between jet and EP in the 1st quadrant (0,Pi/2) 
-//_________________________________________________________________________
-Double_t StJetFrameworkPicoBase::RelativeEPJET(Double_t jetAng, Double_t EPAng) const
-{
-  Double_t pi = 1.0*TMath::Pi();
   Double_t dphi = 1.0*TMath::Abs(jetAng - EPAng);
   
   // ran into trouble with a few dEP<-Pi so trying this...
@@ -575,7 +346,7 @@ TClonesArray* StJetFrameworkPicoBase::CloneAndReduceTrackList(TClonesArray* trac
   Int_t iterTrk = 0;
   Double_t phi, eta, px, py, pt, pz, p, charge;
   const double pi = 1.0*TMath::Pi();
-  for (Int_t i = 0; i < nMixTracks; i++) { 
+  for (Int_t i = 0; i < nMixTracks; i++) {
     // get track pointer
     StPicoTrack *trk = mPicoDst->track(i);
     if(!trk){ continue; }
@@ -593,7 +364,7 @@ TClonesArray* StJetFrameworkPicoBase::CloneAndReduceTrackList(TClonesArray* trac
 */
 //
 // Track Quality Cuts
-// - can call from a class that inherits from this base class and that classes' set 
+// - can call from a class that inherits from this base class and that classes' set
 // members will be used here
 //________________________________________________________________________
 Bool_t StJetFrameworkPicoBase::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 Vert) {
@@ -635,7 +406,7 @@ Bool_t StJetFrameworkPicoBase::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3
   if(phi < 0.0)    phi += 2.0*pi;
   if(phi > 2.0*pi) phi -= 2.0*pi;
   if((phi < fTrackPhiMinCut) || (phi > fTrackPhiMaxCut)) return kFALSE;
-    
+
   // additional quality cuts for tracks
   if(dca > fTrackDCAcut)            return kFALSE;
   if(nHitsFit < fTracknHitsFit)     return kFALSE;
@@ -658,7 +429,7 @@ Bool_t StJetFrameworkPicoBase::AcceptTower(StPicoBTowHit *tower, TVector3 Vertex
   double pi = 1.0*TMath::Pi();
 
   // tower ID - passed into function: make sure some of these aren't still in event array
-  if(towerID < 0) return kFALSE; 
+  if(towerID < 0) return kFALSE;
 
   // cluster and tower position - from vertex and ID: shouldn't need additional eta correction
   TVector3 towerPosition = mPosition->getPosFromVertex(mVertex, towerID);
@@ -690,7 +461,7 @@ Bool_t StJetFrameworkPicoBase::AcceptTower(StPicoBTowHit *tower, TVector3 Vertex
 //
 // general reaction plane function
 //________________________________________________________________________
-Double_t StJetFrameworkPicoBase::GetReactionPlane() { 
+Double_t StJetFrameworkPicoBase::GetReactionPlane() {
   // get event B (magnetic) field
   Float_t Bfield = mPicoEvent->bField();
 
@@ -733,7 +504,7 @@ Double_t StJetFrameworkPicoBase::GetReactionPlane() {
     double eta = mTrkMom.PseudoRapidity();
 
     // more acceptance cuts now - after getting 3vector - hardcoded for now
-    if(pt < fTrackPtMinCut) continue; 
+    if(pt < fTrackPtMinCut) continue;
     if(pt > 5.0) continue;   // 100.0
     if((1.0*TMath::Abs(eta)) > 1.0) continue;
     if(phi < 0.0)    phi+= 2.0*pi;
@@ -761,7 +532,7 @@ Double_t StJetFrameworkPicoBase::GetReactionPlane() {
     mQx += trackweight * cos(phi * order);
     mQy += trackweight * sin(phi * order);
   }
- 
+
   mQ.Set(mQx, mQy);
   double psi= mQ.Phi() / order;
   //return psi*180/pi;  // converted to degrees
@@ -877,7 +648,7 @@ StJet* StJetFrameworkPicoBase::GetSubLeadingJet(TString fJetMakerNametemp, StRho
   }
 
   if(fJets) {
-    // get number of jets 
+    // get number of jets
     Int_t iJets(fJets->GetEntriesFast());
 
     // initialize pt's
@@ -945,7 +716,7 @@ Int_t StJetFrameworkPicoBase::EventCounter() {
   return mEventCounter;
 }
 //
-// Function: select analysis centrality bin, if performing class wide cut 
+// Function: select analysis centrality bin, if performing class wide cut
 //__________________________________________________________________________________________
 Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t fCentralitySelectionCut) {
   // this function is written to cut on centrality in a task for a given range
@@ -973,7 +744,7 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
 
     case kCent020 :  // 0-20%
       if((centbin>-1) && (centbin<4)) { doAnalysis = kTRUE; }
-      else { doAnalysis = kFALSE; }  
+      else { doAnalysis = kFALSE; }
       break;
 
     case kCent1020 : // 10-20%
@@ -1058,7 +829,7 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
 // upon passing the array collapses to a pointer and can not get size anymore
 //________________________________________________________________________
 Bool_t StJetFrameworkPicoBase::DoComparison(int myarr[], int elems) {
-  // get PicoDstMaker 
+  // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) { LOG_WARN << " No PicoDstMaker! Skip! " << endm;  return kStWarn; }
 
@@ -1066,7 +837,7 @@ Bool_t StJetFrameworkPicoBase::DoComparison(int myarr[], int elems) {
   mPicoDst = static_cast<StPicoDst*>(mPicoDstMaker->picoDst());
   if(!mPicoDst) { LOG_WARN << " No PicoDst! Skip! " << endm; return kStWarn; }
 
-  // create pointer to PicoEvent 
+  // create pointer to PicoEvent
   mPicoEvent = static_cast<StPicoEvent*>(mPicoDst->event());
   if(!mPicoEvent) { LOG_WARN << " No PicoEvent! Skip! " << endm; return kStWarn; }
 
@@ -1089,9 +860,8 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
   // Run11 triggers: pp
   int arrMB_Run11[] = {320000, 320001, 320011, 320021, 330021};
 
-  // Run12 (200 GeV pp) triggers: 1) VPDMB, 370011-main
-  int arrMB_Run12[] = {370011};
-  int arrMB_Run12extra[] = {370001, 370011};
+  // Run12 (200 GeV pp) triggers: 1) VPDMB, 2) vpd-zdc-mb
+  int arrMB_Run12[] = {370001, 370011, 370983};
 
   // Run13 triggers: pp
   int arrMB_Run13[] = {430001, 430011, 430021, 430031};
@@ -1114,6 +884,10 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
   int arrMB30_Run17[] = {570001, 590001};
   int arrMB100_Run17[] = {590002};
   int arrMBnovtx_Run17[] = {570004};
+
+  //Run Isobar triggers : 200Gev
+  int arrMB_RunIso[]={610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
+  int arrMB30_RunIso[]={600001, 600011, 600021, 600031, 600002, 600012, 600022, 600032, 600042, 600009, 600019, 600029};
 
   // run flag selection to check for MB firing
   switch(RunFlag) {
@@ -1196,6 +970,21 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
           default :
               if((DoComparison(arrMB30_Run17, sizeof(arrMB30_Run17)/sizeof(*arrMB30_Run17)))) { return kTRUE; }
         }
+
+    case StJetFrameworkPicoBase::RunIsobar : // Run isobar (200 GeV)
+        switch(type) {
+        case StJetFrameworkPicoBase::kRunIsomain :
+	          if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
+    	      break;
+	    case StJetFrameworkPicoBase::kVPDMB30 :
+	          if((DoComparison(arrMB30_RunIso, sizeof(arrMB30_RunIso)/sizeof(*arrMB30_RunIso)))) { return kTRUE; }
+	          break;
+	  /*        case StJetFrameworkPicoBase::kVPDMB100 :
+	   *                      if((DoComparison(arrMB100_RunIso, sizeof(arrMB100_RunIso)/sizeof(*arrMB100_RunIso)))) { return kTRUE; }
+	   *                                    break;*/
+	default :
+	     if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
+	}
         break;
 
   } // RunFlag switch
@@ -1226,6 +1015,10 @@ Bool_t StJetFrameworkPicoBase::CheckForHT(int RunFlag, int type) {
   int arrHT1_Run17[] = {570204, 570214};
   int arrHT2_Run17[] = {570205, 570215};
   int arrHT3_Run17[] = {570201, 590201};
+
+  // RunIso triggers: 200 GeV
+  int arrHT1_RunIso[] = {600201, 600202, 600211, 600212, 60221, 600222, 600231, 600232};
+  int arrHT2_RunIso[] = {600203, 600204, 600213, 600214};
 
   // run flag selection to check for MB firing
   switch(RunFlag) {
@@ -1291,8 +1084,20 @@ Bool_t StJetFrameworkPicoBase::CheckForHT(int RunFlag, int type) {
           default : // HT3
               if((DoComparison(arrHT3_Run17, sizeof(arrHT3_Run17)/sizeof(*arrHT3_Run17)))) { return kTRUE; }
         }
-        break; 
+        break;
 
+    case StJetFrameworkPicoBase::RunIsobar : // RunIso (200 GeV)
+       	switch(type) {
+	   case StJetFrameworkPicoBase::kIsHT1 :
+	       if((DoComparison(arrHT1_RunIso, sizeof(arrHT1_RunIso)/sizeof(*arrHT1_RunIso)))) { return kTRUE; }
+	       break;
+	   case StJetFrameworkPicoBase::kIsHT2 :
+	       if((DoComparison(arrHT2_RunIso, sizeof(arrHT2_RunIso)/sizeof(*arrHT2_RunIso)))) { return kTRUE; }
+	       break;
+	   default : // HT1
+	       if((DoComparison(arrHT1_RunIso, sizeof(arrHT1_RunIso)/sizeof(*arrHT1_RunIso)))) { return kTRUE; }
+	}
+	break;
   } // RunFlag switch
 
   return kFALSE;
@@ -1575,7 +1380,7 @@ Double_t StJetFrameworkPicoBase::ApplyTrackingEff(StPicoTrack *trk, Bool_t apply
   double teta = mTrkMom.PseudoRapidity();
   double tphi = mTrkMom.Phi();
 
-  // track efficiency has pt, eta, and centrality dependence 
+  // track efficiency has pt, eta, and centrality dependence
   //
   // RunFlag switch
   switch(fRunFlag) {
@@ -1584,7 +1389,7 @@ Double_t StJetFrameworkPicoBase::ApplyTrackingEff(StPicoTrack *trk, Bool_t apply
     case StJetFrameworkPicoBase::Run14_AuAu200 : // Run14 AuAu
         break;
     case StJetFrameworkPicoBase::Run16_AuAu200 : // Run16 AuAu
-        break; 
+        break;
   } // RunFlag switch
 
   // return the single track reconstruction efficiency for the corresponding dataset
@@ -1609,7 +1414,7 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
     // check if event triggers meet certain criteria and fill histos
     if(DoComparison(arrHT1, sizeof(arrHT1)/sizeof(*arrHT1))) { h->Fill(2); } // HT1
     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { h->Fill(3); } // HT2
-    //if(DoComparison(arrHT3, sizeof(arrHT3)/sizeof(*arrHT3))) { h->Fill(4); } // HT3 
+    //if(DoComparison(arrHT3, sizeof(arrHT3)/sizeof(*arrHT3))) { h->Fill(4); } // HT3
     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(10); } // VPDMB
 
     // label bins of the analysis trigger selection summary
@@ -1640,11 +1445,11 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
     // check if event triggers meet certain criteria and fill histos
     if(DoComparison(arrBHT1, sizeof(arrBHT1)/sizeof(*arrBHT1))) { h->Fill(2); } // HT1
     if(DoComparison(arrBHT2, sizeof(arrBHT2)/sizeof(*arrBHT2))) { h->Fill(3); } // HT2
-    if(DoComparison(arrBHT3, sizeof(arrBHT3)/sizeof(*arrBHT3))) { h->Fill(4); } // HT3 
-    if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(5); } // MB 
+    if(DoComparison(arrBHT3, sizeof(arrBHT3)/sizeof(*arrBHT3))) { h->Fill(4); } // HT3
+    if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(5); } // MB
     if(DoComparison(arrCentral5, sizeof(arrCentral5)/sizeof(*arrCentral5))) { h->Fill(7); } // Central-5
     if(DoComparison(arrCentral, sizeof(arrCentral)/sizeof(*arrCentral))) { h->Fill(8); }    // Central & Central-mon
-    if(DoComparison(arrMB5, sizeof(arrMB5)/sizeof(*arrMB5))) { h->Fill(10); }    // VPDMB-5 
+    if(DoComparison(arrMB5, sizeof(arrMB5)/sizeof(*arrMB5))) { h->Fill(10); }    // VPDMB-5
     if(DoComparison(arrMB30, sizeof(arrMB30)/sizeof(*arrMB30))) { h->Fill(11); } // VPDMB-30
 
     if(DoComparison(arrBHT2, sizeof(arrBHT2)/sizeof(*arrBHT2)) && DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(13); } // HT2 && MB
@@ -1689,7 +1494,7 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
     if(DoComparison(arrBHT3, sizeof(arrBHT3)/sizeof(*arrBHT3))) { h->Fill(4); } // HT3
     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(5); }  // MB
     if(DoComparison(arrCentral, sizeof(arrCentral)/sizeof(*arrCentral))) { h->Fill(7); } // Central-5 & Central-novtx
-    if(DoComparison(arrMB5, sizeof(arrMB5)/sizeof(*arrMB5))) { h->Fill(10); }    // VPDMB-5 
+    if(DoComparison(arrMB5, sizeof(arrMB5)/sizeof(*arrMB5))) { h->Fill(10); }    // VPDMB-5
     if(DoComparison(arrMB10, sizeof(arrMB10)/sizeof(*arrMB10))) { h->Fill(11); } // VPDMB-10
 
     // label bins of the analysis trigger selection summary
@@ -1703,6 +1508,47 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
     h->GetXaxis()->SetBinLabel(10, "VPDMB-5");
     h->GetXaxis()->SetBinLabel(11, "VPDMB-10");
   }
+  //Run18 Isobar
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
+    int arrHT1[] = {600201,600211}; //BHT1
+    int arrHT1VPD30[] = {600221,600221}; //BHT1 - vdp30
+    int arrHT1VPD100[] = {600202, 600212,600222,600232}; //BHT1 - vpd100
+    int arrHT2[] = {600203,600213}; //BHT2
+    int arrHT2L2G[] = {600204,600214}; //BHT2 - l2gamma
+    int arrMB[] = {610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051};
+    int arrVPDMB[] = {600003};
+    int arrVPDMB30[] = {600001, 600011, 600021, 600031};
+    int arrVPDMB30HLT[] = {600002, 600012, 600022, 600032, 600042};
+    int arrVPDMB30GMT[] = {600009, 600019, 600029};
+    // fill for kAny
+     int bin = 0;
+     bin = 1; h->Fill(bin);
+
+     // check if event triggers meet certain criteria and fill histos
+     if(DoComparison(arrHT1, sizeof(arrHT1)/sizeof(*arrHT1))) { bin = 2; h->Fill(bin); } // HT1
+     if(DoComparison(arrHT1VPD30, sizeof(arrHT1VPD30)/sizeof(*arrHT1VPD30))) { bin = 3; h->Fill(bin); } // HT
+     if(DoComparison(arrHT1VPD100, sizeof(arrHT1VPD100)/sizeof(*arrHT1VPD100))) { bin = 4; h->Fill(bin); } // HT
+     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { bin = 5; h->Fill(bin); } // HT2
+     if(DoComparison(arrHT2L2G, sizeof(arrHT2L2G)/sizeof(*arrHT2L2G))) { bin = 6; h->Fill(bin); } // HT2
+     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { bin = 7; h->Fill(bin); }  // MB
+     if(DoComparison(arrVPDMB, sizeof(arrVPDMB)/sizeof(*arrVPDMB))) { bin = 8; h->Fill(bin); }
+     if(DoComparison(arrVPDMB30, sizeof(arrVPDMB30)/sizeof(*arrVPDMB30))) { bin = 9; h->Fill(bin); }
+     if(DoComparison(arrVPDMB30HLT, sizeof(arrVPDMB30HLT)/sizeof(*arrVPDMB30HLT))) { bin = 10; h->Fill(bin); }
+     if(DoComparison(arrVPDMB30GMT, sizeof(arrVPDMB30GMT)/sizeof(*arrVPDMB30GMT))) { bin = 11; h->Fill(bin); }
+
+     // label bins of the analysis trigger selection summary
+     h->GetXaxis()->SetBinLabel(1, "Un-identified trigger");
+     h->GetXaxis()->SetBinLabel(2, "HT1");
+     h->GetXaxis()->SetBinLabel(3, "HT1-VPD30");
+     h->GetXaxis()->SetBinLabel(4, "HT1-VPD100");
+     h->GetXaxis()->SetBinLabel(5, "HT2");
+     h->GetXaxis()->SetBinLabel(6, "HT2-L2Gamma");
+     h->GetXaxis()->SetBinLabel(7, "MB");
+     h->GetXaxis()->SetBinLabel(8, "VPDMB");
+     h->GetXaxis()->SetBinLabel(9, "VPDMB30");
+     h->GetXaxis()->SetBinLabel(10, "VPDMB30HLT");
+     h->GetXaxis()->SetBinLabel(11, "VPDMB30GMT");
+  }
 
   // set general label
   h->GetXaxis()->SetBinLabel(1, "Any trigger");
@@ -1714,7 +1560,7 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
   return h;
 }
 //
-// this function checks for the bin number of the run from a runlist header 
+// this function checks for the bin number of the run from a runlist header
 // in order to apply various corrections and fill run-dependent histograms
 // 1287 - Liang
 // _________________________________________________________________________________
@@ -1780,7 +1626,7 @@ Double_t StJetFrameworkPicoBase::GetDeltaR(StJet *jet, StPicoTrack *trk) {
   double deltaR = -99.;
   double pi = 1.0*TMath::Pi();
 
-  // get track momentum vector 
+  // get track momentum vector
   TVector3 mTrkMom;
   if(doUsePrimTracks) {
     if(!(trk->isPrimary())) return -99.;

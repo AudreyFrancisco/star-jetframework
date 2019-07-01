@@ -98,7 +98,7 @@ class StFJWrapper
 */
   virtual Int_t DoConstituentSubtraction();
   virtual Int_t DoSoftDrop();
-  
+
   void SetName(const char* name)        { fName           = name;    }
   void SetTitle(const char* title)      { fTitle          = title;   }
   void SetStrategy(const fastjet::Strategy &strat)                 { fStrategy = strat;  }
@@ -166,7 +166,7 @@ class StFJWrapper
   Double_t                               fMedUsedForBgSub;    //!
   Bool_t                                 fUseArea4Vector;     //!
   // condition to stop the grooming (rejection of soft splitting) z > fZcut theta^fBeta
-  Double_t                               fZcut;               // fZcut = 0.1                
+  Double_t                               fZcut;               // fZcut = 0.1
   Double_t                               fBeta;               // fBeta = 0
 #ifdef FASTJET_VERSION
   fastjet::JetMedianBackgroundEstimator   *fBkrdEstimator;    //!
@@ -789,14 +789,14 @@ Int_t StFJWrapper::DoSoftDrop() {
   //fastjet::Subtractor fjsub (fBkrdEstimator);
   //fSoftDrop->set_subtractor(&fjsub);
   //fSoftDrop->set_input_jet_is_subtracted(false); //??
-  
+
   for (unsigned i = 0; i < fInclusiveJets.size(); i++) {
     fj::PseudoJet groomed_jet(0.,0.,0.,0.);
     if(fInclusiveJets[i].perp()>0.){
       groomed_jet = (*fSoftDrop)(fInclusiveJets[i]);
       if(groomed_jet!=0) fGroomedJets.push_back(groomed_jet);
     }
-    
+
   }
   if(fSoftDrop) { delete fSoftDrop; fSoftDrop = NULL; }
 
@@ -809,9 +809,9 @@ Int_t StFJWrapper::CreateSoftDrop() {
   // Do grooming
   #ifdef FASTJET_VERSION
   if (fSoftDrop) { delete fSoftDrop; } // protect against memory leaks
-  
+
   fSoftDrop   = new fj::contrib::SoftDrop(fBeta,fZcut);
-  
+
   #endif
   return 0;
 }
@@ -922,10 +922,10 @@ void StFJWrapper::SetupStrategyfromOpt(const char *option)
   if (!opt.compare("plugin"))          fStrategy = fj::plugin_strategy;
 }
 
-//_______________________________________________________________________________________________ 
+//_______________________________________________________________________________________________
 Double_t StFJWrapper::NSubjettiness(Int_t N, Int_t Algorithm, Double_t Radius, Double_t Beta, Int_t Option){
   //Option 0=Nsubjettiness result, 1=opening angle between axes in Eta-Phi plane, 2=Distance between axes in Eta-Phi plane
-  
+
   fJetDef = new fj::JetDefinition(fAlgor, fR*100, fScheme, fStrategy ); //the *2 is becasue of a handful of jets that end up missing a track for some reason.
 
   try {
@@ -997,7 +997,7 @@ Double_t StFJWrapper::NSubjettiness(Int_t N, Int_t Algorithm, Double_t Radius, D
     SubJet_Axes=nSub.currentAxes();
   }
 
-  SubJet1_Axis=SubJet_Axes[0];	
+  SubJet1_Axis=SubJet_Axes[0];
   Double_t SubJet1_Eta=SubJet1_Axis.pseudorapidity();
   Double_t SubJet2_Eta;
   Double_t SubJet1_Phi=SubJet1_Axis.phi();
@@ -1015,7 +1015,7 @@ Double_t StFJWrapper::NSubjettiness(Int_t N, Int_t Algorithm, Double_t Radius, D
     if(DeltaPhi < -1*TMath::Pi()) DeltaPhi += (2*TMath::Pi());
     else if (DeltaPhi > TMath::Pi()) DeltaPhi -= (2*TMath::Pi());
   }
-    
+
   if (Option==0) return Result;
   else if (Option==1 && SubJet_Axes.size()>1 && N==2) return TMath::Sqrt(TMath::Power(SubJet1_Eta-SubJet2_Eta,2)+TMath::Power(DeltaPhi,2));
   else if (Option==2 && SubJet_Axes.size()>1 && N==2) return TMath::Sqrt(TMath::Power(SubJet1_Eta-SubJet2_Eta,2)+TMath::Power(DeltaPhi,2));
@@ -1085,7 +1085,7 @@ Double32_t StFJWrapper::NSubjettinessDerivativeSub(Int_t N, Int_t Algorithm, Dou
     SubJet_Axes=nSub.currentAxes();
   }
 
-  SubJet1_Axis=SubJet_Axes[0];	
+  SubJet1_Axis=SubJet_Axes[0];
   Double_t SubJet1_Eta=SubJet1_Axis.pseudorapidity();
   Double_t SubJet2_Eta;
   Double_t SubJet1_Phi=SubJet1_Axis.phi();
@@ -1103,7 +1103,7 @@ Double32_t StFJWrapper::NSubjettinessDerivativeSub(Int_t N, Int_t Algorithm, Dou
     if(DeltaPhi < -1*TMath::Pi()) DeltaPhi += (2*TMath::Pi());
     else if (DeltaPhi > TMath::Pi()) DeltaPhi -= (2*TMath::Pi());
   }
-    
+
   if (Option==0) return Result;
   else if (Option==1 && SubJet_Axes.size()>1 && N==2) return TMath::Sqrt(TMath::Power(SubJet1_Eta-SubJet2_Eta,2)+TMath::Power(DeltaPhi,2));
   else if (Option==2 && SubJet_Axes.size()>1 && N==2) return TMath::Sqrt(TMath::Power(SubJet1_Eta-SubJet2_Eta,2)+TMath::Power(DeltaPhi,2));

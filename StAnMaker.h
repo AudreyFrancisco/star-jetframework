@@ -38,13 +38,13 @@ class StAnMaker : public StJetFrameworkPicoBase {
 
     StAnMaker(const char *name, StPicoDstMaker *picoMaker, const char *outName, const char *jetMakerName, const char *rhoMakerName);
     virtual ~StAnMaker();
-   
+
     // class required functions
     virtual Int_t Init();
     virtual Int_t Make();
     virtual void  Clear(Option_t *opt="");
     virtual Int_t Finish();
-    
+
     // booking of histograms (optional)
     void    DeclareHistograms();
     void    WriteHistograms();
@@ -106,7 +106,7 @@ class StAnMaker : public StJetFrameworkPicoBase {
     Double_t                RelativeEPJET(Double_t jetAng, Double_t EPAng) const; // relative jet event plane angle
     void                    FillEmcTriggers();                          // EmcTrigger counter histo
     Bool_t                  DoComparison(int myarr[], int elems);
-    void                    SetSumw2(); // set errors weights 
+    void                    SetSumw2(); // set errors weights
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
 
     // switches

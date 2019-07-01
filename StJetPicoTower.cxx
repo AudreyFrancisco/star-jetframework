@@ -10,16 +10,16 @@ ClassImp(StJetPicoTower)
 
 StJetPicoTower::StJetPicoTower()
   : TObject()
-  , fSMDClusterP(0) 
-  , fSMDClusterE(0) 
+  , fSMDClusterP(0)
+  , fSMDClusterE(0)
   , fTowerStatus(0)
-  , fId(0)           
-  , fEnergy(0)       
-  , fEta(0)          
-  , fPhi(0)          
-  , fADC(0)          
-  , fEtaCorrected(0) 
-  , fPhiCorrected(0) 
+  , fId(0)
+  , fEnergy(0)
+  , fEta(0)
+  , fPhi(0)
+  , fADC(0)
+  , fEtaCorrected(0)
+  , fPhiCorrected(0)
   , fNAssocTracks(0)
   , fMatchedTracks(__PICO_MAX_MATCHED_TRACKS)
 {
@@ -32,16 +32,16 @@ StJetPicoTower::StJetPicoTower()
 
 StJetPicoTower::StJetPicoTower(StJetPicoTower &t)
   : TObject(t)
-  , fSMDClusterP(t.fSMDClusterP) 
-  , fSMDClusterE(t.fSMDClusterE) 
+  , fSMDClusterP(t.fSMDClusterP)
+  , fSMDClusterE(t.fSMDClusterE)
   , fTowerStatus(t.fTowerStatus)
-  , fId(t.fId)           
-  , fEnergy(t.fEnergy)       
-  , fEta(t.fEta)          
-  , fPhi(t.fPhi)          
-  , fADC(t.fADC)          
-  , fEtaCorrected(t.fEtaCorrected) 
-  , fPhiCorrected(t.fPhiCorrected)   
+  , fId(t.fId)
+  , fEnergy(t.fEnergy)
+  , fEta(t.fEta)
+  , fPhi(t.fPhi)
+  , fADC(t.fADC)
+  , fEtaCorrected(t.fEtaCorrected)
+  , fPhiCorrected(t.fPhiCorrected)
   , fNAssocTracks(t.fNAssocTracks)
   , fMatchedTracks(t.fMatchedTracks)
 {
@@ -64,17 +64,17 @@ void StJetPicoTower::Clear(Option_t */*Option*/)
 {
   //
   // Clear everything
-  // 
-  fSMDClusterP = 0; 
+  //
+  fSMDClusterP = 0;
   fSMDClusterE = 0;
   fTowerStatus = 0;
-  fId = 0;           
-  fEnergy = 0;       
-  fEta = 0;          
-  fPhi = 0;          
-  fADC = 0;          
-  fEtaCorrected = 0; 
-  fPhiCorrected = 0; 
+  fId = 0;
+  fEnergy = 0;
+  fEta = 0;
+  fPhi = 0;
+  fADC = 0;
+  fEtaCorrected = 0;
+  fPhiCorrected = 0;
   fNAssocTracks = 0;
 
   fMatchedTracks.Set(__PICO_MAX_MATCHED_TRACKS);
@@ -89,7 +89,7 @@ void StJetPicoTower::AddMatchedTrack(Int_t idx)
   //
   if (fNAssocTracks < fMatchedTracks.GetSize())
     {
-      fMatchedTracks[fNAssocTracks++] = idx;      
+      fMatchedTracks[fNAssocTracks++] = idx;
     }
   else
     {

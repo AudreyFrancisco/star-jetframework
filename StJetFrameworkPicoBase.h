@@ -50,7 +50,7 @@ class StJetFrameworkPicoBase : public StMaker {
 
     // debug flags for tower lists
     enum fBadTowerListsEnum_t {
-      kAltBadTow, 
+      kAltBadTow,
       kBadTow1,
       kBadTow2,
       kBadTow3,
@@ -114,13 +114,14 @@ class StJetFrameworkPicoBase : public StMaker {
     // run flags for specifics - update this as needed: TODO
     enum fRunFlagEnum {
       Run11_pp500, // 500
-      Run12_pp200, 
+      Run12_pp200,
       Run12_pp500, // 500
       Run13_pp510, // 500
       Run14_AuAu200,
       Run15_pp200,
       Run16_AuAu200,
-      Run17_pp510  // 500
+      Run17_pp510, // 500
+      RunIsobar
     };
 
     // trigger flags
@@ -141,7 +142,8 @@ class StJetFrameworkPicoBase : public StMaker {
       kVPDMB100  = 6,
       kVPDMBnovtx= 7,
       kRun12main = 8,
-      kRun12alt  = 9
+      kRun12alt  = 9,
+      kRunIsomain
     };
 
     // trigger type used to run specific part of analysis
@@ -197,7 +199,7 @@ class StJetFrameworkPicoBase : public StMaker {
     StJetFrameworkPicoBase();
     explicit StJetFrameworkPicoBase(const char *name);
     virtual ~StJetFrameworkPicoBase();
-   
+
     // class required functions
     virtual Int_t Init();
     //virtual Int_t Make();
@@ -220,9 +222,9 @@ class StJetFrameworkPicoBase : public StMaker {
     virtual void            SetJetType(Int_t jt)               { fJetType          = jt;}    // jet type (full, charged, neutral)
     virtual void            SetMinJetPt(Double_t j)            { fMinPtJet         = j; }    // min jet pt
     virtual void            SetJetMaxTrackPt(Double_t t)       { fTrackBias        = t; }    // track bias
-    virtual void            SetJetRad(Double_t jrad)           { fJetRad           = jrad; } // jet radius 
+    virtual void            SetJetRad(Double_t jrad)           { fJetRad           = jrad; } // jet radius
     virtual void            SetCorrectJetPt(Bool_t cpt)        { fCorrJetPt = cpt; }
-    
+
     // event setters
     virtual void            SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
     virtual void            SetUseBBCCoincidenceRate(Bool_t b) { doUseBBCCoincidenceRate = b; }
@@ -250,7 +252,7 @@ class StJetFrameworkPicoBase : public StMaker {
     Double_t                GetDiJetAj(StJet *jet1, StJet *jet2, StRhoParameter *eventRho = 0x0, Bool_t doCorrJetPt = kFALSE);
     StJet*                  GetLeadingJet(TString fJetMakerNametemp, StRhoParameter *eventRho = 0x0);
     StJet*                  GetSubLeadingJet(TString fJetMakerNametemp, StRhoParameter *eventRho = 0x0);
- 
+
     virtual void            SetExcludeLeadingJetsFromFit(Float_t n)   {fExcludeLeadingJetsFromFit = n; }
     virtual void            SetEventPlaneTrackWeight(int weight)      {fTrackWeight = weight; }
 
@@ -330,8 +332,8 @@ class StJetFrameworkPicoBase : public StMaker {
     Bool_t                  fRequireCentSelection;   // require particular centrality bin
     Bool_t                  doUseBBCCoincidenceRate; // use BBC or ZDC Coincidence Rate, kFALSE = ZDC
 
-    // centrality    
-    Double_t                fCentralityScaled;       // scaled by 5% centrality 
+    // centrality
+    Double_t                fCentralityScaled;       // scaled by 5% centrality
     Int_t                   ref16;                   // multiplicity bin (16)
     Int_t                   ref9;                    // multiplicity bin (9)
 
@@ -409,7 +411,7 @@ class StJetFrameworkPicoBase : public StMaker {
     StRefMultCorr          *refmultCorr;
     StRefMultCorr          *refmult2Corr;
 
-    // output file name string 
+    // output file name string
     TString                 mOutName;
     TString                 mOutNameEP;
     TString                 mOutNameQA;
@@ -432,7 +434,7 @@ class StJetFrameworkPicoBase : public StMaker {
     // add to histograms name
     TString                 fAddToHistogramsName; ///<  Add this string to histograms name.
 
-    // counters 
+    // counters
     Int_t                   mEventCounter;//!
     Int_t                   mAllPVEventCounter;//!
     Int_t                   mInputEventCounter;//!

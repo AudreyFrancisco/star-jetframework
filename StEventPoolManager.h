@@ -30,25 +30,25 @@ using std::deque;
 class StEventPool : public TObject
 {
  public:
- StEventPool() 
+ StEventPool()
    : fEvents(0),
     fNTracksInEvent(0),
     fEventIndex(0),
-    fMixDepth(1000), 
-    fMultMin(-999), 
-    fMultMax(+999), 
-    fZvtxMin(-999), 
-    fZvtxMax(+999), 
-    fPsiMin(-999), 
-    fPsiMax(+999), 
-    fPtMin(-9999), 
-    fPtMax(+9999), 
-    fWasUpdated(0), 
-    fMultBinIndex(0), 
-    fZvtxBinIndex(0), 
-    fPsiBinIndex(0), 
+    fMixDepth(1000),
+    fMultMin(-999),
+    fMultMax(+999),
+    fZvtxMin(-999),
+    fZvtxMax(+999),
+    fPsiMin(-999),
+    fPsiMax(+999),
+    fPtMin(-9999),
+    fPtMax(+9999),
+    fWasUpdated(0),
+    fMultBinIndex(0),
+    fZvtxBinIndex(0),
+    fPsiBinIndex(0),
     fPtBinIndex(0),
-    fDebug(0), 
+    fDebug(0),
     fTargetTrackDepth(0),
     fFirstFilled(0),
     fLockFlag(0),
@@ -58,25 +58,25 @@ class StEventPool : public TObject
     fTargetEvents(0)  {;} // default constructor needed for correct saving
 
  // 'explicit' added below to constructor to remove cppcheck warning - double check this one in particular FIXME TODO
- explicit StEventPool(Int_t d) 
+ explicit StEventPool(Int_t d)
    : fEvents(0),
     fNTracksInEvent(0),
     fEventIndex(0),
-    fMixDepth(d), 
-    fMultMin(-999), 
-    fMultMax(+999), 
-    fZvtxMin(-999), 
-    fZvtxMax(+999), 
-    fPsiMin(-999), 
-    fPsiMax(+999), 
-    fPtMin(-9999), 
-    fPtMax(+9999), 
-    fWasUpdated(0), 
-    fMultBinIndex(0), 
-    fZvtxBinIndex(0), 
-    fPsiBinIndex(0), 
+    fMixDepth(d),
+    fMultMin(-999),
+    fMultMax(+999),
+    fZvtxMin(-999),
+    fZvtxMax(+999),
+    fPsiMin(-999),
+    fPsiMax(+999),
+    fPtMin(-9999),
+    fPtMax(+9999),
+    fWasUpdated(0),
+    fMultBinIndex(0),
+    fZvtxBinIndex(0),
+    fPsiBinIndex(0),
     fPtBinIndex(0),
-    fDebug(0), 
+    fDebug(0),
     fTargetTrackDepth(0),
     fFirstFilled(0),
     fLockFlag(0),
@@ -84,26 +84,26 @@ class StEventPool : public TObject
     fNTimes(0),
     fTargetFraction(1),
     fTargetEvents(0)  {;}
-  
 
- StEventPool(Int_t d, Double_t multMin, Double_t multMax, 
+
+ StEventPool(Int_t d, Double_t multMin, Double_t multMax,
         Double_t zvtxMin, Double_t zvtxMax,
         Double_t psiMin=-999., Double_t psiMax=999.,
-        Double_t ptMin=-9999., Double_t ptMax=9999.) 
+        Double_t ptMin=-9999., Double_t ptMax=9999.)
    : fEvents(0),
     fNTracksInEvent(0),
     fEventIndex(0),
-    fMixDepth(d), 
-    fMultMin(multMin), 
-    fMultMax(multMax), 
+    fMixDepth(d),
+    fMultMin(multMin),
+    fMultMax(multMax),
     fZvtxMin(zvtxMin),
     fZvtxMax(zvtxMax),
     fPsiMin(psiMin),
     fPsiMax(psiMax),
-    fPtMin(ptMin), 
-    fPtMax(ptMax), 
+    fPtMin(ptMin),
+    fPtMax(ptMax),
     fWasUpdated(0),
-    fMultBinIndex(0), 
+    fMultBinIndex(0),
     fZvtxBinIndex(0),
     fPsiBinIndex(0),
     fPtBinIndex(0),
@@ -115,9 +115,9 @@ class StEventPool : public TObject
     fNTimes(0),
     fTargetFraction(1),
     fTargetEvents(0) {;}
-  
+
   ~StEventPool() {;}
-  
+
   Bool_t      EventMatchesBin(Int_t mult,    Double_t zvtx, Double_t psi=0., Double_t pt=0.) const;
   Bool_t      EventMatchesBin(Double_t mult, Double_t zvtx, Double_t psi=0., Double_t pt=0.) const;
   Bool_t      IsReady()                    const { return IsReady(NTracksInPool(), GetCurrentNEvents()); }
@@ -171,7 +171,7 @@ class StEventPool : public TObject
 
 protected:
   Bool_t      IsReady(Int_t tracks, Int_t events) const { return (tracks >= fTargetFraction * fTargetTrackDepth) || ((fTargetEvents > 0) && (events >= fTargetEvents)); }
-  
+
   deque<TObjArray*>     fEvents;              //Holds TObjArrays of MyTracklets
   deque<int>            fNTracksInEvent;      //Tracks in event
   deque<int>            fEventIndex;          //Original event index
@@ -200,9 +200,9 @@ protected:
 class StEventPoolManager : public TObject
 {
 public:
-  StEventPoolManager() 
+  StEventPoolManager()
     : fDebug(0),
-    fNMultBins(0), 
+    fNMultBins(0),
     fNZvtxBins(0),
     fNPsiBins(0),
     fNPtBins(0),
@@ -215,7 +215,7 @@ public:
   StEventPoolManager(Int_t maxEvts, Int_t minNTracks,
           Int_t nMultBins, Double_t *multbins,
           Int_t nZvtxBins, Double_t *zvtxbins);
-  
+
   StEventPoolManager(Int_t maxEvts, Int_t minNTracks,
           Int_t nMultBins, Double_t *multbins,
           Int_t nZvtxBins, Double_t *zvtxbins,
@@ -238,12 +238,12 @@ public:
   StEventPool *GetEventPool(Int_t centVal, Double_t zvtxVal, Double_t psiVal=0., Int_t iPt=0) const;
   StEventPool *GetEventPool(Double_t centVal, Double_t zvtxVal, Double_t psiVal=0., Int_t iPt=0) const;
 
-  Int_t       InitEventPools(Int_t depth, 
-                Int_t nMultBins, Double_t *multbin, 
-                Int_t nZvtxBins, Double_t *zvtxbin, 
+  Int_t       InitEventPools(Int_t depth,
+                Int_t nMultBins, Double_t *multbin,
+                Int_t nZvtxBins, Double_t *zvtxbin,
                 Int_t nPsiBins, Double_t *psibin,
                 Int_t nPtBins, Double_t *ptbin);
-  
+
   void        SetTargetTrackDepth(Int_t d) { fTargetTrackDepth = d;} // Same as for G.E.P. class
   Int_t       UpdatePools(TObjArray *trk);
   void        SetDebug(Bool_t b) { fDebug = b; }

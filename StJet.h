@@ -36,7 +36,7 @@ namespace fastjet {
 /**
  * @class StJet
  *
- * adapted from the AliEmcalJet class 
+ * adapted from the AliEmcalJet class
  * @author Salvatore Aiola <salvatore.aiola@yale.edu>, Yale University
  * @author Constantin Loizides <cloizides@lbl.gov>, Lawrence Berkeley National Laboratory
  *
@@ -56,7 +56,7 @@ namespace fastjet {
 class StJet : public StVParticle
 {
  public:
-  
+
   StJet();
   StJet(Double_t px, Double_t py, Double_t pz);
   StJet(Double_t pt, Double_t eta, Double_t phi, Double_t m);
@@ -204,7 +204,7 @@ class StJet : public StVParticle
   StJetShapeProperties* GetShapeProperties() const{ return fJetShapeProperties; }
   StJetShapeProperties* GetShapeProperties() { if (!fJetShapeProperties) CreateShapeProperties(); return fJetShapeProperties; }
   void CreateShapeProperties() { if (fJetShapeProperties) delete fJetShapeProperties; fJetShapeProperties = new StJetShapeProperties(); }
-  
+
  protected:
   Bool_t            IsJetTrack(StJet* jet, Int_t itrack, Bool_t sorted = kFALSE)       const;
   Bool_t            IsJetCluster(StJet* jet, Int_t iclus, Bool_t sorted = kFALSE)      const;

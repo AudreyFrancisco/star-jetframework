@@ -40,7 +40,7 @@ StRho::StRho() : StRhoBase("")
   fNExclLeadJets = 0;
   fJets = 0x0;
   fHistMultvsRho = 0x0;
-  mOutName = ""; 
+  mOutName = "";
   fJetMakerName = "";
   fRhoMakerName = "";
 }
@@ -82,7 +82,7 @@ Int_t StRho::Init()
 
   // Create user objects.
   fJets = new TClonesArray("StJet");
-  //fJets->SetName(fJetsName);      
+  //fJets->SetName(fJetsName);
 
   return kStOk;
 }
@@ -118,7 +118,7 @@ Int_t StRho::Finish() {
   return kStOK;
 }
 //
-// Function: declare histograms 
+// Function: declare histograms
 //________________________________________________________________________
 void StRho::DeclareHistograms() {
     // weird that this next line is needed to remove cppcheck warning
@@ -145,7 +145,7 @@ void StRho::Clear(Option_t *opt) {
 //
 // Function that runs the analysis for each event
 //________________________________________________________________________
-Int_t StRho::Make() 
+Int_t StRho::Make()
 {
   // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
@@ -257,7 +257,7 @@ Int_t StRho::Make()
     for(Int_t ij = 0; ij < Njets; ++ij) {
       // get jet pointer
       StJet *jet = static_cast<StJet*>(fJets->At(ij));
-      if(!jet) { continue; } 
+      if(!jet) { continue; }
 
       // NEED TO CHECK DEFAULTS // FIXME
       //if (!AcceptJet(jet)) continue;
@@ -266,7 +266,7 @@ Int_t StRho::Make()
       // some threshold cuts for tests
       if(jetPt < 0) continue;
 
-      // get ID and pt of the leading and sub-leading jet   
+      // get ID and pt of the leading and sub-leading jet
       if(jetPt > maxJetPts[0]) {
 	maxJetPts[1] = maxJetPts[0];
 	maxJetIds[1] = maxJetIds[0];
@@ -278,7 +278,7 @@ Int_t StRho::Make()
       }
     }
 
-    // only set to remove leading jet 
+    // only set to remove leading jet
     if(fNExclLeadJets < 2) {
       maxJetIds[1] = -1;
       maxJetPts[1] = 0;
@@ -296,7 +296,7 @@ Int_t StRho::Make()
 
     // get jet pointer
     StJet *jet = static_cast<StJet*>(fJets->At(iJets));
-    if(!jet) { continue; } 
+    if(!jet) { continue; }
 
     // NEED TO CHECK FOR DEFAULTS - cuts are done at the jet finder level
     //if(!AcceptJet(jet)) continue; //FIXME
@@ -305,7 +305,7 @@ Int_t StRho::Make()
     double jetArea = jet->Area();
     // some threshold cuts for tests
     if(jetPt < 0) continue;
- 
+
     rhovec[NjetAcc] = jetPt / jetArea;
     ++NjetAcc;
   }
@@ -330,4 +330,4 @@ Int_t StRho::Make()
   StRhoBase::FillHistograms();
 
   return kStOk;
-} 
+}

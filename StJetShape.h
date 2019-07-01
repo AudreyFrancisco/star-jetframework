@@ -79,10 +79,10 @@ class StJetShapeConstituent : public fastjet::FunctionOfPseudoJet<Double32_t>{
   virtual std::string description() const{return "constituents";}
   Double_t result(const fastjet::PseudoJet &jet) const {
     if (!jet.has_constituents())
-      return 0; 
+      return 0;
     //Double_t num = 0.;
     std::vector<fastjet::PseudoJet> constits = jet.constituents();
-    Double_t num = 1.*constits.size();  
+    Double_t num = 1.*constits.size();
     return num;
   }
 };
@@ -109,7 +109,7 @@ class StJetShapeLeSub : public fastjet::FunctionOfPseudoJet<Double32_t>{
     if (!jet.has_constituents())
       return 0;
     std::vector<fastjet::PseudoJet> constits = jet.constituents();
-    std::vector<fastjet::PseudoJet> sortedconstits=sorted_by_pt(constits); 
+    std::vector<fastjet::PseudoJet> sortedconstits=sorted_by_pt(constits);
     if(sortedconstits.size() < 2) return 0;
     Double_t num = TMath::Abs(sortedconstits[0].perp()-sortedconstits[1].perp());
     return num;

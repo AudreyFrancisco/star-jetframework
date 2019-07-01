@@ -23,7 +23,7 @@ class StJetPicoTower : public TObject
   Float_t GetEtaCorrected()    const {return fEtaCorrected;}
   Float_t GetEt()     const {return fEnergy / TMath::CosH(fEtaCorrected);}
   Float_t GetPhiCorrected()    const {return fPhiCorrected;}
-  
+
   Int_t   GetSMDClusterP()   const {return fSMDClusterP;}
   Int_t   GetSMDClusterE()   const {return fSMDClusterE;}
 
@@ -34,7 +34,7 @@ class StJetPicoTower : public TObject
 
   const TArrayI *GetMatchedTracks() {return &fMatchedTracks;}
   const TArrayI *GetMatchedTrackIndexes() {return &fMatchedTracks;}
-  
+
   // SETTERS
   void SetId(Int_t val)       {fId = val;}
   void SetEnergy(Float_t val) {fEnergy = val;}
@@ -43,10 +43,10 @@ class StJetPicoTower : public TObject
   void SetADC(Int_t val)      {fADC = val;}
   void SetEtaCorrected(Float_t val)    {fEtaCorrected = val;}
   void SetPhiCorrected(Float_t val)    {fPhiCorrected = val;}
-  
+
   void SetSMDClusterP(Int_t val)     {fSMDClusterP = val;}
   void SetSMDClusterE(Int_t val)     {fSMDClusterE = val;}
-  
+
   void SetTowerStatus(Int_t val)     {fTowerStatus = val;}
 
   void AddMatchedTrack(Int_t idx);

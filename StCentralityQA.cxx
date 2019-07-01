@@ -25,9 +25,9 @@
 #include "StMaker.h"
 #include "StRoot/StPicoEvent/StPicoEvent.h"
 #include "StRoot/StPicoEvent/StPicoTrack.h"
-#include "StRoot/StPicoEvent/StPicoBTowHit.h" 
+#include "StRoot/StPicoEvent/StPicoBTowHit.h"
 #include "StRoot/StPicoEvent/StPicoEmcTrigger.h"
-#include "StRoot/StPicoEvent/StPicoBEmcPidTraits.h"  
+#include "StRoot/StPicoEvent/StPicoBEmcPidTraits.h"
 
 // jet-framework includes
 #include "StJetFrameworkPicoBase.h"
@@ -170,17 +170,17 @@ Int_t StCentralityQA::Init() {
         break;
 
     case StJetFrameworkPicoBase::Run16_AuAu200 : // Run16 AuAu
-        switch(fCentralityDef) {      
+        switch(fCentralityDef) {
           case StJetFrameworkPicoBase::kgrefmult :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx : 
+          case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_VpdMB30 : 
+          case StJetFrameworkPicoBase::kgrefmult_VpdMB30 :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
               break;
           default:
@@ -192,6 +192,10 @@ Int_t StCentralityQA::Init() {
         // this is the default for Run17 pp - don't set anything for pp
         break;
 
+    case StJetFrameworkPicoBase::RunIsobar : // Run14 AuAu
+        grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+  break;
+
     default :
         grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
   }
@@ -200,7 +204,7 @@ Int_t StCentralityQA::Init() {
 }
 
 //____________________________________________________________________________
-Int_t StCentralityQA::Finish() { 
+Int_t StCentralityQA::Finish() {
   cout << "StCentralityQA::Finish()\n";
 
   //  Write histos to file and close it.
@@ -210,7 +214,7 @@ Int_t StCentralityQA::Finish() {
     fout->mkdir(GetName());
     fout->cd(GetName());
     WriteHistograms();
-   
+
     fout->cd();
     fout->Write();
     fout->Close();
@@ -231,7 +235,7 @@ void StCentralityQA::DeclareHistograms() {
 
   // QA histos
   hEventZVertex = new TH1F("hEventZVertex", "z-vertex distribution", 100, -50, 50);
-  hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100); 
+  hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
   hCentralityNEW = new TH1F("hCentralityNEW", "No. events vs centrality - NEW", nHistCentBins, 0, 100);
   hCentralityDiff = new TH1F("hCentralityDiff", "No. events vs centrality - Diff", 2*nHistCentBins, -100, 100);
 
@@ -263,24 +267,24 @@ void StCentralityQA::WriteHistograms() {
   hMultiplicityDiff->Write();
 
   // QA histos
-  fHistEventSelectionQA->Write(); 
+  fHistEventSelectionQA->Write();
   fHistEventSelectionQAafterCuts->Write();
   hTriggerIds->Write();
   hEmcTriggers->Write();
 }
 //
-// OLD user code says: //  Called every event after Make(). 
+// OLD user code says: //  Called every event after Make().
 //_____________________________________________________________________________
 void StCentralityQA::Clear(Option_t *opt) {
 
 }
-// 
+//
 //  This method is called every event.
 //_____________________________________________________________________________
 Int_t StCentralityQA::Make() {
   //StMemStat::PrintMem("MyAnalysisMaker at beginning of make");
 
-  // get PicoDstMaker 
+  // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) {
     LOG_WARN << " No PicoDstMaker! Skip! " << endm;
@@ -294,7 +298,7 @@ Int_t StCentralityQA::Make() {
     return kStWarn;
   }
 
-  // create pointer to PicoEvent 
+  // create pointer to PicoEvent
   mPicoEvent = static_cast<StPicoEvent*>(mPicoDst->event());
   if(!mPicoEvent) {
     LOG_WARN << " No PicoEvent! Skip! " << endm;
@@ -326,12 +330,12 @@ Int_t StCentralityQA::Make() {
   //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
 
   // get event B (magnetic) field
-  Bfield = mPicoEvent->bField(); 
+  Bfield = mPicoEvent->bField();
 
   // get vertex 3-vector and z-vertex component
   mVertex = mPicoEvent->primaryVertex();
   zVtx = mVertex.z();
-  
+
   // Z-vertex cut - the Aj analysis cut on (-40, 40) for reference
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
   hEventZVertex->Fill(zVtx);
@@ -345,7 +349,7 @@ Int_t StCentralityQA::Make() {
   if(fDebugLevel == kDebugGeneralEvt) cout<<"RunID = "<<RunId<<"  fillID = "<<fillId<<"  eventID = "<<eventId<<endl; // what is eventID?
 
   // ============================ CENTRALITY ============================== //
-  // for only 14.5 GeV collisions from 2014 and earlier runs: refMult, for AuAu run14 200 GeV: grefMult 
+  // for only 14.5 GeV collisions from 2014 and earlier runs: refMult, for AuAu run14 200 GeV: grefMult
   // https://github.com/star-bnl/star-phys/blob/master/StRefMultCorr/Centrality_def_refmult.txt
   // https://github.com/star-bnl/star-phys/blob/master/StRefMultCorr/Centrality_def_grefmult.txt
   int grefMult = mPicoEvent->grefMult();
@@ -358,7 +362,7 @@ Int_t StCentralityQA::Make() {
     grefmultCorr->init(RunId);
     if(doUseBBCCoincidenceRate) { grefmultCorr->initEvent(grefMult, zVtx, fBBCCoincidenceRate); } // default
     else{ grefmultCorr->initEvent(grefMult, zVtx, fZDCCoincidenceRate); }
-//    if(grefmultCorr->isBadRun(RunId)) cout << "Run is bad" << endl; 
+//    if(grefmultCorr->isBadRun(RunId)) cout << "Run is bad" << endl;
 //    if(grefmultCorr->isIndexOk()) cout << "Index Ok" << endl;
 //    if(grefmultCorr->isZvertexOk()) cout << "Zvertex Ok" << endl;
 //    if(grefmultCorr->isRefMultOk()) cout << "RefMult Ok" << endl;
@@ -406,7 +410,7 @@ Int_t StCentralityQA::Make() {
     grefmultCorrNEW->init(RunId);
     if(doUseBBCCoincidenceRate) { grefmultCorrNEW->initEvent(grefMult, zVtx, fBBCCoincidenceRate); } // default
     else{ grefmultCorrNEW->initEvent(grefMult, zVtx, fZDCCoincidenceRate); }
-//    if(grefmultCorrNEW->isBadRun(RunId)) cout << "Run is bad" << endl; 
+//    if(grefmultCorrNEW->isBadRun(RunId)) cout << "Run is bad" << endl;
 //    if(grefmultCorrNEW->isIndexOk()) cout << "Index Ok" << endl;
 //    if(grefmultCorrNEW->isZvertexOk()) cout << "Zvertex Ok" << endl;
 //    if(grefmultCorrNEW->isRefMultOk()) cout << "RefMult Ok" << endl;
@@ -467,18 +471,18 @@ Int_t StCentralityQA::Make() {
   FillEmcTriggersHist(hEmcTriggers);
 
   // get trigger IDs from PicoEvent class and loop over them
-  vector<unsigned int> mytriggers = mPicoEvent->triggerIds(); 
+  vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
   if(fDebugLevel == kDebugEmcTrigger) cout<<"EventTriggers: ";
   for(unsigned int i=0; i<mytriggers.size(); i++) {
-    if(fDebugLevel == kDebugEmcTrigger) cout<<"i = "<<i<<": "<<mytriggers[i] << ", "; 
+    if(fDebugLevel == kDebugEmcTrigger) cout<<"i = "<<i<<": "<<mytriggers[i] << ", ";
   }
-  if(fDebugLevel == kDebugEmcTrigger) 
+  if(fDebugLevel == kDebugEmcTrigger)
   cout<<endl;
 
   // check for MB/HT event
   bool fHaveMBevent = CheckForMB(fRunFlag, fMBEventType);
   bool fHaveMB5event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB5);
-  bool fHaveMB30event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB30); 
+  bool fHaveMB30event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB30);
   bool fHaveEmcTrigger = CheckForHT(fRunFlag, fEmcTriggerEventType);
 
   // fill arrays for towers that fired trigger
@@ -511,7 +515,7 @@ TH1* StCentralityQA::FillEmcTriggersHist(TH1* h) {
   //if(fDebugLevel == kDebugEmcTrigger) { cout<<"nEmcTrigger = "<<nEmcTrigger<<endl; }
 
   // set kAny true to use of 'all' triggers
-  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted) 
+  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted)
 
   // loop over valid EmcalTriggers
   for(int i = 0; i < nEmcTrigger; i++) {
@@ -545,7 +549,7 @@ TH1* StCentralityQA::FillEmcTriggersHist(TH1* h) {
     if(isJP2) { h->Fill(7); fEmcTriggerArr[StJetFrameworkPicoBase::kIsJP2] = 1; }
   }
   // kAny trigger - filled once per event
-  h->Fill(10); 
+  h->Fill(10);
 
   // set bin labels
   h->GetXaxis()->SetBinLabel(1, "HT0");
@@ -574,7 +578,7 @@ void StCentralityQA::SetSumw2() {
   //hMultiplicityNEW->Sumw2();
   //hCentralityDiff->Sumw2();
   //hMultiplicityDiff->Sumw2();
-  
+
   //fHistEventSelectionQA->Sumw2();
   //fHistEventSelectionQAafterCuts->Sumw2();
   //hTriggerIds->Sumw2();

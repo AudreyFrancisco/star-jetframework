@@ -61,7 +61,7 @@ StFemtoTrack::StFemtoTrack(Double_t px, Double_t py, Double_t pz) :
 }
 
 /**
- * Constructor that uses the pt, eta, phi, and q to define track: used for Mixed Events 
+ * Constructor that uses the pt, eta, phi, and q to define track: used for Mixed Events
  * to reduce memory consumption
  * @param pt Transverse component of the track momentum
  * @param eta Pseudo-rapidity of the track

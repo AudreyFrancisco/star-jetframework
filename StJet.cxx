@@ -378,7 +378,7 @@ Double_t StJet::DeltaR(const StVParticle* part) const // FIXME
 }
 
 /**
- * Sorting jet constituents by pT (decreasing)  
+ * Sorting jet constituents by pT (decreasing)
  * It returns a standard vector with the indexes of the constituents relative to fTrackIDs.
  * To retrieve the track do:
  * ~~~{.cxx}
@@ -538,7 +538,7 @@ Int_t StJet::ContainsTrack(Int_t it) const
  * - Neutral energy fraction
  * @return String representation of the jet
  */
-// TODO update 
+// TODO update
 TString StJet::toString() const {
   return TString::Format("Jet pT = %.2f, eta = %.2f, phi = %.2f, max charged pT = %.2f, max neutral pT = %.2f, N tracks = %d, N towers = %d, Area = %.2f, NEF = %.2f",
          Pt(), Eta(), Phi(), MaxChargedPt(), MaxNeutralPt(), GetNumberOfTracks(), GetNumberOfTowers(), Area(), NEF());

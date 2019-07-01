@@ -45,7 +45,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
       kDebugGeneralEvt,
       kDebugCentrality,
       kDebugEventPlaneCalc,
-      kDebugJetvsEPtype, 
+      kDebugJetvsEPtype,
       kDebugRhoEstimate
     };
 
@@ -69,13 +69,13 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
 
     StJetShapeAnalysis(const char *name, StPicoDstMaker *picoMaker, const char *outName, bool mDoComments, double minJetPtCut, double trkbias, const char *jetMakerName, const char *rhoMakerName);
     virtual ~StJetShapeAnalysis();
-   
+
     // class required functions
     virtual Int_t Init();
     virtual Int_t Make();
     virtual void  Clear(Option_t *opt="");
     virtual Int_t Finish();
-    
+
     // booking of histograms (optional)
     void    DeclareHistograms();
     void    WriteHistograms();
@@ -101,7 +101,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
     virtual void            SetJetMaxTowerEt(Double_t t)       { fTowerBias        = t; }    // tower bias
     virtual void            SetJetRad(Double_t jrad)           { fJetRad           = jrad; } // jet radius 
     virtual void            SetJetShapeTrackPtRange(Double_t min, Double_t max)  { fJetShapeTrackPtMin = min; fJetShapeTrackPtMax = max; }  // jet shape analysis pt range
-    virtual void            SetJetShapePtAssocBin(Int_t p)     { fJetShapePtAssocBin = p; }  // pt associated bin used in jet shape analysis 
+    virtual void            SetJetShapePtAssocBin(Int_t p)     { fJetShapePtAssocBin = p; }  // pt associated bin used in jet shape analysis
 
     // event setters
     virtual void            SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
@@ -147,13 +147,13 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
     // event plane
     virtual void            SetExcludeLeadingJetsFromFit(Float_t n)         {fExcludeLeadingJetsFromFit = n; }
     virtual void            SetEventPlaneTrackWeight(Int_t weight)          {fTrackWeight = weight; }
-    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          {fEventPlaneMaxTrackPtCut = m; }  
+    virtual void            SetEventPlaneMaxTrackPtCut(Double_t m)          {fEventPlaneMaxTrackPtCut = m; }
     virtual void            SetHistBinLimitsCenZvert(Int_t cmin, Int_t cmax, Int_t zmin, Int_t zmax)   { fHistCentBinMin = cmin; fHistCentBinMax = cmax; fHistZvertBinMin = zmin; fHistZvertBinMax = zmax; }
     virtual void            SetdoEPTPCptAssocMethod(Bool_t ptbin)           {doTPCptassocBin = ptbin; }
     virtual void            SetEPTPCptAssocBin(Int_t pb)                    {fTPCptAssocBin = pb; }
 
     // Where to read calib object with EP calibration if not default
-    void                    SetEPcalibFileName(TString filename)            {fEPcalibFileName = filename; } 
+    void                    SetEPcalibFileName(TString filename)            {fEPcalibFileName = filename; }
     void                    SetOutFileNameEP(TString epout)                 {mOutNameEP = epout; }
     void                    SetOutFileNameQA(TString QAout)                 {mOutNameQA = QAout; }
 
@@ -162,7 +162,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
   protected:
     TH1                    *FillEmcTriggersHist(TH1* h);                          // EmcTrigger counter histo
     Double_t                GetReactionPlane();                                   // get reaction plane angle
-    void                    SetSumw2(); // set errors weights 
+    void                    SetSumw2(); // set errors weights
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
     void                    TrackQA();
     void                    FillTowerTriggersArr();
@@ -233,7 +233,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
 
   private:
     Int_t                   fRunNumber;
-    TString                 fEPcalibFileName; 
+    TString                 fEPcalibFileName;
     Double_t                fEPTPCResolution;
     Double_t                fEPTPCn;
     Double_t                fEPTPCp;
@@ -246,7 +246,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
     bool                    doComments;
 
     // histograms
-    TH1F *hEventPlane;//!   
+    TH1F *hEventPlane;//!
     TH1F *hEventZVertex;//!
     TH1F *hCentrality;//!
     TH1F *hMultiplicity;//!
@@ -278,7 +278,7 @@ class StJetShapeAnalysis : public StJetFrameworkPicoBase {
     TH2F *hJetPhivsEP;//!
 
     // QA histos
-    TH1  *fHistEventSelectionQA;//! 
+    TH1  *fHistEventSelectionQA;//!
     TH1  *fHistEventSelectionQAafterCuts;//!
     TH1  *hTriggerIds;//!
     TH1  *hEmcTriggers;//!

@@ -132,7 +132,7 @@ Int_t StEventPoolMaker::Init() {
 //
 // Function: write to and close output file
 //__________________________________________________________________________________________
-Int_t StEventPoolMaker::Finish() { 
+Int_t StEventPoolMaker::Finish() {
   cout << "StEventPoolMaker::Finish()\n";
 
   //  Write histos to file and close it.
@@ -142,7 +142,7 @@ Int_t StEventPoolMaker::Finish() {
     fout->mkdir(GetName());
     fout->cd(GetName());
     WriteHistograms();
-   
+
     fout->cd();
     fout->Write();
     fout->Close();
@@ -157,7 +157,7 @@ Int_t StEventPoolMaker::Finish() {
 // Function: declare histograms and set up some global objects
 //__________________________________________________________________________________________
 void StEventPoolMaker::DeclareHistograms() {
-  // constants 
+  // constants
   double pi = 1.0*TMath::Pi();
 
   // cent histo bins
@@ -168,7 +168,7 @@ void StEventPoolMaker::DeclareHistograms() {
 
   // QA histos
   hEventZVertex = new TH1F("hEventZVertex", "z-vertex distribution", 100, -50, 50);
-  hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100); 
+  hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
   hMultiplicity = new TH1F("hMultiplicity", "No. events vs multiplicity", 160, 0, 800);
   hTrackEtavsPhi = new TH2F(Form("hTrackEtavsPhi"), Form("track distribution: #eta vs #phi"), 144, 0, 2*pi, 40, -1.0, 1.0);
 
@@ -184,9 +184,9 @@ void StEventPoolMaker::DeclareHistograms() {
   // Setup for Au-Au collisions: cent bin size can only be 5 or 10% bins
   int nCentralityBins = 100;
   double mult = 1.0;
-  if(fCentBinSize==1) { 
+  if(fCentBinSize==1) {
     nCentralityBins = 100;
-    mult = 1.0;  
+    mult = 1.0;
   } else if(fCentBinSize==2){
     nCentralityBins = 50;
     mult = 2.0;
@@ -211,7 +211,7 @@ void StEventPoolMaker::DeclareHistograms() {
   Double_t *centralityBins = cBins;
 
   // multiplicity bins
-//  Int_t nMultBins = 29; 
+//  Int_t nMultBins = 29;
 //  Double_t multBins[] = {10, 14, 19, 25, 31, 37, 44, 52, 61, 71, 82, 95, 109, 124, 140, 157, 175, 194, 214, 235, 257, 280, 304, 329, 355, 382, 410, 439, 469};
 //  Int_t nMultBins = 24;  // Alt-1: Best Yet
 //  Double_t multBins[] = {10,16,24,34,46,61,   80, 95, 112, 130, 149, 169, 190, 212, 235, 257, 280, 304, 329, 355, 382, 410, 439, 469};
@@ -251,7 +251,7 @@ void StEventPoolMaker::WriteHistograms() {
   hTrackEtavsPhi->Write();
 
   // QA histos
-  fHistEventSelectionQA->Write(); 
+  fHistEventSelectionQA->Write();
   fHistEventSelectionQAafterCuts->Write();
   hTriggerIds->Write();
   hEmcTriggers->Write();
@@ -260,12 +260,12 @@ void StEventPoolMaker::WriteHistograms() {
   hMixEvtStatZvsCent->Write();
 }
 //
-// OLD user code says: //  Called every event after Make(). 
+// OLD user code says: //  Called every event after Make().
 //_____________________________________________________________________________
 void StEventPoolMaker::Clear(Option_t *opt) {
 
 }
-// 
+//
 //  This method is called every event.
 //_____________________________________________________________________________
 Int_t StEventPoolMaker::Make() {
@@ -275,7 +275,7 @@ Int_t StEventPoolMaker::Make() {
   // constants
   const double pi = 1.0*TMath::Pi();
 
-  // get PicoDstMaker 
+  // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) {
     LOG_WARN << " No PicoDstMaker! Skip! " << endm;
@@ -289,7 +289,7 @@ Int_t StEventPoolMaker::Make() {
     return kStWarn;
   }
 
-  // create pointer to PicoEvent 
+  // create pointer to PicoEvent
   mPicoEvent = static_cast<StPicoEvent*>(mPicoDst->event());
   if(!mPicoEvent) {
     LOG_WARN << " No PicoEvent! Skip! " << endm;
@@ -319,12 +319,12 @@ Int_t StEventPoolMaker::Make() {
   //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
 
   // get event B (magnetic) field
-  Bfield = mPicoEvent->bField(); 
+  Bfield = mPicoEvent->bField();
 
   // get vertex 3-vector and z-vertex component
   mVertex = mPicoEvent->primaryVertex();
   zVtx = mVertex.z();
-  
+
   // Z-vertex cut - the Aj analysis cut on (-40, 40) for reference
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
   hEventZVertex->Fill(zVtx);
@@ -374,17 +374,17 @@ Int_t StEventPoolMaker::Make() {
   FillEmcTriggersHist(hEmcTriggers);
 
   // get trigger IDs from PicoEvent class and loop over them
-  vector<unsigned int> mytriggers = mPicoEvent->triggerIds(); 
+  vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
   if(fDebugLevel == kDebugEmcTrigger) cout<<"EventTriggers: ";
   for(unsigned int i=0; i<mytriggers.size(); i++) {
-    if(fDebugLevel == kDebugEmcTrigger) cout<<"i = "<<i<<": "<<mytriggers[i] << ", "; 
+    if(fDebugLevel == kDebugEmcTrigger) cout<<"i = "<<i<<": "<<mytriggers[i] << ", ";
   }
   if(fDebugLevel == kDebugEmcTrigger) cout<<endl;
 
   // check for MB/HT event
   bool fHaveMBevent = CheckForMB(fRunFlag, fMBEventType);
   bool fHaveMB5event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB5);
-  bool fHaveMB30event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB30); 
+  bool fHaveMB30event = CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB30);
   bool fHaveEmcTrigger = CheckForHT(fRunFlag, fEmcTriggerEventType);
   bool fRunForMB = kFALSE;  // used to differentiate pp and AuAu
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;
@@ -416,7 +416,7 @@ Int_t StEventPoolMaker::Make() {
       // create a list of reduced objects. This speeds up processing and reduces memory consumption for the event pool
       pool->UpdatePool(CloneAndReduceTrackList());
 
-    } // MB 
+    } // MB
   }
 
   // ============================================================================================= //
@@ -458,7 +458,7 @@ Int_t StEventPoolMaker::Make() {
     // initialize event pools
     StEventPool *pool = 0x0;
     if(fDoUseMultBins) { pool = fPoolMgr->GetEventPool(refCorr2, zVtx);
-    } else { pool = fPoolMgr->GetEventPool(mixcentbin, zVtx); } 
+    } else { pool = fPoolMgr->GetEventPool(mixcentbin, zVtx); }
     if(!pool) {
       Form("No pool found for centrality = %i, zVtx = %f", mixcentbin, zVtx); // FIXME if cent changes to double
       return kTRUE;
@@ -496,7 +496,7 @@ TClonesArray* StEventPoolMaker::CloneAndReduceTrackList()
   //const double pi = 1.0*TMath::Pi();
 
   // loop over tracks
-  for(int i = 0; i < nMixTracks; i++) { 
+  for(int i = 0; i < nMixTracks; i++) {
     // get track pointer
     StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track(i));
     if(!trk){ continue; }
@@ -556,7 +556,7 @@ TH1* StEventPoolMaker::FillEmcTriggersHist(TH1* h) {
   int nEmcTrigger = mPicoDst->numberOfEmcTriggers();
 
   // set kAny true to use of 'all' triggers
-  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted) 
+  fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted)
 
   // loop over valid EmcalTriggers
   for(int i = 0; i < nEmcTrigger; i++) {
@@ -583,7 +583,7 @@ TH1* StEventPoolMaker::FillEmcTriggersHist(TH1* h) {
     if(isJP2) { h->Fill(7); fEmcTriggerArr[StJetFrameworkPicoBase::kIsJP2] = 1; }
   }
   // kAny trigger - filled once per event
-  h->Fill(10); 
+  h->Fill(10);
 
   // set bin labels
   h->GetXaxis()->SetBinLabel(1, "HT0");

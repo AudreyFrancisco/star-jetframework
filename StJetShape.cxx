@@ -1,4 +1,4 @@
-/* 
+/*
 	adapted from a wrapper class in the AliROOT framework, AliJetShape  class
 
 */
@@ -85,7 +85,7 @@ Double32_t StJetShapeGRDen::result(const fastjet::PseudoJet &jet) const {
 //____________________________________________________________________________
 Double32_t StJetShapeAngularity::result(const fastjet::PseudoJet &jet) const {
   if (!jet.has_constituents())
-    return 0; 
+    return 0;
   Double_t den = 0.;
   Double_t num = 0.;
   std::vector<fastjet::PseudoJet> constits = jet.constituents();
@@ -104,7 +104,7 @@ Double32_t StJetShapeAngularity::result(const fastjet::PseudoJet &jet) const {
 //____________________________________________________________________________
 Double32_t StJetShapepTD::result(const fastjet::PseudoJet &jet) const {
   if (!jet.has_constituents())
-    return 0; 
+    return 0;
   Double_t den = 0;
   Double_t num = 0.;
   std::vector<fastjet::PseudoJet> constits = jet.constituents();
@@ -127,14 +127,14 @@ Double32_t StJetShapeCircularity::result(const fastjet::PseudoJet &jet) const {
   Double_t pxjet = jet.px();
   Double_t pyjet = jet.py();
   Double_t pzjet = jet.pz();
-         
+
   // 2 general normalized vectors perpendicular to the jet
   TVector3  ppJ1(pxjet, pyjet, pzjet);
   TVector3  ppJ3(- pxjet* pzjet, - pyjet * pzjet, pxjet * pxjet + pyjet * pyjet);
   ppJ3.SetMag(1.);
   TVector3  ppJ2(-pyjet, pxjet, 0);
   ppJ2.SetMag(1.);
-    
+
   std::vector<fastjet::PseudoJet> constits = jet.constituents();
   for(UInt_t ic = 0; ic < constits.size(); ++ic) {
     TVector3 pp(constits[ic].px(), constits[ic].py(), constits[ic].pz());
@@ -157,7 +157,7 @@ Double32_t StJetShapeCircularity::result(const fastjet::PseudoJet &jet) const {
   // Sphericity Matrix
   Double_t ele[4] = {mxx / sump2, mxy / sump2, mxy / sump2, myy / sump2};
   TMatrixDSym m0(2,ele);
-      
+
   // Find eigenvectors
   TMatrixDSymEigen m(m0);
   TVectorD eval(2);
@@ -175,7 +175,7 @@ Double32_t StJetShapeCircularity::result(const fastjet::PseudoJet &jet) const {
   Double_t circ = 0;
   if(jev == 1) circ = 2*eval[0];
   if(jev == 0) circ=2*eval[1];
-    
+
   return circ;
 }
 
@@ -207,7 +207,7 @@ Double32_t StJetShapeSigma2::result(const fastjet::PseudoJet &jet) const {
   // Sphericity Matrix
   Double_t ele[4] = {mxx , mxy, mxy, myy };
   TMatrixDSym m0(2,ele);
-      
+
   // Find eigenvectors
   TMatrixDSymEigen m(m0);
   TVectorD eval(2);
@@ -225,13 +225,13 @@ Double32_t StJetShapeSigma2::result(const fastjet::PseudoJet &jet) const {
   Double_t sigma2 = 0;
   if(jev == 1) sigma2 = TMath::Sqrt(TMath::Abs(eval[0])/sump2);
   if(jev == 0) sigma2 = TMath::Sqrt(TMath::Abs(eval[1])/sump2);
-    
+
   return sigma2;
 }
 
 //____________________________________________________________________________
 Double32_t StJetShape1subjettiness_kt::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(1,0,0.2,1.0,0.4,jet,0);
@@ -242,7 +242,7 @@ Double32_t StJetShape1subjettiness_kt::result(const fastjet::PseudoJet &jet) con
 
 //____________________________________________________________________________
 Double32_t StJetShape2subjettiness_kt::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,0,0.2,1.0,0.4,jet,0);
@@ -253,7 +253,7 @@ Double32_t StJetShape2subjettiness_kt::result(const fastjet::PseudoJet &jet) con
 
 //____________________________________________________________________________
 Double32_t StJetShape3subjettiness_kt::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(3,0,0.2,1.0,0.4,jet,0);
@@ -264,7 +264,7 @@ Double32_t StJetShape3subjettiness_kt::result(const fastjet::PseudoJet &jet) con
 
 //____________________________________________________________________________
 Double32_t StJetShapeOpeningAngle_kt::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,0,0.2,1.0,0.4,jet,1);
@@ -276,7 +276,7 @@ Double32_t StJetShapeOpeningAngle_kt::result(const fastjet::PseudoJet &jet) cons
 // =====
 //____________________________________________________________________________
 Double32_t StJetShape1subjettiness_ca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(1,1,0.2,1.0,0.4,jet,0);
@@ -287,7 +287,7 @@ Double32_t StJetShape1subjettiness_ca::result(const fastjet::PseudoJet &jet) con
 
 //____________________________________________________________________________
 Double32_t StJetShape2subjettiness_ca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,1,0.2,1.0,0.4,jet,0);
@@ -298,7 +298,7 @@ Double32_t StJetShape2subjettiness_ca::result(const fastjet::PseudoJet &jet) con
 
 //____________________________________________________________________________
 Double32_t StJetShapeOpeningAngle_ca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,1,0.2,1.0,0.4,jet,1);
@@ -309,7 +309,7 @@ Double32_t StJetShapeOpeningAngle_ca::result(const fastjet::PseudoJet &jet) cons
 
 //____________________________________________________________________________
 Double32_t StJetShape1subjettiness_akt02::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(1,2,0.2,1.0,0.4,jet,0);
@@ -320,7 +320,7 @@ Double32_t StJetShape1subjettiness_akt02::result(const fastjet::PseudoJet &jet) 
 
 //____________________________________________________________________________
 Double32_t StJetShape2subjettiness_akt02::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,2,0.2,1.0,0.4,jet,0);
@@ -331,7 +331,7 @@ Double32_t StJetShape2subjettiness_akt02::result(const fastjet::PseudoJet &jet) 
 
 //____________________________________________________________________________
 Double32_t StJetShapeOpeningAngle_akt02::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,2,0.2,1.0,0.4,jet,1);
@@ -342,7 +342,7 @@ Double32_t StJetShapeOpeningAngle_akt02::result(const fastjet::PseudoJet &jet) c
 
 //____________________________________________________________________________
 Double32_t StJetShape1subjettiness_onepassca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(1,6,0.2,1.0,0.4,jet,0);
@@ -353,7 +353,7 @@ Double32_t StJetShape1subjettiness_onepassca::result(const fastjet::PseudoJet &j
 
 //____________________________________________________________________________
 Double32_t StJetShape2subjettiness_onepassca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,6,0.2,1.0,0.4,jet,0);
@@ -364,7 +364,7 @@ Double32_t StJetShape2subjettiness_onepassca::result(const fastjet::PseudoJet &j
 
 //____________________________________________________________________________
 Double32_t StJetShapeOpeningAngle_onepassca::result(const fastjet::PseudoJet &jet) const {
-  if (!jet.has_constituents()) 
+  if (!jet.has_constituents())
     return 0;
   StFJWrapper *fFastjetWrapper = new StFJWrapper("FJWrapper", "FJWrapper");
   Double32_t Result = fFastjetWrapper->StFJWrapper::NSubjettinessDerivativeSub(2,6,0.2,1.0,0.4,jet,1);

@@ -36,13 +36,13 @@ class StCentralityQA : public StJetFrameworkPicoBase {
 
     StCentralityQA(const char *name, StPicoDstMaker *picoMaker, const char *outName, bool mDoComments);
     virtual ~StCentralityQA();
-   
+
     // class required functions
     virtual Int_t Init();
     virtual Int_t Make();
     virtual void  Clear(Option_t *opt="");
     virtual Int_t Finish();
-    
+
     // booking of histograms (optional)
     void    DeclareHistograms();
     void    WriteHistograms();
@@ -86,7 +86,7 @@ class StCentralityQA : public StJetFrameworkPicoBase {
 
   protected:
     TH1                    *FillEmcTriggersHist(TH1* h);                          // EmcTrigger counter histo
-    void                    SetSumw2(); // set errors weights 
+    void                    SetSumw2(); // set errors weights
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
     void                    FillTowerTriggersArr();
 
@@ -129,7 +129,7 @@ class StCentralityQA : public StJetFrameworkPicoBase {
     TH1F *hMultiplicityDiff;//!
 
     // QA histos
-    TH1  *fHistEventSelectionQA;//! 
+    TH1  *fHistEventSelectionQA;//!
     TH1  *fHistEventSelectionQAafterCuts;//!
     TH1  *hTriggerIds;//!
     TH1  *hEmcTriggers;//!

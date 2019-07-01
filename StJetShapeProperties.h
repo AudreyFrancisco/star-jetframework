@@ -212,7 +212,7 @@ protected:
   Double_t          fJetShape1subjettinessktSecondDer;       //!<!   result from shape derivatives for jet 1subjettiness_kt: 2nd derivative
   Double_t          fJetShape1subjettinessktFirstSub;        //!<!   result from shape derivatives for jet 1subjettiness_kt: 1st order subtracted
   Double_t          fJetShape1subjettinessktSecondSub;       //!<!   result from shape derivatives for jet 1subjettiness_kt: 2nd order subtracted
-  
+
   Double_t          fJetShape2subjettinessktFirstDer;        //!<!   result from shape derivatives for jet 2subjettiness_kt: 1st derivative
   Double_t          fJetShape2subjettinessktSecondDer;       //!<!   result from shape derivatives for jet 2subjettiness_kt: 2nd derivative
   Double_t          fJetShape2subjettinessktFirstSub;        //!<!   result from shape derivatives for jet 2subjettiness_kt: 1st order subtracted
