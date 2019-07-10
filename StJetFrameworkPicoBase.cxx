@@ -906,10 +906,11 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
           case StJetFrameworkPicoBase::kRun12main :  // update if needed
               if((DoComparison(arrMB_Run12, sizeof(arrMB_Run12)/sizeof(*arrMB_Run12)))) { return kTRUE; }
               break;
-          case StJetFrameworkPicoBase::kVPDMB :
+         /* case StJetFrameworkPicoBase::kVPDMB :
               if((DoComparison(arrMB_Run12extra, sizeof(arrMB_Run12extra)/sizeof(*arrMB_Run12extra)))) { return kTRUE; }
               break;
-          default :
+         */
+	  default :
               if((DoComparison(arrMB_Run12, sizeof(arrMB_Run12)/sizeof(*arrMB_Run12)))) { return kTRUE; }
         }
         break;

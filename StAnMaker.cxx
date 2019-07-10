@@ -156,9 +156,10 @@ Int_t StAnMaker::Init() {
           case StJetFrameworkPicoBase::kgrefmult_P17id_VpdMB30 :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30 :
+          /*case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30 :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
-              break;
+              break;i
+	  */
           case StJetFrameworkPicoBase::kgrefmult_P16id :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
