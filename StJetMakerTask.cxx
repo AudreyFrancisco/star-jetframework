@@ -446,7 +446,7 @@ void StJetMakerTask::DeclareHistograms() {
   if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   nRunBins = 857 + 43;
   if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
   if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 5;
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 10;
   Double_t nRunBinsMax = (Double_t)nRunBins + 0.5;
 
   //fHistEventCounter = new TH1F("fHistEventCounter", "Event counter", 10, 0.5, 10.5);
