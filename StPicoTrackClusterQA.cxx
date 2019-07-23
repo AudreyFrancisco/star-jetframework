@@ -278,6 +278,7 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fHistEventID_MB30)      delete fHistEventID_MB30;
   if(fHistRunID_MB30)        delete fHistRunID_MB30; 
   if(fProfEventTrackPt_MB30) delete fProfEventTrackPt_MB30;
+  if(fProfEventTracknHitsFit_MB30) delete fProfEventTracknHitsFit_MB30;
   if(fProfEventRefMult_MB30) delete fProfEventRefMult_MB30;
   if(fProfEventXvtx_MB30)    delete fProfEventXvtx_MB30;
   if(fProfEventYvtx_MB30)    delete fProfEventYvtx_MB30;
@@ -295,6 +296,10 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fProfEventVzVPD)        delete fProfEventVzVPD;
   if(fProfEventBBCx)         delete fProfEventBBCx;
   if(fProfEventZDCx)         delete fProfEventZDCx;
+  if(fProfEventnBemcMatch_MB30) delete fProfEventnBemcMatch_MB30;
+  if(fProfEventnBtofMatch_MB30) delete fProfEventnBtofMatch_MB30;
+  if(fProfEventnBemcMatch) delete fProfEventnBemcMatch;
+  if(fProfEventnBtofMatch) delete fProfEventnBtofMatch;
 
   if(fHistNZeroEHT1vsID) delete fHistNZeroEHT1vsID;
   if(fHistNZeroEHT2vsID) delete fHistNZeroEHT2vsID;
@@ -404,7 +409,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   nRunBins = 857 + 43;
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 10;
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 6;
     Double_t nRunBinsMax = (Double_t)nRunBins + 0.5;
 
     // tweak refmult plot binnings for pp datasets
@@ -483,6 +488,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistEventID_MB30 = new TH1F("fHistEventID_MB30", "Event ID distribution", 140, 0., 7000000.0);
     fHistRunID_MB30 = new TH1F("fHistRunID_MB30", "Run ID distribution", nRunBinSize, runMin, runMax);
     fProfEventTrackPt_MB30 = new TProfile("fProfEventTrackPt_MB30", "Event averaged track p_{T}, MB30 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTracknHitsFit_MB30 = new TProfile("fProfEventTracknHitsFit_MB30", "Event averaged nHitsFit, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventRefMult_MB30 = new TProfile("fProfEventRefMult_MB30", "Event averaged refMult, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventZvtx_MB30 = new TProfile("fProfEventZvtx_MB30", "Event averaged primary z-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventYvtx_MB30 = new TProfile("fProfEventYvtx_MB30", "Event averaged primary y-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
@@ -491,7 +497,10 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fProfEventPerpvtx_MB30 = new TProfile("fProfEventPerpvtx_MB30", "Event averaged primary perp-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventBBCx_MB30 = new TProfile("fProfEventBBCx_MB30", "Event averaged BBC coincidence rate, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventZDCx_MB30 = new TProfile("fProfEventZDCx_MB30", "Event averaged ZDC coincidence rate, MB30 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBemcMatch_MB30 = new TProfile("fProfEventnBemcMatch_MB30", "Event averaged nBEMC match, MB30 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBtofMatch_MB30 = new TProfile("fProfEventnBtofMatch_MB30", "Event averaged nBTOF match, MB30 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventTrackPt = new TProfile("fProfEventTrackPt", "Event averaged track p_{T}", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTracknHitsFit = new TProfile("fProfEventTracknHitsFit", "Event averaged nHitsFit", nRunBins, 0.5, nRunBinsMax);
     fProfEventRefMult = new TProfile("fProfEventRefMult", "Event averaged refMult", nRunBins, 0.5, nRunBinsMax);
     fProfEventRanking = new TProfile("fProfEventRanking", "Event averaged vertex ranking", nRunBins, 0.5, nRunBinsMax);
     fProfEventZvtx = new TProfile("fProfEventZvtx", "Event averaged primary z-Vertex", nRunBins, 0.5, nRunBinsMax);
@@ -500,6 +509,8 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fProfEventVzVPD = new TProfile("fProfEventVzVPD", "Event averaged VzVPD", nRunBins, 0.5, nRunBinsMax);
     fProfEventBBCx = new TProfile("fProfEventBBCx", "Event averaged BBC coincidence rate", nRunBins, 0.5, nRunBinsMax);
     fProfEventZDCx = new TProfile("fProfEventZDCx", "Event averaged ZDC coincidence rate", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBemcMatch = new TProfile("fProfEventnBemcMatch", "Event averaged nBEMC match", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBtofMatch = new TProfile("fProfEventnBTOFMatch", "Event averaged nBTOF match", nRunBins, 0.5, nRunBinsMax);
 
     // trigger histograms, zero and negative entries QA
     fHistNZeroEHT1vsID = new TH1F("fHistNZeroEHT1vsID", "NTowers fired HT1 with zero E vs tower ID", 4800, 0.5, 4800.5);
@@ -616,6 +627,7 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistEventID_MB30->Write();
   fHistRunID_MB30->Write();
   fProfEventTrackPt_MB30->Write();
+  fProfEventTracknHitsFit_MB30->Write();
   fProfEventRefMult_MB30->Write();
   fProfEventZvtx_MB30->Write();
   fProfEventYvtx_MB30->Write();
@@ -624,7 +636,10 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fProfEventPerpvtx_MB30->Write();
   fProfEventBBCx_MB30->Write();
   fProfEventZDCx_MB30->Write();
+  fProfEventnBemcMatch_MB30->Write();
+  fProfEventnBtofMatch_MB30->Write();
   fProfEventTrackPt->Write();
+  fProfEventTracknHitsFit->Write();
   fProfEventRefMult->Write();
   fProfEventRanking->Write();
   fProfEventZvtx->Write();
@@ -633,6 +648,8 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fProfEventVzVPD->Write();
   fProfEventBBCx->Write();
   fProfEventZDCx->Write();
+  fProfEventnBemcMatch->Write();
+  fProfEventnBtofMatch->Write();
 
   // trigger QA histograms
   fHistNZeroEHT1vsID->Write();
@@ -1012,6 +1029,8 @@ void StPicoTrackClusterQA::RunTrackQA()
     //double energy = 1.0*TMath::Sqrt(p*p + pi0mass*pi0mass);
     short charge = trk->charge();
     int bemcIndex = trk->bemcPidTraitsIndex();
+    int nHitsFit= trk->nHitsFit();
+    double dca = trk->gDCA(Vert).Mag();
 
     // shift track phi (0, 2*pi)
     if(phi < 0.0)    phi += 2.0*pi;
@@ -1026,10 +1045,14 @@ void StPicoTrackClusterQA::RunTrackQA()
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);
     fProfEventTrackPt->Fill(RunId_Order + 1., pt);
+    fProfEventTracknHitsFit->Fill(RunId_Order + 1., nHitsFit);
+    fProfEventTrackDca->Fill(RunId_Order + 1., dca);
 
     // MB30 histograms filled for QA - pp or AuAu
     if(fRunForMB && !fHaveAnyHT) {
       fProfEventTrackPt_MB30->Fill(RunId_Order + 1., pt);
+      fProfEventTracknHitsFit_MB30->Fill(RunId_Order + 1., nHitsFit);
+      fProfEventTrackDca_MB30->Fill(RunId_Order + 1., dca);
     }
 
     // fill track sparse
@@ -2337,13 +2360,16 @@ void StPicoTrackClusterQA::FillTriggerIDs(TH1 *h) {
 
   // Run12 pp (200 GeV) - 27, 0-26
   unsigned int triggersRun12[] = {370001, 370011, 370021, 370022, 370031, 370032, 370301, 370341, 370361, 370501, 370511, 370521, 370522, 370531, 370541, 370542, 370546, 370601, 370611, 370621, 370641, 370701, 370801, 370980, 370981, 370982, 370983};
+  unsigned int triggersRunIso[] = {19084272,19084304,19084339,19085029,19085095,19085126};
 
   // get size of trigger ID arrays:
   size_t nRun12IDs = sizeof(triggersRun12)/sizeof(triggersRun12[0]);
   size_t nRun14IDs = sizeof(triggersRun14)/sizeof(triggersRun14[0]);
+  size_t nRunIsoIDs = sizeof(triggersRunIso)/sizeof(triggersRunIso[0]);
   int nLoopMax = 0;
   if(StJetFrameworkPicoBase::Run12_pp200)   nLoopMax = nRun12IDs;
   if(StJetFrameworkPicoBase::Run14_AuAu200) nLoopMax = nRun14IDs;
+  if(StJetFrameworkPicoBase::RunIsobar) nLoopMax = nRunIsoIDs;
 
   // get trigger IDs from PicoEvent class and loop over them
   vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
@@ -2354,6 +2380,7 @@ void StPicoTrackClusterQA::FillTriggerIDs(TH1 *h) {
       for(int j = 0; j < nLoopMax; j++) {
         if(mytriggers[i] == triggersRun12[j] && fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   h->Fill(j + 1);
         if(mytriggers[i] == triggersRun14[j] && fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) h->Fill(j + 1);
+        if(mytriggers[i] == triggersRunIso[j] && fRunFlag == StJetFrameworkPicoBase::RunIsobar) h->Fill(j + 1);
 
       } // loops over ID's
     }   // non-test trigger
@@ -2363,6 +2390,7 @@ void StPicoTrackClusterQA::FillTriggerIDs(TH1 *h) {
   for(int i = 0; i < nLoopMax; i++) {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   h->GetXaxis()->SetBinLabel(i+1, Form("%i", triggersRun12[i]));
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) h->GetXaxis()->SetBinLabel(i+1, Form("%i", triggersRun14[i]));
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) h->GetXaxis()->SetBinLabel(i+1, Form("%i", triggersRun14[i]));
   }
 
   // set x-axis labels vertically
@@ -2395,6 +2423,10 @@ void StPicoTrackClusterQA::RunEventQA() {
   // coincidence rates
   float fZDCx = mPicoEvent->ZDCx();
   float fBBCx = mPicoEvent->BBCx();
+
+  //nBemc and Tof matches
+  int nBemcMatch =  mPicoEvent->nBEMCMatch();
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
 
   // =======================================================================================
   // check for MB/HT event
@@ -2431,6 +2463,8 @@ void StPicoTrackClusterQA::RunEventQA() {
     fProfEventPerpvtx_MB30->Fill(RunId_Order + 1., fPerp);   // MB30: transverse - vertex
     fProfEventBBCx_MB30->Fill(RunId_Order + 1., fBBCx);      // MB30: BBC coincidence
     fProfEventZDCx_MB30->Fill(RunId_Order + 1., fZDCx);      // MB30: ZDC coincidence
+    fProfEventnBemcMatch_MB30->Fill(RunId_Order + 1., nBemcMatch);
+    fProfEventnBtofMatch_MB30->Fill(RunId_Order + 1., nBtofMatch);
   }
   // =======================================================================================
 
@@ -2447,6 +2481,8 @@ void StPicoTrackClusterQA::RunEventQA() {
   fProfEventBBCx->Fill(RunId_Order + 1., fBBCx);
   fProfEventZDCx->Fill(RunId_Order + 1., fZDCx);
 
+  fProfEventnBemcMatch->Fill(RunId_Order + 1., nBemcMatch);
+  fProfEventnBtofMatch->Fill(RunId_Order + 1., nBtofMatch);
 }
 //
 // this function checks for the bin number of the run from a runlist header
