@@ -468,6 +468,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   { runMin = 13000000.; runMax = 13100000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) { runMin = 15050000.; runMax = 15200000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) { runMin = 17050000.; runMax = 17150000.; }
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084018.; runMax = 19085126.; nRunBinSize = 1; }
 
     // event QA histograms
     fHistEventNTrig_MB30 = new TH1F("fHistEventNTrig_MB30", "N triggered events for MB30 events", nRunBins, 0.5, nRunBinsMax);
@@ -1304,7 +1305,7 @@ TH1* StPicoTrackClusterQA::FillEmcTriggersHist(TH1* h) {
   // zero out trigger array and get number of Emcal Triggers
   for(int i = 0; i < 8; i++) { fEmcTriggerArr[i] = 0; }
   int nEmcTrigger = mPicoDst->numberOfEmcTriggers();
-  //if(fDebugLevel == kDebugEmcTrigger) { cout<<"nEmcTrigger = "<<nEmcTrigger<<endl; }
+  if(fDebugLevel == kDebugEmcTrigger) { cout<<"nEmcTrigger = "<<nEmcTrigger<<endl; }
 
   // set kAny true to use of 'all' triggers
   fEmcTriggerArr[StJetFrameworkPicoBase::kAny] = 1;  // always TRUE, so can select on all event (when needed/wanted)
@@ -1723,7 +1724,7 @@ Bool_t StPicoTrackClusterQA::MuProcessBEMC() {
   /* define the number of modules in the BEMC */
   UInt_t   mBEMCModules         = 120;
   UInt_t   mBEMCTowPerModule    = 20;
-  Int_t    mBEMCSubSections     = 2;
+  Int_t    mBEMCSubSections     =018
 
   /* and we will count the # of towers/tracks matched, as this
      is saved in the event header. Not sure why
@@ -2483,7 +2484,7 @@ Int_t StPicoTrackClusterQA::GetRunNo(int runid){
   // Run18 Isobar (27 GeV)
   if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
     // 405 runs on May 23
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 10; i++){
       if(RunIso_IdNo[i] == runid) {
         return i;
       }

@@ -974,12 +974,12 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
 
     case StJetFrameworkPicoBase::RunIsobar : // Run isobar (200 GeV)
         switch(type) {
-        case StJetFrameworkPicoBase::kRunIsomain :
-	          if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
+         case StJetFrameworkPicoBase::kVPDMB :
+	      if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
     	      break;
-	    case StJetFrameworkPicoBase::kVPDMB30 :
-	          if((DoComparison(arrMB30_RunIso, sizeof(arrMB30_RunIso)/sizeof(*arrMB30_RunIso)))) { return kTRUE; }
-	          break;
+      	 case StJetFrameworkPicoBase::kVPDMB30 :
+	      if((DoComparison(arrMB30_RunIso, sizeof(arrMB30_RunIso)/sizeof(*arrMB30_RunIso)))) { return kTRUE; }
+	      break;
 	  /*        case StJetFrameworkPicoBase::kVPDMB100 :
 	   *                      if((DoComparison(arrMB100_RunIso, sizeof(arrMB100_RunIso)/sizeof(*arrMB100_RunIso)))) { return kTRUE; }
 	   *                                    break;*/

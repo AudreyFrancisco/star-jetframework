@@ -142,8 +142,7 @@ class StJetFrameworkPicoBase : public StMaker {
       kVPDMB100  = 6,
       kVPDMBnovtx= 7,
       kRun12main = 8,
-      kRun12alt  = 9,
-      kRunIsomain
+      kRun12alt  = 9
     };
 
     // trigger type used to run specific part of analysis
