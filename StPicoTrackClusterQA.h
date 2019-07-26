@@ -277,6 +277,10 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistNTrackvsPt;//!
   TH1F           *fHistNTrackvsPhi;//!
   TH1F           *fHistNTrackvsEta;//!
+  TH1F           *fHistNTrackvsDca;//!
+  TH1F		 *fHistNTrackvsnHitsMax;//!	
+  TH1F		 *fHistNTrackvsnHitsFit;//!	
+  TH1F		 *fHistNTrackvsnHitsRatio;//!	
   TH2F           *fHistNTrackvsPhivsEta;//!
   TH1F           *fHistNHadCorrTowervsE;//!
   TH1F           *fHistNHadCorrTowervsEt;//!
@@ -303,6 +307,19 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistTriggerIDs;//!
 
   // event QA
+  TH1F           *fHistZvtx;//!
+  TH1F           *fHistZDCx;//!
+  TH1F           *fHistBBCx;//!
+  TH2F           *fHistZvtxvsZVPD;//!
+  TH2F           *fHistBemcvsRefMult;//!
+  TH2F		 *fHistBtofvsRefMult;//!
+  TH2F		 *fHistBemcvsBtof;//!
+
+  TH1F           *fHistRefMult;//!
+  TH1F           *fHistVzVPDVz;//!
+  TH2F           *fHistVyvsVx;//!
+  TH1F           *fHistRvtx;//!
+  
   TH1F           *fHistEventNTrig_MB30;//!
   TH1F           *fHistEventNTrig_HT;//!
   TH1F           *fHistRefMult_MB30;//!
@@ -315,6 +332,8 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistEventID_MB30;//!
   TH1F           *fHistRunID_MB30;//!
   TProfile       *fProfEventTrackPt_MB30;//!
+  TProfile       *fProfEventTracknHitsFit_MB30;//!
+  TProfile       *fProfEventTrackDca_MB30;//!
   TProfile       *fProfEventRefMult_MB30;//!
   TProfile       *fProfEventXvtx_MB30;//!
   TProfile       *fProfEventYvtx_MB30;//!
@@ -323,7 +342,11 @@ class StPicoTrackClusterQA : public StMaker {
   TProfile       *fProfEventPerpvtx_MB30;//!
   TProfile       *fProfEventBBCx_MB30;//!
   TProfile       *fProfEventZDCx_MB30;//!
+  TProfile       *fProfEventnBemcMatch_MB30;//!
+  TProfile       *fProfEventnBtofMatch_MB30;//!
   TProfile       *fProfEventTrackPt;//!
+  TProfile       *fProfEventTracknHitsFit;//!
+  TProfile       *fProfEventTrackDca;//!
   TProfile       *fProfEventRefMult;//!
   TProfile       *fProfEventRanking;//!
   TProfile       *fProfEventZvtx;//!
@@ -332,6 +355,8 @@ class StPicoTrackClusterQA : public StMaker {
   TProfile       *fProfEventVzVPD;//!
   TProfile       *fProfEventBBCx;//!
   TProfile       *fProfEventZDCx;//!
+  TProfile       *fProfEventnBemcMatch;//!
+  TProfile       *fProfEventnBtofMatch;//!
  
   // trigger histos for hot tower (threshold levels for varying bad tower lists)
   TProfile       *fProfTowerAvgEvsID;//!
