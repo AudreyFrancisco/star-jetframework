@@ -440,7 +440,7 @@ void StEventPlaneMaker::DeclareHistograms() {
   Int_t nRunBins = 1; // - just a default
   if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
   if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 10;
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 82;
   Double_t nRunBinsMax = (Double_t)nRunBins;
 
   // ZDC centering

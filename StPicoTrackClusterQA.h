@@ -120,6 +120,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetTrackDCAcut(Double_t d)         { fTrackDCAcut = d       ; }
   virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
   virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
+  virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
   virtual void         SetClusterPtRange(Double_t mi, Double_t ma) { fClusterPtMinCut = mi; fClusterPtMaxCut = ma; }
 
   // tower setters
@@ -209,6 +210,7 @@ class StPicoTrackClusterQA : public StMaker {
   Double_t             fTrackDCAcut;            // max track dca cut
   Int_t                fTracknHitsFit;          // requirement for track hits
   Double_t             fTracknHitsRatio;        // requirement for nHitsFit / nHitsMax
+  Int_t		       fTrackChargePos;		// track charge sign
   Double_t             fTrackEfficiency;        // artificial tracking inefficiency (0...1)
   Int_t                fGoodTrackCounter;       // good tracks - passed quality cuts
   Double_t             fTowerEMinCut;           // min tower energy cut
@@ -322,6 +324,8 @@ class StPicoTrackClusterQA : public StMaker {
   
   TH1F           *fHistEventNTrig_MB30;//!
   TH1F           *fHistEventNTrig_HT;//!
+  TH1F           *fHistEventNTrig_HT1;//!
+  TH1F           *fHistEventNTrig_HT2;//!
   TH1F           *fHistRefMult_MB30;//!
   TH1F           *fHistVzVPDVz_MB30;//!
   TH2F           *fHistVyvsVx_MB30;//!
@@ -332,6 +336,7 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistEventID_MB30;//!
   TH1F           *fHistRunID_MB30;//!
   TProfile       *fProfEventTrackPt_MB30;//!
+  TProfile       *fProfEventTrackEta_MB30;//!
   TProfile       *fProfEventTracknHitsFit_MB30;//!
   TProfile       *fProfEventTrackDca_MB30;//!
   TProfile       *fProfEventRefMult_MB30;//!
@@ -345,6 +350,7 @@ class StPicoTrackClusterQA : public StMaker {
   TProfile       *fProfEventnBemcMatch_MB30;//!
   TProfile       *fProfEventnBtofMatch_MB30;//!
   TProfile       *fProfEventTrackPt;//!
+  TProfile       *fProfEventTrackEta;//!
   TProfile       *fProfEventTracknHitsFit;//!
   TProfile       *fProfEventTrackDca;//!
   TProfile       *fProfEventRefMult;//!
