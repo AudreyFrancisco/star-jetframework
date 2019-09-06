@@ -116,7 +116,8 @@ Int_t StCentMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30_AllLumi :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
