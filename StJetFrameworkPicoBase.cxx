@@ -304,6 +304,236 @@ Int_t StJetFrameworkPicoBase::Init() {
 
   ///fJets = new TClonesArray("StJet"); // will have name correspond to the Maker which made it
   //fJets->SetName(fJetsName);
+  
+
+  return kStOK;
+}
+//
+//
+//_________________________________________________________________________________________
+Int_t StJetFrameworkPicoBase::Finish() { 
+  return kStOK;
+}
+//
+// OLD user code says: //  Called every event after Make(). 
+//_________________________________________________________________________________________
+void StJetFrameworkPicoBase::Clear(Option_t *opt) {
+
+}
+// 
+//  Get the event-wise rho value
+//_________________________________________________________________________________________
+double StJetFrameworkPicoBase::GetRhoValue(TString fRhoMakerNametemp)
+{
+  // get RhoMaker from event: old names "StRho_JetsBG", "OutRho", "StMaker#0"
+  RhoMaker = static_cast<StRho*>(GetMaker(fRhoMakerNametemp));
+  const char *fRhoMakerNameCh = fRhoMakerNametemp;
+  if(!RhoMaker) {
+    LOG_WARN << Form(" No %s! Skip! ", fRhoMakerNameCh) << endm;
+    return kStWarn;
+  }
+
+  // set rho object, alt fRho = GetRhoFromEvent(fRhoName);
+  fRho = static_cast<StRhoParameter*>(RhoMaker->GetRho());
+  if(!fRho) {
+    LOG_WARN << Form("Couldn't get fRho object! ") << endm;
+    return kStWarn;
+  }
+
+  // get rho/area       fRho->ls("");
+  fRhoVal = fRho->GetVal();
+
+  return fRhoVal;
+}
+//
+// get centrality bin
+// - input is raw cent bin & nBins to re-order from
+//________________________________________________________________________
+Int_t StJetFrameworkPicoBase::GetCentBin(Int_t cent, Int_t nBin) const
+{
+  Int_t centbin = -1;
+
+  if(nBin == 16) { centbin = nBin - 1 - cent; }
+  if(nBin == 9)  { centbin = nBin - 1 - cent; }
+
+  return centbin;
+}
+//
+// get centrality bin in 4 different bins
+// - input is the scaled centrality
+//________________________________________________________________________
+Int_t StJetFrameworkPicoBase::Get4CentBin(Double_t scaledCent) const
+{
+  // initialize centrality bin
+  int centbin = -99;
+
+  // get centrality bin number
+  if(scaledCent >= 0 && scaledCent <  10.0)  { centbin = 0; }
+  else if(scaledCent <  20.0)                { centbin = 1; }
+  else if(scaledCent <  50.0)                { centbin = 2; }
+  else if(scaledCent <= 80.0)                { centbin = 3; }
+
+  return centbin;
+}
+//
+// function to get annuli bin
+//___________________________________________________________________________________________
+Int_t StJetFrameworkPicoBase::GetAnnuliBin(Double_t deltaR) const
+{
+  // initialize annuli bin
+  int annuliBin = -99;
+
+  // get annuli bin number
+  if(deltaR >= 0.00 && deltaR <= 0.05)     { annuliBin = 0; }
+  else if(deltaR > 0.05 && deltaR <= 0.10) { annuliBin = 1; }
+  else if(deltaR > 0.10 && deltaR <= 0.15) { annuliBin = 2; }
+  else if(deltaR > 0.15 && deltaR <= 0.20) { annuliBin = 3; } 
+  else if(deltaR > 0.20 && deltaR <= 0.25) { annuliBin = 4; }
+  else if(deltaR > 0.25 && deltaR <= 0.30) { annuliBin = 5; }
+  else if(deltaR > 0.30 && deltaR <= 0.35) { annuliBin = 6; }
+  else if(deltaR > 0.35 && deltaR <= 0.40) { annuliBin = 7; }
+  else if(deltaR > 0.40 && deltaR <= 0.45) { annuliBin = 8; }
+  else if(deltaR > 0.45 && deltaR <= 0.50) { annuliBin = 9; }
+
+  return annuliBin;
+}
+//
+// function to jet pt bin
+//___________________________________________________________________________________________
+Int_t StJetFrameworkPicoBase::GetJetPtBin(Double_t jetpt) const
+{
+  // initialize jet pt bin
+  int jetPtBin = -99;
+
+  // get jet pt bin number
+  if(jetpt >= 10.0 && jetpt < 15.0)      { jetPtBin = 0; } 
+  else if(jetpt >= 15.0 && jetpt < 20.0) { jetPtBin = 1; }
+  else if(jetpt >= 20.0 && jetpt < 40.0) { jetPtBin = 2; } 
+  else if(jetpt >= 40.0 && jetpt < 60.0) { jetPtBin = 3; }
+
+  return jetPtBin;
+}
+//
+// function to jet event plane bin
+//___________________________________________________________________________________________
+Int_t StJetFrameworkPicoBase::GetJetEPBin(Double_t dEP) const
+{
+  // constants
+  double pi = 1.0*TMath::Pi();
+
+  // initialize jet event plane bin
+  int jetEPBin = -99;
+
+  // get jet event plane bin number
+  if(dEP >= 0.0*pi/6.0 && dEP <= 1.0*pi/6.0)     { jetEPBin = 0; }
+  else if(dEP > 1.0*pi/6.0 && dEP <= 2.0*pi/6.0) { jetEPBin = 1; }
+  else if(dEP > 2.0*pi/6.0 && dEP <= 3.0*pi/6.0) { jetEPBin = 2; }
+
+  return jetEPBin;
+}
+//
+// this function generates a jet name based on input
+//___________________________________________________________________________________________
+TString StJetFrameworkPicoBase::GenerateJetName(EJetType_t jetType, EJetAlgo_t jetAlgo, ERecoScheme_t recoScheme, Double_t radius, TClonesArray* partCont, TClonesArray* clusCont, TString tag)
+{
+  TString algoString;
+  switch (jetAlgo) {
+      case kt_algorithm:
+        algoString = "KT";
+        break;
+      case antikt_algorithm:
+        algoString = "AKT";
+        break;
+      default:
+        ::Warning("StJetFrameworkPicoBase::GenerateJetName", "Unknown jet finding algorithm '%d'!", jetAlgo);
+        algoString = "";
+  }
+
+  TString typeString;
+  switch (jetType) {
+      case kFullJet:
+        typeString = "Full";
+        break;
+      case kChargedJet:
+        typeString = "Charged";
+        break;
+      case kNeutralJet:
+        typeString = "Neutral";
+        break;
+  }
+
+  TString radiusString = TString::Format("R%03.0f", radius*100.0);
+
+  TString trackString;
+  if (jetType != kNeutralJet && partCont) {
+    trackString = "_" + TString(partCont->GetTitle());
+  }
+
+  TString clusterString;
+  if (jetType != kChargedJet && clusCont) {
+    clusterString = "_" + TString(clusCont->GetTitle());
+  }
+
+  TString recombSchemeString;
+  switch (recoScheme) {
+      case E_scheme:
+        recombSchemeString = "E_scheme";
+        break;
+      case pt_scheme:
+        recombSchemeString = "pt_scheme";
+        break;
+      case pt2_scheme:
+        recombSchemeString = "pt2_scheme";
+        break;
+      case Et_scheme:
+        recombSchemeString = "Et_scheme";
+        break;
+      case Et2_scheme:
+        recombSchemeString = "Et2_scheme";
+        break;
+      case BIpt_scheme:
+        recombSchemeString = "BIpt_scheme";
+        break;
+      case BIpt2_scheme:
+        recombSchemeString = "BIpt2_scheme";
+        break;
+      case external_scheme:
+        recombSchemeString = "ext_scheme";
+        break;
+      default:
+        ::Error("StJetFrameworkPicoBase::GenerateJetName", "Recombination %d scheme not recognized.", recoScheme);
+  }
+
+  TString name = TString::Format("%s_%s%s%s%s%s_%s",
+      tag.Data(), algoString.Data(), typeString.Data(), radiusString.Data(), trackString.Data(), clusterString.Data(), recombSchemeString.Data());
+
+  return name;
+}
+//
+// Function: to calculate relative Phi
+// range: -pi/2 to 3pi/2
+//________________________________________________________________________
+Double_t StJetFrameworkPicoBase::RelativePhi(Double_t jphi, Double_t tphi) const
+{
+  // calculate relative phi
+  double dphi = jphi - tphi;
+
+  // set dphi to operate on adjusted scale
+  if(dphi < -0.5*TMath::Pi()) dphi += 2.*TMath::Pi();
+  if(dphi >  1.5*TMath::Pi()) dphi -= 2.*TMath::Pi();
+
+  // test check
+  if( dphi < -0.5*TMath::Pi() || dphi > 1.5*TMath::Pi() )
+    Form("%s: dPHI not in range [-0.5*Pi, 1.5*Pi]!", GetName());
+
+  return dphi; // dphi in [-0.5Pi, 1.5Pi]                                                                                   
+}
+//
+// Function: calculate angle between jet and EP in the 1st quadrant (0,Pi/2) 
+//_________________________________________________________________________
+Double_t StJetFrameworkPicoBase::RelativeEPJET(Double_t jetAng, Double_t EPAng) const
+{
+  Double_t pi = 1.0*TMath::Pi();
   Double_t dphi = 1.0*TMath::Abs(jetAng - EPAng);
   
   // ran into trouble with a few dEP<-Pi so trying this...

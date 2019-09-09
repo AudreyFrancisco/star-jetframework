@@ -186,7 +186,7 @@ class StPicoTrackClusterQA : public StMaker {
 
   // event cuts
   Double_t             fMaxEventTrackPt;        // max track pt in the event (to cut on)
-  Double_t             fMaxEventTowerE;         // max tower E in the event (to cut on)
+  Double_t             fMaxEventTowerEt;         // max tower E in the event (to cut on)
   Bool_t               doRejectBadRuns;         // switch to reject bad runs and thus skip from analysis
   Double_t             fEventZVtxMinCut;        // min event z-vertex cut
   Double_t             fEventZVtxMaxCut;        // max event z-vertex cut
