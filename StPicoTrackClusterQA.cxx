@@ -321,7 +321,6 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fProfEventZDCx)         delete fProfEventZDCx;
   if(fProfEventnBemcMatch_MB30) delete fProfEventnBemcMatch_MB30;
   if(fProfEventnBtofMatch_MB30) delete fProfEventnBtofMatch_MB30;
-  if(fProfEventTrackPt) delete fProfEventTrackPt;
   if(fProfEventTrackEta) delete fProfEventTrackEta;
   if(fProfEventTracknHitsFit) delete fProfEventTracknHitsFit;
   if(fProfEventnBemcMatch) delete fProfEventnBemcMatch;
@@ -1151,7 +1150,7 @@ void StPicoTrackClusterQA::RunTrackQA()
 
   // looping over clusters - STAR: matching already done, get # of clusters and set position variables
   int nclus = mPicoDst->numberOfBEmcPidTraits();
-  cout <<  "nclus  : "  << nclus << endl;
+  //cout <<  "nclus  : "  << nclus << endl;
   TVector3  towPosition, clusPosition;
 
   // print EMCal cluster info
@@ -2192,7 +2191,7 @@ void StPicoTrackClusterQA::RunTowerQA()
 
   // loop over towers
   int nTowers = mPicoDst->numberOfBTowHits();
-  cout << "number of btow hits: " << nTowers <<  endl;
+  //cout << "number of btow hits: " << nTowers <<  endl;
   for(int itow = 0; itow < nTowers; itow++) {
     // get tower pointer
     StPicoBTowHit *tower = static_cast<StPicoBTowHit*>(mPicoDst->btowHit(itow));
