@@ -110,9 +110,14 @@ StDummyMaker::~StDummyMaker()
 { /*  */
   // destructor
   if(hCentrality)  delete hCentrality;
+  if(hCentralitySc)  delete hCentralitySc;
   if(hMultiplicity)delete hMultiplicity;
+  if(hMultiplicity2)delete hMultiplicity2;
   if(hJetPt)       delete hJetPt;
   if(hJetCorrPt)   delete hJetCorrPt;
+  if(hJetArea)	   delete hJetArea;
+  if(hJetPtvsArea) delete hJetPtvsArea;
+  if(hJetCorrPtvsArea) delete hJetCorrPtvsArea;
 
   if(mEmcPosition) delete mEmcPosition;
 }
@@ -178,11 +183,16 @@ void StDummyMaker::DeclareHistograms() {
 
   // histograms
   hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+  hCentralitySc = new TH1F("hCentralitySc", "No. events vs scaled centrality", nHistCentBins, 0, 100);
   hMultiplicity = new TH1F("hMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+  hMultiplicity2 = new TH1F("hMultiplicity2", "No. events vs corrected multiplicity", kHistMultBins, 0, kHistMultMax);
 
   // jet QA histos
   hJetPt = new TH1F("hJetPt", "Jet p_{T}", 100, 0, 100);
   hJetCorrPt = new TH1F("hJetCorrPt", "Corrected Jet p_{T}", 125, -25, 100);
+  hJetArea = new TH1F("hJetArea", "Jet area", 100, 0., 1.);
+  hJetPtvsArea = new TH2F("hJetPtvsArea", "Raw jet p_{T} vs area", 100, 0. ,1., 700, -20.,50.);
+  hJetCorrPtvsArea = new TH2F("hJetCorrPtvsArea", "Corrected jet p_{T} vs area", 100, 0. ,1., 700, -20.,50.);
 }
 //
 // write histograms
@@ -190,9 +200,14 @@ void StDummyMaker::DeclareHistograms() {
 void StDummyMaker::WriteHistograms() {
   // writing of histograms done here
   hCentrality->Write();
+  hCentralitySc->Write();
   hMultiplicity->Write();
+  hMultiplicity2->Write();
   hJetPt->Write();
   hJetCorrPt->Write();
+  hJetArea->Write();
+  hJetPtvsArea->Write();
+  hJetCorrPtvsArea->Write();
 }
 //
 // OLD user code says: //  Called every event after Make(). 
@@ -292,8 +307,11 @@ Int_t StDummyMaker::Make() {
   if(cent16 == -1) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them 
 
   // fill histograms
-  hCentrality->Fill(fCentralityScaled);
-  hMultiplicity->Fill(refCorr2);
+  hCentrality->Fill(centbin);
+  hMultiplicity->Fill(refMult);
+
+  hCentralitySc->Fill(fCentralityScaled);
+  hMultiplicity2->Fill(refCorr2);
 
   // cut on centrality for analysis before doing anything
   if(fRequireCentSelection) { if(!SelectAnalysisCentralityBin(centbin, fCentralitySelectionCut)) return kStOk; }
@@ -421,7 +439,9 @@ void StDummyMaker::RunJets()
     // fill some basic histos
     hJetPt->Fill(jetpt);
     hJetCorrPt->Fill(corrjetpt);
-
+    hJetArea->Fill(jetarea);
+    hJetPtvsArea->Fill(jetarea, jetpt);
+    hJetCorrPtvsArea->Fill(jetarea, corrjetpt);
 /*
     // TEST - when using constituent subtractor
     vector<fastjet::PseudoJet> fConstituents = jet->GetJetConstituents();
@@ -600,9 +620,12 @@ void StDummyMaker::RunTowers()
 // __________________________________________________________________________________
 void StDummyMaker::SetSumw2() {
   hCentrality->Sumw2();
+  hCentralitySc->Sumw2();
   hMultiplicity->Sumw2();
+  hMultiplicity2->Sumw2();
   hJetPt->Sumw2();
   hJetCorrPt->Sumw2();
+  hJetArea->Sumw2();
 }
 
 //

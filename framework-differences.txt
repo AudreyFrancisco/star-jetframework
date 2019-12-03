@@ -1,0 +1,65 @@
+// include path differences for files of StPicoEvent and StPicoDstMaker packages:
+StJet.cxx, StMyAnalysisMaker.cxx, StRhoBase.cxx, StEventPlaneMaker.cxx, StRho.cxx, StJetMakerTask.cxx, StJetFrameworkPicoBase.cxx, StPicoTrackClusterQA.cxx, StMyAnalysisMaker3.cxx, StJetMakerTaskBGsub.cxx
+
+// StThreeVectorF -> TVector3 not done, to keep with old library:
+StFemtoTrack.h, StRho.cxx, StRhoBase.cxx, StMyAnalysisMaker.h, StMyAnalysisMaker.cxx, StFemtoTrack.cxx, StEventPlaneMaker.cxx
+StJetMakerTask.h, StJetMakerTask.cxx, StPicoTrackClusterQA.h, StPicoTrackClusterQA.cxx, StJetFrameworkPicoBase.h, StJetFrameworkPicoBase.cxx, StMyAnalysisMaker3.cxx, StJetMakerTaskBGsub.h, StJetMakerTaskBGsub.cxx
+
+// towerID from tow->Id(); to keep with old library:
+StMyAnalysisMaker.cxx, StJetMakerTask.cxx, StPicoTrackClusterQA.h, StPicoTrackClusterQA.cxx, StJetFrameworkPicoBase.cxx, StMyAnalysisMaker3.cxx, StJetMakerTaskBGsub.cxx
+
+:::::StMyAnalysisMaker.h:::::
+	- removed Flattener and Calibration file usage
+
+:::::StMyAnalysisMaker.cxx:::::
+	- removed Flattener and Calibration file usage
+	- commented out mVertex = 0x0;
+        - didn't add pp (Run12/17) - uses new library
+	- made hard coded values in double format (no big deal)
+
+:::::StMyAnalysisMaker3.cxx:::::
+	- commented out mVertex = 0x0;
+        - didn't add pp (Run12/17) - uses new library
+	- made hard coded values in double format (no big deal)
+	- BTOW not BTow because of old library
+
+:::::StEventPlaneMaker.h:::::
+	- removed Flattener and Calibration file usage
+
+:::::StEventPlaneMaker.cxx:::::
+	- removed Flattener and Calibration file usage
+	- commented out mVertex = 0x0;
+	- didn't add pp (Run12/17) - uses new library
+        - removed commented out text in old version
+
+:::::StJetMakerTask.h:::::
+	- AcceptJetTower() and GetMomentum(), don't need input parameter of towID because of using old library
+
+:::::StJetMakerTask.cxx:::::
+	- AcceptJetTower() and GetMomentum(), don't need input parameter of towID because of using old library
+	- BTOW not BTow because of old library
+        - didn't add pp (Run12/17) - uses new library
+
+:::::StJetMakerTaskBGsub.h:::::
+	- AcceptJetTower() and GetMomentum(), don't need input parameter of towID because of using old library
+
+:::::StJetMakerTaskBGsub.cxx:::::
+	- AcceptJetTower() and GetMomentum(), don't need input parameter of towID because of using old library
+	- BTOW not BTow because of old library
+        - didn't add pp (Run12/17) - uses new library
+
+:::::StPicoTrackClusterQA.h:::::
+	- AcceptTower(), don't need input parameter of towId because of using old library
+
+:::::StPicoTrackClusterQA.cxx:::::
+	- AcceptTower(), don't need input parameter of towId because of using old library
+	- BTOW not BTow because of old library
+
+:::::StJetFrameworkPicoBase.h:::::
+	- AcceptTower() and GetMomentum(), don't need input parameter of towId because of using old library
+
+:::::StJetFrameworkPicoBase.cxx:::::
+	- AcceptTower() and GetMomentum(), don't need input parameter of towId because of using old library
+        - didn't add pp (Run12/17) - uses new library
+	- BTOW not BTow because of old library
+

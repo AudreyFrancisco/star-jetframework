@@ -125,11 +125,16 @@ class StDummyMaker : public StJetFrameworkPicoBase {
 
     // histos
     TH1F *hCentrality;//!
+    TH1F *hCentralitySc;//!
     TH1F *hMultiplicity;//!
+    TH1F *hMultiplicity2;//!
  
     // jet histos
     TH1F *hJetPt;//!
     TH1F *hJetCorrPt;//!
+    TH1F *hJetArea;//!
+    TH2F *hJetPtvsArea;//!
+    TH2F *hJetCorrPtvsArea;//!
 
     // bad and dead tower list
     std::set<Int_t>        badTowers;

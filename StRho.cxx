@@ -40,6 +40,9 @@ StRho::StRho() : StRhoBase("")
   fNExclLeadJets = 0;
   fJets = 0x0;
   fHistMultvsRho = 0x0;
+  fHistMultvsGMult = 0x0;
+  fHistGMultvsRho = 0x0;
+  fHistJetPt = 0x0;
   mOutName = "";
   fJetMakerName = "";
   fRhoMakerName = "";
@@ -52,6 +55,9 @@ StRho::StRho(const char *name, Bool_t histo, const char *outName, const char *je
   fNExclLeadJets = 0;
   fJets = 0x0;
   fHistMultvsRho = 0x0;
+  fHistGMultvsRho = 0x0;
+  fHistMultvsGMult = 0x0;
+  fHistJetPt = 0x0;
   mBaseMaker = 0x0;
   mOutName = outName;
   fJetMakerName = jetMakerName;
@@ -67,6 +73,8 @@ StRho::~StRho()
 { /*  */
   // destructor
   if(fHistMultvsRho) delete fHistMultvsRho;
+  if(fHistGMultvsRho) delete fHistGMultvsRho;
+  if(fHistMultvsGMult) delete fHistMultvsGMult;
 
 }
 
@@ -123,17 +131,35 @@ Int_t StRho::Finish() {
 void StRho::DeclareHistograms() {
     // weird that this next line is needed to remove cppcheck warning
     delete fHistMultvsRho;
+    delete fHistGMultvsRho;
+    delete fHistMultvsGMult;
+    delete fHistJetPt;
 
     // mult was 150, 0, 1500
     fHistMultvsRho = new TH2F("fHistMultvsRho", "fHistMultvsRho", 160, 0., 800., 100, 0., 100.);
     fHistMultvsRho->GetXaxis()->SetTitle("Charged track multiplicity");
     fHistMultvsRho->GetYaxis()->SetTitle("#rho (GeV/c)/A");
+    
+    fHistGMultvsRho = new TH2F("fHistGMultvsRho", "fHistGMultvsRho", 160, 0., 800., 100, 0., 100.);
+    fHistGMultvsRho->GetXaxis()->SetTitle("Charged track multiplicity (grefMult)");
+    fHistGMultvsRho->GetYaxis()->SetTitle("#rho (GeV/c)/A");
+	    
+    fHistMultvsGMult = new TH2F("fHistMultvsGMult", "fHistMultvsGMult", 100, 0., 800., 100, 0., 800.);
+    fHistMultvsGMult->GetXaxis()->SetTitle("Charged track multiplicity (RefMult)");
+    fHistMultvsGMult->GetYaxis()->SetTitle("GrefMult");
+
+    fHistJetPt = new TH1F("fHistJetPtD","fHistJetPtD", 100,0.,100.);
+    fHistJetPt->GetXaxis()->SetTitle("Nentries");
+    fHistJetPt->GetYaxis()->SetTitle("pt");
 }
 //
 // Function: write histograms / objects to file
 //________________________________________________________________________
 void StRho::WriteHistograms() {
   fHistMultvsRho->Write();
+  fHistGMultvsRho->Write();
+  fHistMultvsGMult->Write();
+  fHistJetPt->Write();
 }
 
 //________________________________________________________________________
@@ -238,8 +264,11 @@ Int_t StRho::Make()
 
   // get event multiplicity - TODO is this correct? same as that used for centrality
   //const int multiplicity = mPicoDst->numberOfTracks(); // this is total tracks not multiplicity
-  const double multiplicity = refCorr2;
+  const double multiplicity = refMult;//refCorr2;
+  const double gmultiplicity = grefMult;//refCorr2;
 
+  fHistMultvsGMult->Fill(multiplicity, gmultiplicity);
+  
   // ============================ end of CENTRALITY ============================== //
 
   // initialize Rho and scaled Rho
@@ -292,7 +321,7 @@ Int_t StRho::Make()
   for(Int_t iJets = 0; iJets < Njets; ++iJets) {
     // excluding lead jets
     if(iJets == maxJetIds[0] || iJets == maxJetIds[1])
-      continue;
+     continue;
 
     // get jet pointer
     StJet *jet = static_cast<StJet*>(fJets->At(iJets));
@@ -302,6 +331,7 @@ Int_t StRho::Make()
     //if(!AcceptJet(jet)) continue; //FIXME
     // get some get parameters
     double jetPt = jet->Pt();
+    fHistJetPt->Fill(jetPt);
     double jetArea = jet->Area();
     // some threshold cuts for tests
     if(jetPt < 0) continue;
@@ -309,7 +339,6 @@ Int_t StRho::Make()
     rhovec[NjetAcc] = jetPt / jetArea;
     ++NjetAcc;
   }
-
   // when we have accepted Jets - calculate and set rho
   if(NjetAcc > 0) {
     // find median value
@@ -318,6 +347,8 @@ Int_t StRho::Make()
 
     // fill histo
     fHistMultvsRho->Fill(multiplicity, rho);
+    //fHistMultvsGMult->Fill(multiplicity, gmultiplicity);
+    fHistGMultvsRho->Fill(gmultiplicity, rho);
 
     // if we want scaled Rho from charged -> ch+ne
     if(fOutRhoScaled) {

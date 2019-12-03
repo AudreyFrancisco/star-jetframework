@@ -43,6 +43,9 @@ class StRho : public StRhoBase {
 
  private:
   TH2F             *fHistMultvsRho;//!
+  TH2F             *fHistGMultvsRho;//!
+  TH2F             *fHistMultvsGMult;//!
+  TH1F   	   *fHistJetPt;//!
 
   StRho(const StRho&);             // not implemented
   StRho& operator=(const StRho&);  // not implemented
