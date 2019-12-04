@@ -75,7 +75,7 @@ StRho::~StRho()
   if(fHistMultvsRho) delete fHistMultvsRho;
   if(fHistGMultvsRho) delete fHistGMultvsRho;
   if(fHistMultvsGMult) delete fHistMultvsGMult;
-
+  if(fHistJetPt)      delete fHistJetPt;
 }
 
 //________________________________________________________________________
