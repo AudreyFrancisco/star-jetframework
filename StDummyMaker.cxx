@@ -110,8 +110,11 @@ StDummyMaker::~StDummyMaker()
 { /*  */
   // destructor
   if(hCentrality)  delete hCentrality;
+  if(hCentrality_NoPUCorr)  delete hCentrality_NoPUCorr;
   if(hCentralitySc)  delete hCentralitySc;
   if(hMultiplicity)delete hMultiplicity;
+  if(hMultiplicity_NoPUCorr)delete hMultiplicity_NoPUCorr;
+  if(hMultiplicity_PU)delete hMultiplicity_PU;
   if(hMultiplicity2)delete hMultiplicity2;
   if(hJetPt)       delete hJetPt;
   if(hJetCorrPt)   delete hJetCorrPt;
@@ -183,8 +186,11 @@ void StDummyMaker::DeclareHistograms() {
 
   // histograms
   hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+  hCentrality_NoPUCorr = new TH1F("hCentralityNoPUC", "No. events vs centrality - no pile-up removal", nHistCentBins, 0, 100);
   hCentralitySc = new TH1F("hCentralitySc", "No. events vs scaled centrality", nHistCentBins, 0, 100);
-  hMultiplicity = new TH1F("hMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+  hMultiplicity = new TH1F("hMultiplicity (PUcut)", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+  hMultiplicity_PU = new TH1F("hMultiplicity (pile-up only)", "No. events vs multiplicity - pile-up", kHistMultBins, 0, kHistMultMax);
+  hMultiplicity_NoPUCorr = new TH1F("hMultiplicity_wPU", "No. events vs multiplicity - no pile-up removal", kHistMultBins, 0, kHistMultMax);
   hMultiplicity2 = new TH1F("hMultiplicity2", "No. events vs corrected multiplicity", kHistMultBins, 0, kHistMultMax);
 
   // jet QA histos
@@ -200,8 +206,11 @@ void StDummyMaker::DeclareHistograms() {
 void StDummyMaker::WriteHistograms() {
   // writing of histograms done here
   hCentrality->Write();
+  hCentrality_NoPUCorr->Write();
   hCentralitySc->Write();
   hMultiplicity->Write();
+  hMultiplicity_PU->Write();
+  hMultiplicity_NoPUCorr->Write();
   hMultiplicity2->Write();
   hJetPt->Write();
   hJetCorrPt->Write();
@@ -282,6 +291,8 @@ Int_t StDummyMaker::Make() {
   // Z-vertex cut: the Aj analysis cut on (-40, 40) for reference
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
 
+  //nBtofMatch
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
 
   // ============================ CENTRALITY ============================== //
   // get CentMaker pointer
@@ -307,12 +318,21 @@ Int_t StDummyMaker::Make() {
   if(cent16 == -1) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them 
 
   // fill histograms
-  hCentrality->Fill(centbin);
-  hMultiplicity->Fill(refMult);
 
-  hCentralitySc->Fill(fCentralityScaled);
-  hMultiplicity2->Fill(refCorr2);
+  hCentrality_NoPUCorr->Fill(centbin);
+  hMultiplicity_NoPUCorr->Fill(refMult);
+  
+  if(mCentMaker->Refmult_check(nBtofMatch, refMult, 3, 4)){ 
+     hCentrality->Fill(centbin);
+     hMultiplicity->Fill(refMult);
 
+     hCentralitySc->Fill(fCentralityScaled);
+     hMultiplicity2->Fill(refCorr2);
+  }
+  else {
+     hMultiplicity_PU->Fill(refMult);
+     return kStOk;
+  }
   // cut on centrality for analysis before doing anything
   if(fRequireCentSelection) { if(!SelectAnalysisCentralityBin(centbin, fCentralitySelectionCut)) return kStOk; }
 
@@ -620,8 +640,11 @@ void StDummyMaker::RunTowers()
 // __________________________________________________________________________________
 void StDummyMaker::SetSumw2() {
   hCentrality->Sumw2();
+  hCentrality_NoPUCorr->Sumw2();
   hCentralitySc->Sumw2();
   hMultiplicity->Sumw2();
+  hMultiplicity_NoPUCorr->Sumw2();
+  hMultiplicity_PU->Sumw2();
   hMultiplicity2->Sumw2();
   hJetPt->Sumw2();
   hJetCorrPt->Sumw2();

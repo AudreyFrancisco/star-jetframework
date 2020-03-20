@@ -68,6 +68,8 @@ class StCentMaker : public StJetFrameworkPicoBase {
     Double_t                GetRefCorr2() const                { return krefCorr2; }
     Double_t                GetCentScaled() const              { return kCentralityScaled; }
 
+    //Pile-up removal
+    Bool_t 		    Refmult_check (const Short_t __nBTOFMatch, const Int_t __refMult, const Short_t MAX_nSigmaPileup=3, const Short_t MIN_nSigmaPileup=4);// remove pile-up by cutting on refmul - CME method for isobar data
 
   protected:
     // functions

@@ -386,3 +386,34 @@ const Double_t zdcCoincidenceRate, const UInt_t flag) {
 
     return refCorr;
 }
+//
+// Remove pile-up by using the correlation between Refmult and TofMatch - CME method for isobar data
+//_______________________________________________________________________________________________
+Bool_t StCentMaker::Refmult_check (Short_t __nBTOFMatch, Int_t __refMult, Short_t MAX_nSigmaPileup, Short_t MIN_nSigmaPileup){
+
+        ///This is a nBTOFMatch-refMult pile-up removal cut for 27gev AuAu / 200GeV isobar.
+	//  ///We do the Y-projection in a nBTOFMatch window, fit by double negative binomial distribution then get these parameters.
+	//     ///Recommand use max as 3, set min as 4.
+	double a0=-0.704787625248525, a1=0.99026234637141, a2=-0.000680713101607504, a3=2.77035215460421e-06, a4=-4.04096185674966e-09;
+	double b0=2.52126730672253, b1=0.128066911940844, b2=-0.000538959206681944, b3=1.21531743671716e-06, b4=-1.01886685404478e-09;
+	double c0=4.79427731664144, c1=0.187601372159186, c2=-0.000849856673886957, c3=1.9359155975421e-06, c4=-1.61214724626684e-09;
+
+        double refmultcutmode=a0+a1*(__nBTOFMatch)+a2*pow(__nBTOFMatch,2)+a3*pow(__nBTOFMatch,3)+a4*pow(__nBTOFMatch,4);
+	double refmultcutsigma=b0+b1*(__nBTOFMatch)+b2*pow(__nBTOFMatch,2)+b3*pow(__nBTOFMatch,3)+b4*pow(__nBTOFMatch,4);
+	double refmultcutsigmaske=c0+c1*(__nBTOFMatch)+c2*pow(__nBTOFMatch,2)+c3*pow(__nBTOFMatch,3)+c4*pow(__nBTOFMatch,4);
+
+
+        double refmultcutmax=refmultcutmode + MAX_nSigmaPileup*refmultcutsigmaske;
+        double refmultcutmin=refmultcutmode - MIN_nSigmaPileup*refmultcutsigma;
+
+
+        //cout<<"refmult,maxcut,mincut= "<<__refMult<<" "<<refmultcutmax<<" "<<refmultcutmin<< " (nBtofMatch=" <<__nBTOFMatch <<")"<<endl;
+
+       if( __refMult<refmultcutmax && __refMult>refmultcutmin ){
+       		return true;
+	}else{
+		return false;
+	}
+	       //return ( __refMult<refmultcutmax && __refMult>refmultcutmin );
+}
+

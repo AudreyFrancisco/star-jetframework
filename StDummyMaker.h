@@ -125,8 +125,11 @@ class StDummyMaker : public StJetFrameworkPicoBase {
 
     // histos
     TH1F *hCentrality;//!
+    TH1F *hCentrality_NoPUCorr;//!
     TH1F *hCentralitySc;//!
     TH1F *hMultiplicity;//!
+    TH1F *hMultiplicity_NoPUCorr;//!
+    TH1F *hMultiplicity_PU;//!
     TH1F *hMultiplicity2;//!
  
     // jet histos
