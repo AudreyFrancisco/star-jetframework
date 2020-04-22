@@ -133,6 +133,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetEmcTriggerEventType(UInt_t te)  { fEmcTriggerEventType = te; }
   virtual void         SetMBEventType(UInt_t mbe)         { fMBEventType = mbe; }
   virtual void         SetDoTowerQAforHT(Bool_t m)        { fDoTowerQAforHT = m; }
+  virtual void         SetPileUpCorrection(Bool_t m)      { fCorrPileUp = m; }
 
   // efficiency correction setter
   virtual void         SetDoEffCorr(Int_t effcorr)        { fDoEffCorr = effcorr; }
@@ -183,6 +184,7 @@ class StPicoTrackClusterQA : public StMaker {
   Bool_t               doppAnalysis;            // use pp analysis data
   Bool_t               fDoEffCorr;              // efficiency correction to tracks
   Bool_t               fDoTowerQAforHT;         // do tower QA for HT triggers (else do for MB) - temp
+  Bool_t               fCorrPileUp              // correct for Pile-Up using the CME method (isobar parameters)
 
   // event cuts
   Double_t             fMaxEventTrackPt;        // max track pt in the event (to cut on)

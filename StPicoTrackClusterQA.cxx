@@ -72,7 +72,7 @@ class StJetFrameworkPicoBase;
 ClassImp(StPicoTrackClusterQA)
 //
 //________________________________________________________________________
-StPicoTrackClusterQA::StPicoTrackClusterQA() : 
+StPicoTrackClusterQA::StPicoTrackClusterQA() :
   StMaker(),
   doWriteHistos(kFALSE),
   doUsePrimTracks(kFALSE),
@@ -81,10 +81,11 @@ StPicoTrackClusterQA::StPicoTrackClusterQA() :
   doppAnalysis(kFALSE),
   fDoEffCorr(kFALSE),
   fDoTowerQAforHT(kFALSE),
+  fCorrPileUp(kFALSE),
   fMaxEventTrackPt(30.0),
   fMaxEventTowerEt(1000.0), // 30.0
   doRejectBadRuns(kFALSE),
-  fEventZVtxMinCut(-40.0), 
+  fEventZVtxMinCut(-40.0),
   fEventZVtxMaxCut(40.0),
   fCentralitySelectionCut(-99),
   fRequireCentSelection(kFALSE),
@@ -165,7 +166,7 @@ StPicoTrackClusterQA::StPicoTrackClusterQA(const char *name, bool doHistos = kFA
   fMaxEventTrackPt(30.0),
   fMaxEventTowerEt(1000.0), // 30.0
   doRejectBadRuns(kFALSE),
-  fEventZVtxMinCut(-40.0), 
+  fEventZVtxMinCut(-40.0),
   fEventZVtxMaxCut(40.0),
   fCentralitySelectionCut(-99),
   fRequireCentSelection(kFALSE),
@@ -295,9 +296,9 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fHistZvtx_MB30)         delete fHistZvtx_MB30;
   if(fHistZDCx_MB30)         delete fHistZDCx_MB30;
   if(fHistEventID_MB30)      delete fHistEventID_MB30;
-  if(fHistRunID_MB30)        delete fHistRunID_MB30; 
+  if(fHistRunID_MB30)        delete fHistRunID_MB30;
   if(fHistEventNTrig_HT1)    delete fHistEventNTrig_HT1;
-  if(fHistEventNTrig_HT2)    delete fHistEventNTrig_HT2;  
+  if(fHistEventNTrig_HT2)    delete fHistEventNTrig_HT2;
   if(fProfEventTrackPt_MB30) delete fProfEventTrackPt_MB30;
   if(fProfEventTrackEta_MB30) delete fProfEventTrackEta_MB30;
   if(fProfEventTracknHitsFit_MB30) delete fProfEventTracknHitsFit_MB30;
@@ -442,11 +443,11 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 
     // binning for cent histograms
     int nHistCentBins = 20;
-    
+
     // binning for mult histograms - pp : AuAu
     double kHistMultMax = (doppAnalysis) ? 100. : 800.;
     int kHistMultBins = (doppAnalysis) ? 100. : 400.;
-    
+
     // basic event QA
     fHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
     fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
@@ -506,7 +507,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084006.; runMax = 19104009.; nRunBinSize = 1; }
 
     // event QA histograms
-    fHistZvtx = new TH1F("fHistZvtx", "Z-vertex distribution ", 150, -100., 100.); 
+    fHistZvtx = new TH1F("fHistZvtx", "Z-vertex distribution ", 150, -100., 100.);
     fHistZDCx = new TH1F("fHistZDCx", "Luminosity, ZDCx distribution", 1000, 15000., 65000.);
     fHistBBCx = new TH1F("fHistBBCx", "BBC coincidence rate distribution", 1000, 15000., 65000.);
     fHistZvtxvsZVPD = new TH2F("fHistZvtxvsZVPD", "Z-vertex vs VPDz distribution",160, -100., 100., 160, -100., 100.);
@@ -518,7 +519,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistVzVPDVz = new TH1F("fHistVzVPDVz", "Vz - VPDVz distribution", 65, -10., 10.);
     fHistVyvsVx  = new TH2F("fHistVyvsVx", "Vy vs Vx distribution", 160, -4.0, 4.0, 160, -4.0, 4.0);
     fHistRvtx    = new TH1F("fHistRvtx", "Radial vertex distribution", 500, 0., 100.);
-    
+
     fHistEventNTrig_MB30 = new TH1F("fHistEventNTrig_MB30", "N triggered events for MB30 events", nRunBins, 0.5, nRunBinsMax);
     fHistEventNTrig_HT = new TH1F("fHistEventNTrig_HT", "N triggered events for HT (1, 2, 3) events", nRunBins, 1., nRunBinsMax);
     fHistEventNTrig_HT1 = new TH1F("fHistEventNTrig_HT1", "N triggered events for HT (1, 2, 3) events", nRunBins, 1., nRunBinsMax);
@@ -641,11 +642,11 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistNTrackvsPhi->Write();
   fHistNTrackvsEta->Write();
   fHistNTrackvsPhivsEta->Write();
-  fHistNTrackvsDca->Write(); 
+  fHistNTrackvsDca->Write();
   fHistNTrackvsnHitsMax->Write();
-  fHistNTrackvsnHitsFit->Write(); 
+  fHistNTrackvsnHitsFit->Write();
   fHistNTrackvsnHitsRatio->Write();
- 
+
   fHistNHadCorrTowervsE->Write();
   fHistNHadCorrTowervsEt->Write();
   fHistNHadCorrTowervsPhi->Write();
@@ -955,9 +956,9 @@ int StPicoTrackClusterQA::Make()
 
   if(fHaveHT1) { fHistEventNTrig_HT1->Fill(RunId_Order + 1., 1); }
   if(fHaveHT2) { fHistEventNTrig_HT2->Fill(RunId_Order + 1., 1); }
-  
+
   // run tower QA for specific conditions
-  // 1) want HT, 2) have EMC trigger: HT, 3) and NOT requesting the MB30-HT2-HT3 
+  // 1) want HT, 2) have EMC trigger: HT, 3) and NOT requesting the MB30-HT2-HT3
   if(fDoTowerQAforHT && fHaveEmcTrigger && fTriggerToUse != StJetFrameworkPicoBase::kTriggerMB30HT2HT3)  {
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
@@ -977,7 +978,7 @@ int StPicoTrackClusterQA::Make()
   }
 
   // look for firing trigger specifically requested
-  // 1) DON'T want HT, 2) have MB trigger, 3) and NOT requesting the MB30-HT2-HT3 
+  // 1) DON'T want HT, 2) have MB trigger, 3) and NOT requesting the MB30-HT2-HT3
   //if(!fDoTowerQAforHT && fHaveMBevent) {
   if(!fDoTowerQAforHT && fRunForMB && fTriggerToUse != StJetFrameworkPicoBase::kTriggerMB30HT2HT3) { // updated MB type Dec4, 2018
     FillEventTriggerQA(fHistEventSelectionTrg);
@@ -1001,7 +1002,7 @@ int StPicoTrackClusterQA::Make()
   // 1) NOT doing pp analysis, 2) have MB30 | HT2 | HT3, 3) requesting MB30-HT2-HT3, 4) fDoTowerQAforHT - off
   //     or
   // 1) doing pp analysis, 2) have MB | HT2 | HT3, 3) requesting MB-HT2-HT3, 4) fDoTowerQAforHT - off
-  if( (!doppAnalysis && fHaveMB30HT2HT3 && fTriggerToUse == StJetFrameworkPicoBase::kTriggerMB30HT2HT3 && !fDoTowerQAforHT)  || 
+  if( (!doppAnalysis && fHaveMB30HT2HT3 && fTriggerToUse == StJetFrameworkPicoBase::kTriggerMB30HT2HT3 && !fDoTowerQAforHT)  ||
       ( doppAnalysis && fHaveMBHT2HT3   && fTriggerToUse == StJetFrameworkPicoBase::kTriggerMBHT2HT3 && fDoTowerQAforHT) ) {
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
@@ -1096,7 +1097,7 @@ void StPicoTrackClusterQA::RunTrackQA()
       // get global track vector
       mTrkMom = trk->gMom(mVertex, Bfield);
     }
-    
+
     // track variables
     double pt = mTrkMom.Perp();
     double phi = mTrkMom.Phi();
@@ -1109,7 +1110,7 @@ void StPicoTrackClusterQA::RunTrackQA()
     int nHitsMax = trk->nHitsMax();
     double dca = trk->gDCA(mVertex).Mag();
     double nHitsRatio = 1.0*nHitsFit/nHitsMax;
-    
+
     // shift track phi (0, 2*pi)
     if(phi < 0.0)    phi += 2.0*pi;
     if(phi > 2.0*pi) phi -= 2.0*pi;
@@ -1118,9 +1119,8 @@ void StPicoTrackClusterQA::RunTrackQA()
     if(fDebugLevel == 8) cout<<"  nHitsFit = "<<trk->nHitsFit()<<"  BEmc Index = "<<bemcIndex<<endl;
 
     // fill some QA histograms
-    
-    int nBtofMatch =  mPicoEvent->nBTOFMatch();
-    if(nBtofMatch>0) fHistNTrackvsPt->Fill(pt);
+
+    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,krefCorr2,3,4)) fHistNTrackvsPt->Fill(pt);
     fHistNTrackvsPhi->Fill(phi);
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);
@@ -1128,7 +1128,7 @@ void StPicoTrackClusterQA::RunTrackQA()
     fHistNTrackvsnHitsMax->Fill(nHitsMax);
     fHistNTrackvsnHitsFit->Fill(nHitsFit);
     fHistNTrackvsnHitsRatio->Fill((Float_t)nHitsFit/nHitsMax);
-    
+
     fProfEventTrackPt->Fill(RunId_Order + 1., pt);
     fProfEventTrackEta->Fill(RunId_Order + 1., eta);
     fProfEventTracknHitsFit->Fill(RunId_Order + 1., nHitsFit);
@@ -1185,7 +1185,7 @@ void StPicoTrackClusterQA::RunTrackQA()
     StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track(trackIndex));
     if(!trk) continue;
     // TODO
-    //if(doUsePrimTracks) { if(!(trk->isPrimary())) continue; } // check if primary 
+    //if(doUsePrimTracks) { if(!(trk->isPrimary())) continue; } // check if primary
 
     if(fDebugLevel == 8) cout<<"cluster bemcId = "<<cluster->bemcId()<<"  cluster btowId = "<<cluster->btowId();
     if(fDebugLevel == 8) cout<<"  cluster trackIndex = "<<cluster->trackIndex()<<"  trkId = "<<trk->id()<<endl;
@@ -1206,8 +1206,8 @@ void StPicoTrackClusterQA::SetSumw2() {
   fHistNTrackvsEta->Sumw2();
   fHistNTrackvsDca->Sumw2();
   fHistNTrackvsnHitsMax->Sumw2();
-  fHistNTrackvsnHitsFit->Sumw2(); 
-  fHistNTrackvsnHitsRatio->Sumw2(); 
+  fHistNTrackvsnHitsFit->Sumw2();
+  fHistNTrackvsnHitsRatio->Sumw2();
   fHistNTrackvsPhivsEta->Sumw2();
   fHistNHadCorrTowervsE->Sumw2();
   fHistNHadCorrTowervsEt->Sumw2();
@@ -1236,17 +1236,17 @@ void StPicoTrackClusterQA::SetSumw2() {
   // event QA histograms
   fHistZvtx->Sumw2();
   fHistZDCx->Sumw2();
-  fHistBBCx->Sumw2(); 
+  fHistBBCx->Sumw2();
   fHistZvtxvsZVPD->Sumw2();
   fHistBemcvsRefMult->Sumw2();
   fHistBtofvsRefMult->Sumw2();
   fHistBemcvsBtof->Sumw2();
-  
+
   fHistRefMult->Sumw2();
   fHistVzVPDVz->Sumw2();
   fHistVyvsVx->Sumw2();
   fHistRvtx->Sumw2();
-  
+
   fHistEventNTrig_MB30->Sumw2();
   fHistEventNTrig_HT->Sumw2();
   fHistEventNTrig_HT1->Sumw2();
@@ -1348,7 +1348,7 @@ Int_t StPicoTrackClusterQA::GetCentBin(Int_t cent, Int_t nBin) const
 
   return centbin;
 }
-// 
+//
 // Function: Track Quality Cuts
 //________________________________________________________________________
 Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 Vert) {
@@ -1867,8 +1867,8 @@ Bool_t StPicoTrackClusterQA::MuProcessBEMC() {
    */
   Int_t nMatchedTowers = 0;
   Int_t nMatchedTracks = 0;
- 
-  // not according to: http://www.star.bnl.gov/public/comp/meet/RM200311/MuDstTutorial.pdf 
+
+  // not according to: http://www.star.bnl.gov/public/comp/meet/RM200311/MuDstTutorial.pdf
   StEmcCollection *mEmcCollection = static_cast<StEmcCollection*>(mMuDst->emcCollection());
   StMuEmcCollection *mMuEmcCollection = static_cast<StMuEmcCollection*>(mMuDst->muEmcCollection());
   mBemcTables->loadTables(static_cast<StMaker*>(this));
@@ -2079,9 +2079,9 @@ void StPicoTrackClusterQA::RunHadCorrTowerQA()
     double maxEt = 0.;
     double sumEt = 0.;
 
-    // if tower was is matched to a track or multiple, add up the matched track energies 
+    // if tower was is matched to a track or multiple, add up the matched track energies
     //     (mult opt.) to then subtract from the corresponding tower
-    // August 15: if *have* 1+ matched trk-tow AND uncorrected energy of tower is at least your tower constituent cut, then CONTINUE 
+    // August 15: if *have* 1+ matched trk-tow AND uncorrected energy of tower is at least your tower constituent cut, then CONTINUE
     if(mTowerStatusArr[towerID] > 0.5) {
       double maxE = 0.0;
       double sumE = 0.0;
@@ -2089,19 +2089,19 @@ void StPicoTrackClusterQA::RunHadCorrTowerQA()
       // --- last indexed track matched to tower
       // get track pointer
       StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track( mTowerMatchTrkIndexLast[towerID] ));
-      if(!trk) { cout<<"No trk pointer...."<<endl; continue; } // FIXME 
+      if(!trk) { cout<<"No trk pointer...."<<endl; continue; } // FIXME
 
       // apply quality cuts to track
       if(AcceptTrack(trk, Bfield, mVertex)) {
 
         // get track variables to matched tower
         TVector3 mTrkMom;
-        if(doUsePrimTracks) { 
+        if(doUsePrimTracks) {
           // get primary track vector
-          mTrkMom = trk->pMom(); 
-        } else { 
+          mTrkMom = trk->pMom();
+        } else {
           // get global track vector
-          mTrkMom = trk->gMom(mVertex, Bfield); 
+          mTrkMom = trk->gMom(mVertex, Bfield);
         }
 
         //double pt = mTrkMom.Perp();
@@ -2112,7 +2112,7 @@ void StPicoTrackClusterQA::RunHadCorrTowerQA()
 
         // apply hadronic correction
         LastIndexTrktowerE = towerEunCorr - (mHadronicCorrFrac * E);
-      } 
+      }
 
       // --- finds max E track matched to tower *AND* the sum of all matched track E and subtract from said tower
       //     USER provides readMacro.C which method to use for their analysis via SetJetHadCorrType(type);
@@ -2463,7 +2463,7 @@ Double_t StPicoTrackClusterQA::GetMaxTowerEt()
 }
 //
 // fill trigger ids of the dataset into a histogram
-// only currently set up for Run12 pp (200 GeV) and Run14 AuAu (200 GeV) 
+// only currently set up for Run12 pp (200 GeV) and Run14 AuAu (200 GeV)
 // - set up for more runs
 //________________________________________________________________________
 void StPicoTrackClusterQA::FillTriggerIDs(TH1 *h) {
