@@ -101,7 +101,12 @@ class StCentMaker : public StJetFrameworkPicoBase {
     TH1F *hEventZVertex;//!
     TH1F *hCentrality;//!
     TH1F *hMultiplicity;//!
+    TH1F *hMultiplicity_NoPU;//!
+    TH1F *hMultiplicity_PU;//!
     TH1F *fHistEventSelectionQA;//! 
+
+    TH2F *hBtofvsMult;//!
+    TH2F *hBtofvsMult_NoPU;//!
 
     // bad run list 
     std::set<Int_t>        badRuns;

@@ -452,7 +452,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
 
     // track histograms
-    fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 6, 0., 30.);
+    fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 300, 0., 30.);
     fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi", "Ntracks vs #phi", 144, 0., 2.0*pi);
     fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -2.0, 2.0);
     fHistNTrackvsPhivsEta = new TH2F("fHistNTrackvsPhivsEta", "Ntrack vs #phi vs #eta", 144, 0, 2*pi, 40, -1.0, 1.0);
@@ -1118,7 +1118,9 @@ void StPicoTrackClusterQA::RunTrackQA()
     if(fDebugLevel == 8) cout<<"  nHitsFit = "<<trk->nHitsFit()<<"  BEmc Index = "<<bemcIndex<<endl;
 
     // fill some QA histograms
-    fHistNTrackvsPt->Fill(pt);
+    
+    int nBtofMatch =  mPicoEvent->nBTOFMatch();
+    if(nBtofMatch>0) fHistNTrackvsPt->Fill(pt);
     fHistNTrackvsPhi->Fill(phi);
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);

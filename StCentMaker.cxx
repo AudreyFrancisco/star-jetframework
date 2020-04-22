@@ -11,6 +11,7 @@
 
 // ROOT includes
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TFile.h"
 #include "TParameter.h"
 
@@ -77,6 +78,10 @@ StCentMaker::~StCentMaker()
   if(hEventZVertex)         delete hEventZVertex;
   if(hCentrality)           delete hCentrality;
   if(hMultiplicity)         delete hMultiplicity;
+  if(hMultiplicity_NoPU)    delete hMultiplicity_NoPU;
+  if(hMultiplicity_PU)      delete hMultiplicity_PU;
+  if(hBtofvsMult)	    delete hBtofvsMult;
+  if(hBtofvsMult_NoPU)	    delete hBtofvsMult_NoPU;
   if(fHistEventSelectionQA) delete fHistEventSelectionQA;
 }
 
@@ -194,7 +199,12 @@ void StCentMaker::DeclareHistograms() {
   hEventZVertex = new TH1F("hEventZVertex", "z-vertex distribution", 200, -100., 100.);
   hCentrality = new TH1F("hCentrality", "No. events vs centrality", nHistCentBins, 0, 100); 
   hMultiplicity = new TH1F("hMultiplicity", "No. events vs multiplicity", 160, 0, 800);
+  hMultiplicity_NoPU = new TH1F("hMultiplicity_NoPU", "No. events vs multiplicity (Pile-up removed)", 160, 0, 800);
+  hMultiplicity_PU = new TH1F("hMultiplicity_PU", "No. events vs multiplicity (pile-up only)", 160, 0, 800);
 
+  hBtofvsMult = new TH2F("hBtofvsRefMult","Event nBtofMatch vs multiplicity", 160, 0., 600., 160, 0., 600.);
+  hBtofvsMult_NoPU = new TH2F("hBtofvsRefMult_NoPU","Event nBtofMatch vs multiplicity (pile-up removed)", 160, 0., 600., 160, 0., 600.);
+  
   // Event Selection QA histo
   fHistEventSelectionQA = new TH1F("fHistEventSelectionQA", "Trigger Selection Counter", 20, 0.5, 20.5);
 
@@ -210,7 +220,12 @@ void StCentMaker::WriteHistograms() {
   hEventZVertex->Write();
   hCentrality->Write();
   hMultiplicity->Write();
+  hMultiplicity_NoPU->Write();
+  hMultiplicity_PU->Write();
 
+  hBtofvsMult->Write();
+  hBtofvsMult_NoPU->Write();
+  
   // QA histos
   fHistEventSelectionQA->Write(); 
 }
@@ -330,8 +345,18 @@ Int_t StCentMaker::Make() {
   // cut on unset centrality, > 80%
   if(kcent16 == -1) return kStOk; // this is for the lowest multiplicity events 80%+ centrality, cut on them here
 
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+
   // multiplicity histogram
   hMultiplicity->Fill(krefCorr2);
+  hBtofvsMult->Fill(nBtofMatch,krefCorr2);
+  if(nBtofMatch>0){
+     if(Refmult_check(nBtofMatch,krefCorr2,3,4)){
+  	hMultiplicity_NoPU->Fill(krefCorr2);
+	hBtofvsMult_NoPU->Fill(nBtofMatch,krefCorr2);
+     }
+     else  hMultiplicity_PU->Fill(krefCorr2);
+  }
 
   // centrality histogram
   kCentralityScaled = centbin*5.0;
@@ -354,7 +379,11 @@ void StCentMaker::SetSumw2() {
   hEventZVertex->Sumw2();
   hCentrality->Sumw2();
   hMultiplicity->Sumw2();
+  hMultiplicity_NoPU->Sumw2();
+  hMultiplicity_PU->Sumw2();
   fHistEventSelectionQA->Sumw2();
+  hBtofvsMult->Sumw2();
+  hBtofvsMult_NoPU->Sumw2();
 }
 //
 // Get corrected multiplicity for different correction flags
