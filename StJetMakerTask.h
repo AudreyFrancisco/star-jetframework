@@ -115,6 +115,7 @@ class StJetMakerTask : public StMaker {
   virtual void         SetTurnOnCentSelection(Bool_t o) { fRequireCentSelection = o; }
   virtual void         SetCentralityBinCut(Int_t c)     { fCentralitySelectionCut = c; }
   virtual void         SetdoConstituentSubtr(Bool_t c)  { doConstituentSubtr    = c; }
+  virtual void         SetPileUpCorrection(Bool_t c)    { fCorrPileUp    = c; }
 
   // event setters
   virtual void         SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
@@ -250,6 +251,7 @@ class StJetMakerTask : public StMaker {
   Int_t                  fDebugLevel;             // debug printout level
   Int_t                  fRunFlag;                // Run Flag numerator value
   Bool_t                 doppAnalysis;            // use pp analysis data
+  Bool_t                 fCorrPileUp;             // correct pile-up using CME method
   Bool_t                 fRequireCentSelection;   // require particular centrality bin
   Bool_t                 doConstituentSubtr;      // run constituent subtractor
 

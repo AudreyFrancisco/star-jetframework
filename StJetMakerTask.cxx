@@ -83,7 +83,8 @@ StJetMakerTask::StJetMakerTask() :
   doUsePrimTracks(kFALSE),
   fDebugLevel(0),
   fRunFlag(0),       // see StJetFrameworkPicoBase::fRunFlagEnum
-  doppAnalysis(kFALSE), 
+  doppAnalysis(kFALSE),
+  fCorrPileUp(kFALSE),
   fRequireCentSelection(kFALSE),
   doConstituentSubtr(kFALSE),
   fEventZVtxMinCut(-40.0),
@@ -668,6 +669,10 @@ int StJetMakerTask::Make()
 
   // scaled centrality - based on 5% bins
   fHistCentrality->Fill(fCentralityScaled);
+
+  //Cut on Pile-up (isobar)
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if(fCorrPileUp && !mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {return kStOK;}
 
   // cut on centrality for analysis before doing anything
   if(fRequireCentSelection) { if(!mBaseMaker->SelectAnalysisCentralityBin(centbin, fCentralitySelectionCut)) return kStOK; }
