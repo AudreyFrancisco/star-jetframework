@@ -672,6 +672,7 @@ int StJetMakerTask::Make()
 
   //Cut on Pile-up (isobar)
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if(nBtofMatch<=0) {return kStOk;}
   if(fCorrPileUp && !mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {return kStOK;}
 
   // cut on centrality for analysis before doing anything

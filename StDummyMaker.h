@@ -89,6 +89,9 @@ class StDummyMaker : public StJetFrameworkPicoBase {
 
     // efficiency correction setter
     virtual void            SetDoEffCorr(Int_t effcorr)          { fDoEffCorr = effcorr; }
+    
+    // Pile-Up Correction
+    virtual void            SetPileUpCorrection(Bool_t m)        { fCorrPileUp = m; }
 
     // use rho to correct jet pt in correlation sparses
     virtual void            SetCorrectJetPt(Bool_t cpt)          { fCorrJetPt = cpt; }
@@ -107,6 +110,7 @@ class StDummyMaker : public StJetFrameworkPicoBase {
     // switches
     Bool_t                  doPrintEventCounter;     // print event # switch
     Int_t                   fDoEffCorr;              // efficiency correction to tracks
+    Bool_t		    fCorrPileUp;	     //Pile-Up correction
 
     // event selection types
     UInt_t                  fEmcTriggerEventType;        // Physics selection of event used for signal

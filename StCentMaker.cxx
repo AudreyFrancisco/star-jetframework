@@ -346,6 +346,7 @@ Int_t StCentMaker::Make() {
   if(kcent16 == -1) return kStOk; // this is for the lowest multiplicity events 80%+ centrality, cut on them here
 
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if(nBtofMatch<=0) {return kStOk;} // cutting on events without nBTofMatch
 
   // multiplicity histogram
   hMultiplicity->Fill(krefCorr2);
@@ -354,8 +355,7 @@ Int_t StCentMaker::Make() {
   	hMultiplicity_NoPU->Fill(krefCorr2);
 	  hBtofvsMult_NoPU->Fill(nBtofMatch,krefCorr2);
   }
-     else  hMultiplicity_PU->Fill(krefCorr2);
-  }
+  else hMultiplicity_PU->Fill(krefCorr2);
 
   // centrality histogram
   kCentralityScaled = centbin*5.0;
@@ -422,7 +422,7 @@ Bool_t StCentMaker::Refmult_check (Short_t __nBTOFMatch, Int_t __refMult, Short_
         ///This is a nBTOFMatch-refMult pile-up removal cut for 27gev AuAu / 200GeV isobar.
 	//  ///We do the Y-projection in a nBTOFMatch window, fit by double negative binomial distribution then get these parameters.
 	//     ///Recommand use max as 3, set min as 4.
-  if(__nBTOFMatch<0) return false;
+	if(__nBTOFMatch<=0) return false;
 	double a0=-0.704787625248525, a1=0.99026234637141, a2=-0.000680713101607504, a3=2.77035215460421e-06, a4=-4.04096185674966e-09;
 	double b0=2.52126730672253, b1=0.128066911940844, b2=-0.000538959206681944, b3=1.21531743671716e-06, b4=-1.01886685404478e-09;
 	double c0=4.79427731664144, c1=0.187601372159186, c2=-0.000849856673886957, c3=1.9359155975421e-06, c4=-1.61214724626684e-09;

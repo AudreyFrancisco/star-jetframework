@@ -70,6 +70,7 @@ StDummyMaker::StDummyMaker(const char* name, StPicoDstMaker *picoMaker, const ch
   fRequireCentSelection = kFALSE;
   fCentralitySelectionCut = -99;
   fDoEffCorr = kFALSE;
+  fCorrPileUp = kFALSE;
   doRejectBadRuns = kFALSE;
   fCorrJetPt = kFALSE;
   fMinPtJet = 0.0;
@@ -293,7 +294,8 @@ Int_t StDummyMaker::Make() {
 
   //nBtofMatch
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
-
+  if(nBtofMatch<=0) {return kStOk;} // cutting on events without nBTofMatch
+  
   // ============================ CENTRALITY ============================== //
   // get CentMaker pointer
   mCentMaker = static_cast<StCentMaker*>(GetMaker("CentMaker"));

@@ -932,6 +932,10 @@ int StPicoTrackClusterQA::Make()
   bool fHaveMB30event = mBaseMaker->CheckForMB(fRunFlag, StJetFrameworkPicoBase::kVPDMB30);     // MB30
   bool fHaveEmcTrigger = mBaseMaker->CheckForHT(fRunFlag, fEmcTriggerEventType);                // HT trigger, set in readMacro
   bool fRunForMB = kFALSE;  // used to differentiate pp and AuAu
+
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if(nBtofMatch<=0) {return kStOk;} // cutting on events without nBTofMatch
+
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;                    // pp analysis
   if(!doppAnalysis) fRunForMB = (fHaveMB5event || fHaveMB30event) ? kTRUE : kFALSE; // NON-pp analysis
 
@@ -963,7 +967,7 @@ int StPicoTrackClusterQA::Make()
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();  //cout<<"HT.."<<endl; } // HT trigger
-    RunTrackQA();
+    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
 
@@ -984,7 +988,7 @@ int StPicoTrackClusterQA::Make()
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();
-    RunTrackQA();
+    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
 
@@ -1007,7 +1011,7 @@ int StPicoTrackClusterQA::Make()
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();
-    RunTrackQA();
+    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
 
@@ -1120,7 +1124,7 @@ void StPicoTrackClusterQA::RunTrackQA()
 
     // fill some QA histograms
 
-    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,krefCorr2,3,4)) fHistNTrackvsPt->Fill(pt);
+    fHistNTrackvsPt->Fill(pt);
     fHistNTrackvsPhi->Fill(phi);
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);

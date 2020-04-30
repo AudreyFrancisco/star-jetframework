@@ -184,7 +184,7 @@ class StPicoTrackClusterQA : public StMaker {
   Bool_t               doppAnalysis;            // use pp analysis data
   Bool_t               fDoEffCorr;              // efficiency correction to tracks
   Bool_t               fDoTowerQAforHT;         // do tower QA for HT triggers (else do for MB) - temp
-  Bool_t               fCorrPileUp              // correct for Pile-Up using the CME method (isobar parameters)
+  Bool_t               fCorrPileUp;             // correct for Pile-Up using the CME method (isobar parameters)
 
   // event cuts
   Double_t             fMaxEventTrackPt;        // max track pt in the event (to cut on)
