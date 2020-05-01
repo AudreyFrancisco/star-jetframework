@@ -139,8 +139,8 @@ Int_t StCentralityQA::Init() {
     case StJetFrameworkPicoBase::Run14_AuAu200 : // Run14 AuAu
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
-              grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
-              //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
+              //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
+              grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
 
 /*
         switch(fCentralityDef) {
