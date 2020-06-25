@@ -120,6 +120,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetTrackDCAcut(Double_t d)         { fTrackDCAcut = d       ; }
   virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
   virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
+  virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
   virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
   virtual void         SetClusterPtRange(Double_t mi, Double_t ma) { fClusterPtMinCut = mi; fClusterPtMaxCut = ma; }
 
@@ -192,6 +193,8 @@ class StPicoTrackClusterQA : public StMaker {
   Bool_t               doRejectBadRuns;         // switch to reject bad runs and thus skip from analysis
   Double_t             fEventZVtxMinCut;        // min event z-vertex cut
   Double_t             fEventZVtxMaxCut;        // max event z-vertex cut
+  Double_t             fEventVzDiffCut;        // max event z-vertex - z-vpd cut
+  Double_t             fEventVrCut;             // max event sqrt(vx2 + vy2)vertex cut
   Int_t                fCentralitySelectionCut; // centrality selection cut
   Bool_t               fRequireCentSelection;   // require particular centrality bin
 
@@ -212,6 +215,7 @@ class StPicoTrackClusterQA : public StMaker {
   Double_t             fTrackDCAcut;            // max track dca cut
   Int_t                fTracknHitsFit;          // requirement for track hits
   Double_t             fTracknHitsRatio;        // requirement for nHitsFit / nHitsMax
+  Double_t             fTracknHitsRatioMax;        // requirement for nHitsFit / nHitsMax
   Int_t		       fTrackChargePos;		// track charge sign
   Double_t             fTrackEfficiency;        // artificial tracking inefficiency (0...1)
   Int_t                fGoodTrackCounter;       // good tracks - passed quality cuts
@@ -286,6 +290,7 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F		 *fHistNTrackvsnHitsFit;//!	
   TH1F		 *fHistNTrackvsnHitsRatio;//!	
   TH2F           *fHistNTrackvsPhivsEta;//!
+  TH1F 		 *fHistNTracksvsRefmult;//!
   TH1F           *fHistNHadCorrTowervsE;//!
   TH1F           *fHistNHadCorrTowervsEt;//!
   TH1F           *fHistNHadCorrTowervsPhi;//!
@@ -301,8 +306,13 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistNTowerHOTvsTowID;//!
 
   // trigger / event selection QA histos
+  TH1F           *hGoodEvents;//!
   TH1F           *fHistCentrality;//!
+  TH1F           *fHistCentralityAfterCuts;//!
   TH1F           *fHistMultiplicity;//!
+  TH1F           *fHistMultiplicityCorr;//!
+  TH1F           *fHistMultiplicityAfterCuts;//!
+  TH1F           *fHistMultiplicityCorrAfterCuts;//!
   TH1F           *fHistEventCounter;//!
   TH1F           *fHistEventSelectionQA;//! 
   TH1F           *fHistEventSelectionQAafterCuts;//!
@@ -318,7 +328,8 @@ class StPicoTrackClusterQA : public StMaker {
   TH2F           *fHistBemcvsRefMult;//!
   TH2F		 *fHistBtofvsRefMult;//!
   TH2F		 *fHistBemcvsBtof;//!
-
+  TH2F		 *fHistNtracksvsRefMult;//!
+  
   TH1F           *fHistRefMult;//!
   TH1F           *fHistVzVPDVz;//!
   TH2F           *fHistVyvsVx;//!
@@ -328,36 +339,45 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistEventNTrig_HT;//!
   TH1F           *fHistEventNTrig_HT1;//!
   TH1F           *fHistEventNTrig_HT2;//!
-  TH1F           *fHistRefMult_MB30;//!
-  TH1F           *fHistVzVPDVz_MB30;//!
-  TH2F           *fHistVyvsVx_MB30;//!
-  TH1F           *fHistRvtx_MB30;//!
-  TH1F           *fHistPerpvtx_MB30;//!
-  TH1F           *fHistZvtx_MB30;//!
-  TH1F           *fHistZDCx_MB30;//!
-  TH1F           *fHistEventID_MB30;//!
-  TH1F           *fHistRunID_MB30;//!
-  TProfile       *fProfEventTrackPt_MB30;//!
-  TProfile       *fProfEventTrackEta_MB30;//!
-  TProfile       *fProfEventTracknHitsFit_MB30;//!
-  TProfile       *fProfEventTrackDca_MB30;//!
-  TProfile       *fProfEventRefMult_MB30;//!
-  TProfile       *fProfEventXvtx_MB30;//!
-  TProfile       *fProfEventYvtx_MB30;//!
-  TProfile       *fProfEventZvtx_MB30;//!
-  TProfile       *fProfEventRvtx_MB30;//!
-  TProfile       *fProfEventPerpvtx_MB30;//!
-  TProfile       *fProfEventBBCx_MB30;//!
-  TProfile       *fProfEventZDCx_MB30;//!
-  TProfile       *fProfEventnBemcMatch_MB30;//!
-  TProfile       *fProfEventnBtofMatch_MB30;//!
+  TH1F           *fHistEventPileUp;//!
+ 
+ 
+  TH1F           *fHistRefMult_HT1;//!
+  TH1F           *fHistVzVPDVz_HT1;//!
+  TH2F           *fHistVyvsVx_HT1;//!
+  TH1F           *fHistRvtx_HT1;//!
+  TH1F           *fHistPerpvtx_HT1;//!
+  TH1F           *fHistZvtx_HT1;//!
+  TH1F           *fHistZDCx_HT1;//!
+  
+  TH1F           *fHistEventID;//!
+  TH1F           *fHistRunID;//!
+
+  TProfile       *fProfEventTrackPt_HT1;//!
+  TProfile       *fProfEventTrackPhi_HT1;//!
+  TProfile       *fProfEventTrackEta_HT1;//!
+  TProfile       *fProfEventTracknHitsFit_HT1;//!
+  TProfile       *fProfEventTrackDca_HT1;//!
+  TProfile       *fProfEventRefMult_HT1;//!
+  TProfile       *fProfEventXvtx_HT1;//!
+  TProfile       *fProfEventYvtx_HT1;//!
+  TProfile       *fProfEventZvtx_HT1;//!
+  TProfile       *fProfEventRvtx_HT1;//!
+  TProfile       *fProfEventPerpvtx_HT1;//!
+  TProfile       *fProfEventBBCx_HT1;//!
+  TProfile       *fProfEventZDCx_HT1;//!
+  TProfile       *fProfEventnBemcMatch_HT1;//!
+  TProfile       *fProfEventnBtofMatch_HT1;//!
+  
   TProfile       *fProfEventTrackPt;//!
+  TProfile       *fProfEventTrackPhi;//!
   TProfile       *fProfEventTrackEta;//!
   TProfile       *fProfEventTracknHitsFit;//!
   TProfile       *fProfEventTrackDca;//!
   TProfile       *fProfEventRefMult;//!
   TProfile       *fProfEventRanking;//!
   TProfile       *fProfEventZvtx;//!
+  TProfile       *fProfEventZvtxZvpd;//!
   TProfile       *fProfEventYvtx;//!
   TProfile       *fProfEventXvtx;//!
   TProfile       *fProfEventVzVPD;//!

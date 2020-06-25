@@ -87,6 +87,8 @@ StPicoTrackClusterQA::StPicoTrackClusterQA() :
   doRejectBadRuns(kFALSE),
   fEventZVtxMinCut(-40.0),
   fEventZVtxMaxCut(40.0),
+  fEventVzDiffCut(5.),
+  fEventVrCut(2.),
   fCentralitySelectionCut(-99),
   fRequireCentSelection(kFALSE),
   mOutName(""),
@@ -103,7 +105,8 @@ StPicoTrackClusterQA::StPicoTrackClusterQA() :
   fTrackEtaMaxCut(1.0),
   fTrackDCAcut(3.0),
   fTracknHitsFit(15),
-  fTracknHitsRatio(0.52),
+  fTracknHitsRatio(0.2),
+  fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
   fTrackEfficiency(1.),
   fGoodTrackCounter(0),
@@ -163,11 +166,14 @@ StPicoTrackClusterQA::StPicoTrackClusterQA(const char *name, bool doHistos = kFA
   doppAnalysis(kFALSE),
   fDoEffCorr(kFALSE),
   fDoTowerQAforHT(kFALSE),
+  fCorrPileUp(kFALSE),
   fMaxEventTrackPt(30.0),
   fMaxEventTowerEt(1000.0), // 30.0
   doRejectBadRuns(kFALSE),
   fEventZVtxMinCut(-40.0),
-  fEventZVtxMaxCut(40.0),
+  fEventZVtxMaxCut(40.0), 
+  fEventVzDiffCut(5.),
+  fEventVrCut(2.),
   fCentralitySelectionCut(-99),
   fRequireCentSelection(kFALSE),
   mOutName(outName),
@@ -184,7 +190,8 @@ StPicoTrackClusterQA::StPicoTrackClusterQA(const char *name, bool doHistos = kFA
   fTrackEtaMaxCut(1.0),
   fTrackDCAcut(3.0),
   fTracknHitsFit(15),
-  fTracknHitsRatio(0.52),
+  fTracknHitsRatio(0.2),
+  fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
   fTrackEfficiency(1.),
   fGoodTrackCounter(0),
@@ -264,8 +271,14 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fHistNTowervsPhivsEta)   delete fHistNTowervsPhivsEta;
   if(fHistNTowerHOTvsTowID)   delete fHistNTowerHOTvsTowID;
 
+  if(fHistNTracksvsRefmult)  delete fHistNTracksvsRefmult;
+  if(hGoodEvents)                     delete hGoodEvents;
   if(fHistCentrality)                 delete fHistCentrality;
+  if(fHistCentralityAfterCuts)        delete fHistCentralityAfterCuts;
   if(fHistMultiplicity)               delete fHistMultiplicity;
+  if(fHistMultiplicityCorr)           delete fHistMultiplicityCorr;
+  if(fHistMultiplicityAfterCuts)      delete fHistMultiplicityAfterCuts;
+  if(fHistMultiplicityCorrAfterCuts)  delete fHistMultiplicityCorrAfterCuts;
   if(fHistEventCounter)               delete fHistEventCounter;
   if(fHistEventSelectionQA)           delete fHistEventSelectionQA;
   if(fHistEventSelectionQAafterCuts)  delete fHistEventSelectionQAafterCuts;
@@ -280,6 +293,7 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fHistBemcvsRefMult) delete fHistBemcvsRefMult;
   if(fHistBtofvsRefMult) delete fHistBtofvsRefMult;
   if(fHistBemcvsBtof)    delete fHistBemcvsBtof;
+  if(fHistNtracksvsRefMult) delete fHistNtracksvsRefMult;
 
   if(fHistRefMult) delete fHistRefMult;
   if(fHistVzVPDVz) delete fHistVzVPDVz;
@@ -288,40 +302,44 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
 
   if(fHistEventNTrig_MB30)   delete fHistEventNTrig_MB30;
   if(fHistEventNTrig_HT)     delete fHistEventNTrig_HT;
-  if(fHistRefMult_MB30)      delete fHistRefMult_MB30;
-  if(fHistVzVPDVz_MB30)      delete fHistVzVPDVz_MB30;
-  if(fHistVyvsVx_MB30)       delete fHistVyvsVx_MB30;
-  if(fHistRvtx_MB30)         delete fHistRvtx_MB30;
-  if(fHistPerpvtx_MB30)      delete fHistPerpvtx_MB30;
-  if(fHistZvtx_MB30)         delete fHistZvtx_MB30;
-  if(fHistZDCx_MB30)         delete fHistZDCx_MB30;
-  if(fHistEventID_MB30)      delete fHistEventID_MB30;
-  if(fHistRunID_MB30)        delete fHistRunID_MB30;
+  if(fHistRefMult_HT1)      delete fHistRefMult_HT1;
+  if(fHistVzVPDVz_HT1)      delete fHistVzVPDVz_HT1;
+  if(fHistVyvsVx_HT1)       delete fHistVyvsVx_HT1;
+  if(fHistRvtx_HT1)         delete fHistRvtx_HT1;
+  if(fHistPerpvtx_HT1)      delete fHistPerpvtx_HT1;
+  if(fHistZvtx_HT1)         delete fHistZvtx_HT1;
+  if(fHistZDCx_HT1)         delete fHistZDCx_HT1;
+  if(fHistEventID)      delete fHistEventID;
+  if(fHistRunID)        delete fHistRunID;
   if(fHistEventNTrig_HT1)    delete fHistEventNTrig_HT1;
   if(fHistEventNTrig_HT2)    delete fHistEventNTrig_HT2;
-  if(fProfEventTrackPt_MB30) delete fProfEventTrackPt_MB30;
-  if(fProfEventTrackEta_MB30) delete fProfEventTrackEta_MB30;
-  if(fProfEventTracknHitsFit_MB30) delete fProfEventTracknHitsFit_MB30;
-  if(fProfEventTrackDca_MB30) delete fProfEventTrackDca_MB30;
-  if(fProfEventRefMult_MB30) delete fProfEventRefMult_MB30;
-  if(fProfEventXvtx_MB30)    delete fProfEventXvtx_MB30;
-  if(fProfEventYvtx_MB30)    delete fProfEventYvtx_MB30;
-  if(fProfEventZvtx_MB30)    delete fProfEventZvtx_MB30;
-  if(fProfEventRvtx_MB30)    delete fProfEventRvtx_MB30;
-  if(fProfEventPerpvtx_MB30) delete fProfEventPerpvtx_MB30;
-  if(fProfEventBBCx_MB30)    delete fProfEventBBCx_MB30;
-  if(fProfEventZDCx_MB30)    delete fProfEventZDCx_MB30;
+  if(fHistEventPileUp)       delete fHistEventPileUp;
+  if(fProfEventTrackPt_HT1)  delete fProfEventTrackPt_HT1;
+  if(fProfEventTrackPhi_HT1) delete fProfEventTrackPhi_HT1;
+  if(fProfEventTrackEta_HT1) delete fProfEventTrackEta_HT1;
+  if(fProfEventTracknHitsFit_HT1) delete fProfEventTracknHitsFit_HT1;
+  if(fProfEventTrackDca_HT1) delete fProfEventTrackDca_HT1;
+  if(fProfEventRefMult_HT1) delete fProfEventRefMult_HT1;
+  if(fProfEventXvtx_HT1)    delete fProfEventXvtx_HT1;
+  if(fProfEventYvtx_HT1)    delete fProfEventYvtx_HT1;
+  if(fProfEventZvtx_HT1)    delete fProfEventZvtx_HT1;
+  if(fProfEventRvtx_HT1)    delete fProfEventRvtx_HT1;
+  if(fProfEventPerpvtx_HT1) delete fProfEventPerpvtx_HT1;
+  if(fProfEventBBCx_HT1)    delete fProfEventBBCx_HT1;
+  if(fProfEventZDCx_HT1)    delete fProfEventZDCx_HT1;
   if(fProfEventTrackPt)      delete fProfEventTrackPt;
+  if(fProfEventTrackPhi)     delete fProfEventTrackPhi;
   if(fProfEventRefMult)      delete fProfEventRefMult;
   if(fProfEventRanking)      delete fProfEventRanking;
   if(fProfEventZvtx)         delete fProfEventZvtx;
+  if(fProfEventZvtxZvpd)     delete fProfEventZvtxZvpd;
   if(fProfEventYvtx)         delete fProfEventYvtx;
   if(fProfEventXvtx)         delete fProfEventXvtx;
   if(fProfEventVzVPD)        delete fProfEventVzVPD;
   if(fProfEventBBCx)         delete fProfEventBBCx;
   if(fProfEventZDCx)         delete fProfEventZDCx;
-  if(fProfEventnBemcMatch_MB30) delete fProfEventnBemcMatch_MB30;
-  if(fProfEventnBtofMatch_MB30) delete fProfEventnBtofMatch_MB30;
+  if(fProfEventnBemcMatch_HT1) delete fProfEventnBemcMatch_HT1;
+  if(fProfEventnBtofMatch_HT1) delete fProfEventnBtofMatch_HT1;
   if(fProfEventTrackEta) delete fProfEventTrackEta;
   if(fProfEventTracknHitsFit) delete fProfEventTracknHitsFit;
   if(fProfEventnBemcMatch) delete fProfEventnBemcMatch;
@@ -435,7 +453,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   nRunBins = 857 + 43;
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 82;
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 218; //FIXME
     Double_t nRunBinsMax = (Double_t)nRunBins + 0.5;
 
     // tweak refmult plot binnings for pp datasets
@@ -450,7 +468,12 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 
     // basic event QA
     fHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+    fHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
     fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicityAfterCuts = new TH1F("fHistMultiplicityAfterCuts", "No. events vs multiplicity after cuts", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicityCorrAfterCuts = new TH1F("fHistMultiplicityCorrAfterCuts", "No. events vs corr. multiplicity after cuts", kHistMultBins, 0, kHistMultMax);
+    hGoodEvents = new TH1F("hGoodEvents", "No. good tracks", 100, 0, 5000);
 
     // track histograms
     fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 300, 0., 30.);
@@ -463,6 +486,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistNTrackvsnHitsFit = new TH1F("fHistNTrackvsnHitsFit", "Ntracks vs nHitsFit", 150, 0., 50.0);
     fHistNTrackvsnHitsRatio = new TH1F("fHistNTrackvsnHitsRatio", "Ntracks vs nHitsRatio", 40, .0, 1.0);
 
+    fHistNTracksvsRefmult = new TH1F("fHistNTracksvsRefmult","Ntracks vs refmult",kHistMultBins,0, kHistMultMax);
     // Tower histograms/
     fHistNHadCorrTowervsE = new TH1F("fHistNHadCorrTowervsE", "NHadCorrTowers vs energy", 200, 0., 40.0);
     fHistNHadCorrTowervsEt = new TH1F("fHistNHadCorrTowervsEt", "NHadCorrTowers vs transverse energy", 200, 0., 40.0);
@@ -504,7 +528,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   { runMin = 13000000.; runMax = 13100000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) { runMin = 15050000.; runMax = 15200000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) { runMin = 17050000.; runMax = 17150000.; }
-    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084006.; runMax = 19104009.; nRunBinSize = 1; }
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084005.; runMax = 19130027.; nRunBinSize = 1; } //FIXME
 
     // event QA histograms
     fHistZvtx = new TH1F("fHistZvtx", "Z-vertex distribution ", 150, -100., 100.);
@@ -514,7 +538,8 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistBemcvsRefMult = new TH2F("fHistBemcvsRefMult", "Event nBemcMatch vs multiplicity", 160, 0., 600., 160, 0., 600.);
     fHistBtofvsRefMult = new TH2F("fHistBtofvsRefMult", "Event nBtofMatch vs multiplicity", 160, 0., 600., 160, 0., 600.);
     fHistBemcvsBtof    = new TH2F("fHistBemcvsBtof", "Event nBemcMatch vs nBtofMatch", 160, 0., 600., 160, 0., 600.);
-
+    fHistNtracksvsRefMult = new TH2F("fHistNtracksvsRefMult", "Event nTracks vs multiplicity", 160, 0., 600., 160, 0., 600.);
+    
     fHistRefMult = new TH1F("fHistRefMult", "RefMult distribution", 140*nFactor, 0., 700.);
     fHistVzVPDVz = new TH1F("fHistVzVPDVz", "Vz - VPDVz distribution", 65, -10., 10.);
     fHistVyvsVx  = new TH2F("fHistVyvsVx", "Vy vs Vx distribution", 160, -4.0, 4.0, 160, -4.0, 4.0);
@@ -524,36 +549,40 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistEventNTrig_HT = new TH1F("fHistEventNTrig_HT", "N triggered events for HT (1, 2, 3) events", nRunBins, 1., nRunBinsMax);
     fHistEventNTrig_HT1 = new TH1F("fHistEventNTrig_HT1", "N triggered events for HT (1, 2, 3) events", nRunBins, 1., nRunBinsMax);
     fHistEventNTrig_HT2 = new TH1F("fHistEventNTrig_HT2", "N triggered events for HT (1, 2, 3) events", nRunBins, 0.5, nRunBinsMax);
-    fHistRefMult_MB30 = new TH1F("fHistRefMult_MB30", "RefMult distribution, MB30 events", 140*nFactor, 0., 700.);
-    fHistVzVPDVz_MB30 = new TH1F("fHistVzVPDVz_MB30", "Vz - VPDVz distribution, MB30 events", 65, -10., 10.);
-    fHistVyvsVx_MB30 = new TH2F("fHistVyvsVx_MB30", "Vy vs Vx distribution, MB30 events", 160, -4.0, 4.0, 160, -4.0, 4.0);
-    fHistRvtx_MB30 = new TH1F("fHistRvtx_MB30", "Radial vertex distribution, MB30 events", 250, 0., 50.);
-    fHistPerpvtx_MB30 = new TH1F("fHistPerpvtx_MB30", "Perp-vertex distribution, MB30 events", 100, 0., 5.);
-    fHistZvtx_MB30 = new TH1F("fHistZvtx_MB30", "Z-vertex distribution, MB30 events", 150, -100., 100.);
-    fHistZDCx_MB30 = new TH1F("fHistZDCx_MB30", "Luminosity, ZDCx distribution, MB30 events", 1000, 15000., 65000.);
-    fHistEventID_MB30 = new TH1F("fHistEventID_MB30", "Event ID distribution", 140, 0., 7000000.0);
-    fHistRunID_MB30 = new TH1F("fHistRunID_MB30", "Run ID distribution", nRunBinSize, runMin, runMax);
-    fProfEventTrackPt_MB30 = new TProfile("fProfEventTrackPt_MB30", "Event averaged track p_{T}, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventTrackEta_MB30 = new TProfile("fProfEventTrackEta_MB30", "Event averaged track #eta, MB events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventTracknHitsFit_MB30 = new TProfile("fProfEventTracknHitsFit_MB30", "Event averaged nHitsFit, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventTrackDca_MB30 = new TProfile("fProfEventTrackDca_MB30", "Event averaged DCA, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventRefMult_MB30 = new TProfile("fProfEventRefMult_MB30", "Event averaged refMult, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventZvtx_MB30 = new TProfile("fProfEventZvtx_MB30", "Event averaged primary z-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventYvtx_MB30 = new TProfile("fProfEventYvtx_MB30", "Event averaged primary y-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventXvtx_MB30 = new TProfile("fProfEventXvtx_MB30", "Event averaged primary x-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventRvtx_MB30 = new TProfile("fProfEventRvtx_MB30", "Event averaged primary R-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventPerpvtx_MB30 = new TProfile("fProfEventPerpvtx_MB30", "Event averaged primary perp-Vertex, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventBBCx_MB30 = new TProfile("fProfEventBBCx_MB30", "Event averaged BBC coincidence rate, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventZDCx_MB30 = new TProfile("fProfEventZDCx_MB30", "Event averaged ZDC coincidence rate, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventnBemcMatch_MB30 = new TProfile("fProfEventnBemcMatch_MB30", "Event averaged nBEMC match, MB30 events", nRunBins, 0.5, nRunBinsMax);
-    fProfEventnBtofMatch_MB30 = new TProfile("fProfEventnBtofMatch_MB30", "Event averaged nBTOF match, MB30 events", nRunBins, 0.5, nRunBinsMax);
+    fHistEventPileUp = new TH1F("fHistEventPileUp", "PileUp events", nRunBins, 0.5, nRunBinsMax);
+    fHistRefMult_HT1 = new TH1F("fHistRefMult_HT1", "RefMult distribution, HT1 events", 140*nFactor, 0., 700.);
+    fHistVzVPDVz_HT1 = new TH1F("fHistVzVPDVz_HT1", "Vz - VPDVz distribution, HT1 events", 65, -10., 10.);
+    fHistVyvsVx_HT1 = new TH2F("fHistVyvsVx_HT1", "Vy vs Vx distribution, HT1 events", 160, -4.0, 4.0, 160, -4.0, 4.0);
+    fHistRvtx_HT1 = new TH1F("fHistRvtx_HT1", "Radial vertex distribution, HT1 events", 250, 0., 50.);
+    fHistPerpvtx_HT1 = new TH1F("fHistPerpvtx_HT1", "Perp-vertex distribution, HT1 events", 100, 0., 5.);
+    fHistZvtx_HT1 = new TH1F("fHistZvtx_HT1", "Z-vertex distribution, HT1 events", 150, -100., 100.);
+    fHistZDCx_HT1 = new TH1F("fHistZDCx_HT1", "Luminosity, ZDCx distribution, HT1 events", 1000, 15000., 65000.);
+    fHistEventID = new TH1F("fHistEventID", "Event ID distribution", 140, 0., 7000000.0);
+    fHistRunID = new TH1F("fHistRunID", "Run ID distribution ", nRunBinSize, runMin, runMax);
+    fProfEventTrackPt_HT1 = new TProfile("fProfEventTrackPt_HT1", "Event averaged track p_{T}, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTrackPhi_HT1 = new TProfile("fProfEventTrackPhi_HT1", "Event averaged track #phi, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTrackEta_HT1 = new TProfile("fProfEventTrackEta_HT1", "Event averaged track #eta, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTracknHitsFit_HT1 = new TProfile("fProfEventTracknHitsFit_HT1", "Event averaged nHitsFit, MB30 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTrackDca_HT1 = new TProfile("fProfEventTrackDca_HT1", "Event averaged DCA, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventRefMult_HT1 = new TProfile("fProfEventRefMult_HT1", "Event averaged refMult, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventZvtx_HT1 = new TProfile("fProfEventZvtx_HT1", "Event averaged primary z-Vertex, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventYvtx_HT1 = new TProfile("fProfEventYvtx_HT1", "Event averaged primary y-Vertex, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventXvtx_HT1 = new TProfile("fProfEventXvtx_HT1", "Event averaged primary x-Vertex, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventRvtx_HT1 = new TProfile("fProfEventRvtx_HT1", "Event averaged primary R-Vertex, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventPerpvtx_HT1 = new TProfile("fProfEventPerpvtx_HT1", "Event averaged primary perp-Vertex, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventBBCx_HT1 = new TProfile("fProfEventBBCx_HT1", "Event averaged BBC coincidence rate, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventZDCx_HT1 = new TProfile("fProfEventZDCx_HT1", "Event averaged ZDC coincidence rate, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBemcMatch_HT1 = new TProfile("fProfEventnBemcMatch_HT1", "Event averaged nBEMC match, HT1 events", nRunBins, 0.5, nRunBinsMax);
+    fProfEventnBtofMatch_HT1 = new TProfile("fProfEventnBtofMatch_HT1", "Event averaged nBTOF match, HT1 events", nRunBins, 0.5, nRunBinsMax);
     fProfEventTrackPt = new TProfile("fProfEventTrackPt", "Event averaged track p_{T}", nRunBins, 0.5, nRunBinsMax);
+    fProfEventTrackPhi = new TProfile("fProfEventTrackPhi", "Event averaged track #phi", nRunBins, 0.5, nRunBinsMax);
     fProfEventTrackEta = new TProfile("fProfEventTrackEta", "Event averaged track #eta", nRunBins, 0.5, nRunBinsMax);
     fProfEventTracknHitsFit = new TProfile("fProfEventTracknHitsFit", "Event averaged nHitsFit", nRunBins, 0.5, nRunBinsMax);
     fProfEventTrackDca = new TProfile("fProfEventTrackDca", "Event averaged DCA", nRunBins, 0.5, nRunBinsMax);
     fProfEventRefMult = new TProfile("fProfEventRefMult", "Event averaged refMult", nRunBins, 0.5, nRunBinsMax);
     fProfEventRanking = new TProfile("fProfEventRanking", "Event averaged vertex ranking", nRunBins, 0.5, nRunBinsMax);
     fProfEventZvtx = new TProfile("fProfEventZvtx", "Event averaged primary z-Vertex", nRunBins, 0.5, nRunBinsMax);
+    fProfEventZvtxZvpd = new TProfile("fProfEventZvtxZvpd", "Event difference averaged primary z-Vertex vs VPD vertex", nRunBins, 0.5, nRunBinsMax);
     fProfEventYvtx = new TProfile("fProfEventYvtx", "Event averaged primary y-Vertex", nRunBins, 0.5, nRunBinsMax);
     fProfEventXvtx = new TProfile("fProfEventXvtx", "Event averaged primary x-Vertex", nRunBins, 0.5, nRunBinsMax);
     fProfEventVzVPD = new TProfile("fProfEventVzVPD", "Event averaged VzVPD", nRunBins, 0.5, nRunBinsMax);
@@ -635,7 +664,11 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 void StPicoTrackClusterQA::WriteHistograms() {
   // basic QA
   fHistCentrality->Write();
+  fHistCentralityAfterCuts->Write();
   fHistMultiplicity->Write();
+  fHistMultiplicityCorr->Write();
+  fHistMultiplicityAfterCuts->Write();
+  fHistMultiplicityCorrAfterCuts->Write();
 
   // track and tower histograms
   fHistNTrackvsPt->Write();
@@ -646,6 +679,7 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistNTrackvsnHitsMax->Write();
   fHistNTrackvsnHitsFit->Write();
   fHistNTrackvsnHitsRatio->Write();
+  fHistNTracksvsRefmult->Write();
 
   fHistNHadCorrTowervsE->Write();
   fHistNHadCorrTowervsEt->Write();
@@ -662,6 +696,7 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistNTowerHOTvsTowID->Write();
 
   // QA histograms
+  hGoodEvents->Write();
   fHistEventCounter->Write();
   fHistEventSelectionQA->Write();
   fHistEventSelectionQAafterCuts->Write();
@@ -677,7 +712,8 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistBemcvsRefMult->Write();
   fHistBtofvsRefMult->Write();
   fHistBemcvsBtof->Write();
-
+  fHistNtracksvsRefMult->Write();
+  
   fHistRefMult->Write();
   fHistVzVPDVz->Write();
   fHistVyvsVx->Write();
@@ -687,36 +723,40 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistEventNTrig_HT->Write();
   fHistEventNTrig_HT1->Write();
   fHistEventNTrig_HT2->Write();
-  fHistRefMult_MB30->Write();
-  fHistVzVPDVz_MB30->Write();
-  fHistVyvsVx_MB30->Write();
-  fHistRvtx_MB30->Write();
-  fHistPerpvtx_MB30->Write();
-  fHistZvtx_MB30->Write();
-  fHistZDCx_MB30->Write();
-  fHistEventID_MB30->Write();
-  fHistRunID_MB30->Write();
-  fProfEventTrackPt_MB30->Write();
-  fProfEventTrackEta_MB30->Write();
-  fProfEventTracknHitsFit_MB30->Write();
-  fProfEventTrackDca_MB30->Write();
-  fProfEventRefMult_MB30->Write();
-  fProfEventZvtx_MB30->Write();
-  fProfEventYvtx_MB30->Write();
-  fProfEventXvtx_MB30->Write();
-  fProfEventRvtx_MB30->Write();
-  fProfEventPerpvtx_MB30->Write();
-  fProfEventBBCx_MB30->Write();
-  fProfEventZDCx_MB30->Write();
-  fProfEventnBemcMatch_MB30->Write();
-  fProfEventnBtofMatch_MB30->Write();
+  fHistEventPileUp->Write();
+  fHistRefMult_HT1->Write();
+  fHistVzVPDVz_HT1->Write();
+  fHistVyvsVx_HT1->Write();
+  fHistRvtx_HT1->Write();
+  fHistPerpvtx_HT1->Write();
+  fHistZvtx_HT1->Write();
+  fHistZDCx_HT1->Write();
+  fHistEventID->Write();
+  fHistRunID->Write();
+  fProfEventTrackPt_HT1->Write();
+  fProfEventTrackPhi_HT1->Write();
+  fProfEventTrackEta_HT1->Write();
+  fProfEventTracknHitsFit_HT1->Write();
+  fProfEventTrackDca_HT1->Write();
+  fProfEventRefMult_HT1->Write();
+  fProfEventZvtx_HT1->Write();
+  fProfEventYvtx_HT1->Write();
+  fProfEventXvtx_HT1->Write();
+  fProfEventRvtx_HT1->Write();
+  fProfEventPerpvtx_HT1->Write();
+  fProfEventBBCx_HT1->Write();
+  fProfEventZDCx_HT1->Write();
+  fProfEventnBemcMatch_HT1->Write();
+  fProfEventnBtofMatch_HT1->Write();
   fProfEventTrackPt->Write();
+  fProfEventTrackPhi->Write();
   fProfEventTrackEta->Write();
   fProfEventTracknHitsFit->Write();
   fProfEventTrackDca->Write();
   fProfEventRefMult->Write();
   fProfEventRanking->Write();
   fProfEventZvtx->Write();
+  fProfEventZvtxZvpd->Write();
   fProfEventYvtx->Write();
   fProfEventXvtx->Write();
   fProfEventVzVPD->Write();
@@ -848,8 +888,15 @@ int StPicoTrackClusterQA::Make()
   mVertex = mPicoEvent->primaryVertex();
   zVtx = mVertex.z();
 
+  float yVtx = mVertex.y();
+  float xVtx = mVertex.x();
+  float vzVPD = mPicoEvent->vzVpd();
+  float vDiff = TMath::Abs(zVtx - vzVPD); 
+  float vrVtx = TMath::Sqrt(xVtx*xVtx+yVtx*yVtx); 
   // Z-vertex cut - per the Aj analysis (-40, 40)
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
+  if(vDiff > fEventVzDiffCut) return kStOk;
+  if(vrVtx > fEventVrCut) return kStOk;
 
   // ============================ CENTRALITY ============================== //
   // get CentMaker pointer
@@ -876,7 +923,8 @@ int StPicoTrackClusterQA::Make()
 
   // fill histograms
   fHistCentrality->Fill(fCentralityScaled);
-  fHistMultiplicity->Fill(refCorr2);
+  fHistMultiplicity->Fill(refMult);
+  fHistMultiplicityCorr->Fill(refCorr2);
 
   // cut on centrality for analysis before doing anything
   if(fRequireCentSelection) { if(!mBaseMaker->SelectAnalysisCentralityBin(centbin, fCentralitySelectionCut)) return kStOk; }
@@ -885,10 +933,9 @@ int StPicoTrackClusterQA::Make()
   // ========================= Trigger Info =============================== //
   // fill Event Trigger QA
   FillEventTriggerQA(fHistEventSelectionQA);
-
   // looking at the EMCal triggers - used for QA and deciding on HT triggers
   FillEmcTriggersHist(hEmcTriggers);
-
+//cout <<"AFter emctri"<<endl;
   // fill trigger IDs
   FillTriggerIDs(fHistTriggerIDs);
 
@@ -934,7 +981,7 @@ int StPicoTrackClusterQA::Make()
   bool fRunForMB = kFALSE;  // used to differentiate pp and AuAu
 
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
-  if(nBtofMatch<=0) {return kStOk;} // cutting on events without nBTofMatch
+//  if(nBtofMatch<=0) {cout << "notofmtch " <<endl; return kStOk;} // cutting on events without nBTofMatch
 
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;                    // pp analysis
   if(!doppAnalysis) fRunForMB = (fHaveMB5event || fHaveMB30event) ? kTRUE : kFALSE; // NON-pp analysis
@@ -961,15 +1008,25 @@ int StPicoTrackClusterQA::Make()
   if(fHaveHT1) { fHistEventNTrig_HT1->Fill(RunId_Order + 1., 1); }
   if(fHaveHT2) { fHistEventNTrig_HT2->Fill(RunId_Order + 1., 1); }
 
+  bool doTrackQA = kTRUE;
+  if(fCorrPileUp && !mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) { 
+     fHistEventPileUp->Fill(RunId_Order + 1., 1);
+     doTrackQA = kFALSE;
+     return kStOk;
+  }
+
+  //if(!doTrackQA) cout << "doTrackQA " << doTrackQA << " CorrPU ? " << fCorrPileUp << " checking refmult : " << mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4) << endl;
   // run tower QA for specific conditions
   // 1) want HT, 2) have EMC trigger: HT, 3) and NOT requesting the MB30-HT2-HT3
   if(fDoTowerQAforHT && fHaveEmcTrigger && fTriggerToUse != StJetFrameworkPicoBase::kTriggerMB30HT2HT3)  {
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();  //cout<<"HT.."<<endl; } // HT trigger
-    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
+    //if((fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4))||!fCorrPileUp) 
+    if(doTrackQA)  RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
+    //cout  << "wantHT " << fHaveHT1 << ", " << fHaveHT2 << "< " << fHaveHT3 << ", " << fHaveAnyHT << ", " <<fHaveMBHT2HT3 << ", " << fHaveMB30HT2HT3 << ", "<<fRunForMB << ", " <<fHaveMB30event << endl; 
 
     if(fHaveHT1)        fHistEventCounter->Fill(1);
     if(fHaveHT2)        fHistEventCounter->Fill(2);
@@ -988,10 +1045,12 @@ int StPicoTrackClusterQA::Make()
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();
-    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
+    //if((fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4))||!fCorrPileUp) 
+    if(doTrackQA)  RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
 
+    //cout  << "notHT " << fHaveHT1 << ", " << fHaveHT2 << "< " << fHaveHT3 << ", " << fHaveAnyHT << ", " <<fHaveMBHT2HT3 << ", " << fHaveMB30HT2HT3 << ", "<<fRunForMB << ", " <<fHaveMB30event << endl; 
     if(fHaveHT1)        fHistEventCounter->Fill(1);
     if(fHaveHT2)        fHistEventCounter->Fill(2);
     if(fHaveHT3)        fHistEventCounter->Fill(3);
@@ -1011,10 +1070,12 @@ int StPicoTrackClusterQA::Make()
     FillEventTriggerQA(fHistEventSelectionTrg);
     RunEventQA();
     RunFiredTriggerQA();
-    if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) RunTrackQA();
+    //if((fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4))||!fCorrPileUp) 
+    if(doTrackQA)  RunTrackQA();
     RunTowerQA();
     RunHadCorrTowerQA();
 
+    //cout  << "Hanseul v " << fHaveHT1 << ", " << fHaveHT2 << "< " << fHaveHT3 << ", " << fHaveAnyHT << ", " << fHaveMBHT2HT3 << ", " << fHaveMB30HT2HT3 << ", "<<fRunForMB << ", " << fHaveMB30event << endl; 
     if(fHaveHT1)        fHistEventCounter->Fill(1);
     if(fHaveHT2)        fHistEventCounter->Fill(2);
     if(fHaveHT3)        fHistEventCounter->Fill(3);
@@ -1050,8 +1111,12 @@ int StPicoTrackClusterQA::Make()
   ////mPicoDst->printBEmcPidTraits();
 
   // fill Event QA after cuts
-  FillEventTriggerQA(fHistEventSelectionQAafterCuts);
 
+  fHistCentralityAfterCuts->Fill(fCentralityScaled);
+  fHistMultiplicityAfterCuts->Fill(refMult);
+  fHistMultiplicityCorrAfterCuts->Fill(refCorr2);
+  FillEventTriggerQA(fHistEventSelectionQAafterCuts);
+  if(fGoodTrackCounter>0) hGoodEvents->Fill(fGoodTrackCounter);
   return kStOK;
 }
 //
@@ -1059,6 +1124,7 @@ int StPicoTrackClusterQA::Make()
 //________________________________________________________________________
 void StPicoTrackClusterQA::RunTrackQA()
 {
+//	cout << "RUnning track qa " <<endl;
   // assume neutral pion mass
   double pi = 1.0*TMath::Pi();
   double pi0mass = Pico::mMass[0]; // GeV
@@ -1079,6 +1145,8 @@ void StPicoTrackClusterQA::RunTrackQA()
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;
   if(!doppAnalysis) fRunForMB = (fHaveMB30) ? kTRUE : kFALSE;
 
+  int refmult = mPicoEvent->refMult();
+  
   // track variables
   int ntracks = mPicoDst->numberOfTracks();
 
@@ -1091,7 +1159,8 @@ void StPicoTrackClusterQA::RunTrackQA()
     // USER may want this commented out if wanting to see *RAW* distributions
     // acceptance and kinematic quality cuts
     if(!AcceptTrack(trk, Bfield, mVertex)) { continue; }
-
+    //if(fCorrPileUp &&  mCentMaker->Refmult_check(nBtofMatch,refmult,3,4)) { continue; } 
+    
     // get momentum vector of track - global or primary track
     TVector3 mTrkMom;
     if(doUsePrimTracks) {
@@ -1132,18 +1201,21 @@ void StPicoTrackClusterQA::RunTrackQA()
     fHistNTrackvsnHitsMax->Fill(nHitsMax);
     fHistNTrackvsnHitsFit->Fill(nHitsFit);
     fHistNTrackvsnHitsRatio->Fill((Float_t)nHitsFit/nHitsMax);
-
+    fHistNTracksvsRefmult->Fill(refmult);
     fProfEventTrackPt->Fill(RunId_Order + 1., pt);
+    fProfEventTrackPhi->Fill(RunId_Order + 1., phi);
     fProfEventTrackEta->Fill(RunId_Order + 1., eta);
     fProfEventTracknHitsFit->Fill(RunId_Order + 1., nHitsFit);
     fProfEventTrackDca->Fill(RunId_Order + 1., dca);
 
     // MB30 histograms filled for QA - pp or AuAu
-    if(fRunForMB && !fHaveAnyHT) {
-      fProfEventTrackPt_MB30->Fill(RunId_Order + 1., pt);
-      fProfEventTrackEta_MB30->Fill(RunId_Order + 1., eta);
-      fProfEventTracknHitsFit_MB30->Fill(RunId_Order + 1., nHitsFit);
-      fProfEventTrackDca_MB30->Fill(RunId_Order + 1., dca);
+    //if(fRunForMB && !fHaveAnyHT) {
+    if(fHaveHT1) {
+      fProfEventTrackPt_HT1->Fill(RunId_Order + 1., pt);
+      fProfEventTrackPhi_HT1->Fill(RunId_Order + 1., phi);
+      fProfEventTrackEta_HT1->Fill(RunId_Order + 1., eta);
+      fProfEventTracknHitsFit_HT1->Fill(RunId_Order + 1., nHitsFit);
+      fProfEventTrackDca_HT1->Fill(RunId_Order + 1., dca);
     }
 
     // fill track sparse
@@ -1226,10 +1298,14 @@ void StPicoTrackClusterQA::SetSumw2() {
   fHistNTowervsEta->Sumw2();
   fHistNTowervsPhivsEta->Sumw2();
   fHistNTowerHOTvsTowID->Sumw2();
-
+  fHistNTracksvsRefmult->Sumw2();
   // QA histograms
+  hGoodEvents->Sumw2();
   fHistCentrality->Sumw2();
+  fHistCentralityAfterCuts->Sumw2();
   fHistMultiplicity->Sumw2();
+  fHistMultiplicityCorr->Sumw2();
+  fHistMultiplicityCorrAfterCuts->Sumw2();
   fHistEventCounter->Sumw2();
   fHistEventSelectionQA->Sumw2();
   fHistEventSelectionQAafterCuts->Sumw2();
@@ -1245,6 +1321,7 @@ void StPicoTrackClusterQA::SetSumw2() {
   fHistBemcvsRefMult->Sumw2();
   fHistBtofvsRefMult->Sumw2();
   fHistBemcvsBtof->Sumw2();
+  fHistNtracksvsRefMult->Sumw2();
 
   fHistRefMult->Sumw2();
   fHistVzVPDVz->Sumw2();
@@ -1255,15 +1332,16 @@ void StPicoTrackClusterQA::SetSumw2() {
   fHistEventNTrig_HT->Sumw2();
   fHistEventNTrig_HT1->Sumw2();
   fHistEventNTrig_HT2->Sumw2();
-  fHistRefMult_MB30->Sumw2();
-  fHistVzVPDVz_MB30->Sumw2();
-  fHistVyvsVx_MB30->Sumw2();
-  fHistRvtx_MB30->Sumw2();
-  fHistPerpvtx_MB30->Sumw2();
-  fHistZvtx_MB30->Sumw2();
-  fHistZDCx_MB30->Sumw2();
-  fHistEventID_MB30->Sumw2();
-  fHistRunID_MB30->Sumw2();
+  fHistEventPileUp->Sumw2();
+  fHistRefMult_HT1->Sumw2();
+  fHistVzVPDVz_HT1->Sumw2();
+  fHistVyvsVx_HT1->Sumw2();
+  fHistRvtx_HT1->Sumw2();
+  fHistPerpvtx_HT1->Sumw2();
+  fHistZvtx_HT1->Sumw2();
+  fHistZDCx_HT1->Sumw2();
+  fHistEventID->Sumw2();
+  fHistRunID->Sumw2();
   //fProfEventTrackPt_MB30->Sumw2();
   //fProfEventRefMult_MB30->Sumw2();
   //fProfEventZvtx_MB30->Sumw2();
@@ -1370,7 +1448,7 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
     // get global track vector
     mTrkMom = trk->gMom(Vert, B);
   }
-
+  
   // track variables
   double pt = mTrkMom.Perp();
   double phi = mTrkMom.Phi();
@@ -1385,21 +1463,19 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
   double nHitsRatio = 1.0*nHitsFit/nHitsMax;
 
   // track pt, eta, phi cut
-  if(pt < fTrackPtMinCut) return kFALSE;
-  if(pt > fTrackPtMaxCut) return kFALSE; // 20.0 STAR -> 30.0 GeV, 100.0 ALICE
+  if((pt < fTrackPtMinCut) ||(pt > fTrackPtMaxCut)) return kFALSE; // 20.0 STAR -> 30.0 GeV, 100.0 ALICE
   if((eta < fTrackEtaMinCut) || (eta > fTrackEtaMaxCut)) return kFALSE;
-  if(phi < 0.0)    phi += 2.0*pi;
-  if(phi > 2.0*pi) phi -= 2.0*pi;
   if((phi < fTrackPhiMinCut) || (phi > fTrackPhiMaxCut)) return kFALSE;
-
+  
   // additional quality cuts for tracks
   if(dca > fTrackDCAcut)            return kFALSE;
   if(nHitsFit < fTracknHitsFit)     return kFALSE;
-  if(nHitsRatio < fTracknHitsRatio) return kFALSE;
-
+  if((nHitsRatio < fTracknHitsRatio) || (nHitsRatio > fTracknHitsRatioMax)) return kFALSE;
+  
   // selecting positive or negative tracks only
   if((fTrackChargePos == 1) && (charge < 0) ) return kFALSE;
   if((fTrackChargePos == 0) && (charge > 0) ) return kFALSE;
+  
   // passed all above cuts - keep track and fill input vector to fastjet
   return kTRUE;
 }
@@ -1519,6 +1595,7 @@ TH1* StPicoTrackClusterQA::FillEmcTriggersHist(TH1* h) {
 // Trigger QA histogram, label bins
 TH1* StPicoTrackClusterQA::FillEventTriggerQA(TH1* h) {
   // Run12 pp 200 GeV
+  //cout << "filling trigg QA" <<endl;
   if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200) {
     // Run12 (200 GeV pp) triggers:
     int arrHT1[] = {370511, 370546};
@@ -1620,46 +1697,48 @@ TH1* StPicoTrackClusterQA::FillEventTriggerQA(TH1* h) {
   }
   //Run18 Isobar
   if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
-    int arrHT1[] = {600201,600211}; //BHT1
-    int arrHT1VPD30[] = {600221,600231}; //BHT1 - vdp30
-    int arrHT1VPD100[] = {600202, 600212,600222,600232}; //BHT1 - vpd100
-    int arrHT2[] = {600203,600213}; //BHT2
-    int arrHT2L2G[] = {600204,600214}; //BHT2 - l2gamma
-    int arrMB[] = {610001, 610011,  610021,  610031,  610041,  610051};
-    int arrMB_HLTGOOD[] = {610016, 610026};
-    int arrVPDMB[] = {600003};
-    int arrVPDMB30[] = {600001, 600011, 600021, 600031};
-    int arrVPDMB30HLT[] = {600002, 600012, 600022, 600032, 600042};
-    int arrVPDMB30GMT[] = {600009, 600019, 600029};
+    int arrHT1[] = {600201, 600202, 600211, 600212, 600221, 600222, 600231, 600232};
+    int arrHT2[] = {600203, 600213}; //no L2G
+    //int arrHT1VPD30[] = {600221,600231}; //BHT1 - vdp30
+    //int arrHT1VPD100[] = {600202, 600212,600222,600232}; //BHT1 - vpd100
+    //int arrHT2L2G[] = {600204,600214}; //BHT2 - l2gamma
+    //int arrMB[] = {610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051};
+    int arrMB[]={600001, 600011, 600021, 600031};//{610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
+ // int arrMB30_RunIso[]={600001, 600011, 600021, 600031, 600002, 600012, 600022, 600032, 600042, 600009, 600019, 600029};
+    //int arrMB30[] = {600001, 600011, 600021, 600031};
+    //int arrVPDMB30HLT[] = {600002, 600012, 600022, 600032, 600042};
+    //int arrVPDMB30GMT[] = {600009, 600019, 600029};
+  
+    //int arrMB_HLTGOOD[] = {610016, 610026};
     // fill for kAny
      h->Fill(1);
 
      // check if event triggers meet certain criteria and fill histos
      if(DoComparison(arrHT1, sizeof(arrHT1)/sizeof(*arrHT1))) { h->Fill(2); } // HT1
-     if(DoComparison(arrHT1VPD30, sizeof(arrHT1VPD30)/sizeof(*arrHT1VPD30))) { h->Fill(3); } // HT
-     if(DoComparison(arrHT1VPD100, sizeof(arrHT1VPD100)/sizeof(*arrHT1VPD100))) { h->Fill(4); } // HT
-     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { h->Fill(5); } // HT2
-     if(DoComparison(arrHT2L2G, sizeof(arrHT2L2G)/sizeof(*arrHT2L2G))) { h->Fill(6); } // HT2
-     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(7); }  // MB
-     if(DoComparison(arrMB_HLTGOOD, sizeof(arrMB_HLTGOOD)/sizeof(*arrMB_HLTGOOD))) { h->Fill(8); }  // MB
-     if(DoComparison(arrVPDMB, sizeof(arrVPDMB)/sizeof(*arrVPDMB))) { h->Fill(9); }
-     if(DoComparison(arrVPDMB30, sizeof(arrVPDMB30)/sizeof(*arrVPDMB30))) { h->Fill(10); }
-     if(DoComparison(arrVPDMB30HLT, sizeof(arrVPDMB30HLT)/sizeof(*arrVPDMB30HLT))) { h->Fill(11); }
-     if(DoComparison(arrVPDMB30GMT, sizeof(arrVPDMB30GMT)/sizeof(*arrVPDMB30GMT))) { h->Fill(12); }
+     //if(DoComparison(arrHT1VPD30, sizeof(arrHT1VPD30)/sizeof(*arrHT1VPD30))) { h->Fill(3); } // HT
+     //if(DoComparison(arrHT1VPD100, sizeof(arrHT1VPD100)/sizeof(*arrHT1VPD100))) { h->Fill(4); } // HT
+     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { h->Fill(3); } // HT2
+     //if(DoComparison(arrHT2L2G, sizeof(arrHT2L2G)/sizeof(*arrHT2L2G))) { h->Fill(6); } // HT2
+     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { h->Fill(4); }  // MB
+    // if(DoComparison(arrMB_HLTGOOD, sizeof(arrMB_HLTGOOD)/sizeof(*arrMB_HLTGOOD))) { h->Fill(8); }  // MB
+     //if(DoComparison(arrVPDMB, sizeof(arrVPDMB)/sizeof(*arrVPDMB))) { h->Fill(9); }
+     //if(DoComparison(arrVPDMB30, sizeof(arrVPDMB30)/sizeof(*arrVPDMB30))) { h->Fill(10); }
+     //if(DoComparison(arrVPDMB30HLT, sizeof(arrVPDMB30HLT)/sizeof(*arrVPDMB30HLT))) { h->Fill(11); }
+     //if(DoComparison(arrVPDMB30GMT, sizeof(arrVPDMB30GMT)/sizeof(*arrVPDMB30GMT))) { h->Fill(12); }
 
      // label bins of the analysis trigger selection summary
      h->GetXaxis()->SetBinLabel(1, "Un-identified trigger");
      h->GetXaxis()->SetBinLabel(2, "HT1");
-     h->GetXaxis()->SetBinLabel(3, "HT1-VPD30");
-     h->GetXaxis()->SetBinLabel(4, "HT1-VPD100");
-     h->GetXaxis()->SetBinLabel(5, "HT2");
-     h->GetXaxis()->SetBinLabel(6, "HT2-L2Gamma");
-     h->GetXaxis()->SetBinLabel(7, "MB");
-     h->GetXaxis()->SetBinLabel(8, "MB-HLTGood");
-     h->GetXaxis()->SetBinLabel(9, "VPDMB");
-     h->GetXaxis()->SetBinLabel(10, "VPDMB30");
-     h->GetXaxis()->SetBinLabel(11, "VPDMB30HLT");
-     h->GetXaxis()->SetBinLabel(12, "VPDMB30GMT");
+     //h->GetXaxis()->SetBinLabel(3, "HT1-VPD30");
+     //h->GetXaxis()->SetBinLabel(4, "HT1-VPD100");
+     h->GetXaxis()->SetBinLabel(3, "HT2");
+     //h->GetXaxis()->SetBinLabel(6, "HT2-L2Gamma");
+     h->GetXaxis()->SetBinLabel(4, "MB");
+     //h->GetXaxis()->SetBinLabel(8, "MB-HLTGood");
+     //h->GetXaxis()->SetBinLabel(9, "VPDMB");
+     //h->GetXaxis()->SetBinLabel(10, "VPDMB30");
+     //h->GetXaxis()->SetBinLabel(11, "VPDMB30HLT");
+     //h->GetXaxis()->SetBinLabel(12, "VPDMB30GMT");
   }
 
   // set general label
@@ -2167,7 +2246,7 @@ void StPicoTrackClusterQA::RunHadCorrTowerQA()
         if(fJetHadCorrType == StJetFrameworkPicoBase::kHighestEMatchedTrack) {  towerEt = fMaxEt;  towerE = fMaxEt  * 1.0*TMath::CosH(towerEta); }
         if(fJetHadCorrType == StJetFrameworkPicoBase::kAllMatchedTracks)     {  towerEt = fSumEt;  towerE = fSumEt  * 1.0*TMath::CosH(towerEta); }
     }
-    if(towerEt == 0) { cout<<"fJetHadCorrType - or - towerE actually 0"<<endl; }  // it was unset, because you provided wrong fJetHadCorrType
+    //if(towerEt == 0) { cout<<"fJetHadCorrType - or - towerE actually 0"<<endl; }  // it was unset, because you provided wrong fJetHadCorrType
     if(towerEt < 0) towerEt = 0.0;
     if(towerEt < mTowerEnergyMin) continue;
 
@@ -2478,7 +2557,7 @@ void StPicoTrackClusterQA::FillTriggerIDs(TH1 *h) {
 
   // Run12 pp (200 GeV) - 27, 0-26
   unsigned int triggersRun12[] = {370001, 370011, 370021, 370022, 370031, 370032, 370301, 370341, 370361, 370501, 370511, 370521, 370522, 370531, 370541, 370542, 370546, 370601, 370611, 370621, 370641, 370701, 370801, 370980, 370981, 370982, 370983};
-  unsigned int triggersRunIso[] = {600001, 600002, 600003, 600011, 600012, 600016, 600019, 600021, 600022, 600026, 600029, 600031, 600032, 600041, 600042, 600051, 600201, 600202, 600203, 600204, 600211, 600212, 600213, 600214, 6002221, 600222, 600231, 600232};
+  unsigned int triggersRunIso[] = {600001, 600011, 600021, 600031, 600201, 600202, 600203, 600211, 600212, 600213, 600221, 600222, 600231, 600232};
 
   // get size of trigger ID arrays:
   size_t nRun12IDs = sizeof(triggersRun12)/sizeof(triggersRun12[0]);
@@ -2545,6 +2624,7 @@ void StPicoTrackClusterQA::RunEventQA() {
   //nBemc and Tof matches
   int nBemcMatch =  mPicoEvent->nBEMCMatch();
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  int ntracks = mPicoDst->numberOfTracks();
 
   // =======================================================================================
   // check for MB/HT event
@@ -2560,6 +2640,8 @@ void StPicoTrackClusterQA::RunEventQA() {
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;
   if(!doppAnalysis) fRunForMB = (fHaveMB30) ? kTRUE : kFALSE;
 
+  //cout << "runfor MB : " << fRunForMB << " MB?: "<< fHaveMBevent << " MB30?: " << fHaveMB30 << " HT " << fHaveAnyHT << " HT1?: " 
+//	  << fHaveHT1 << " HT2?: " << fHaveHT2 << " HT3?: " << fHaveHT3 <<endl; 
   fHistZvtx->Fill(fZVtx);
   fHistZDCx->Fill(fZDCx);
   fHistBBCx->Fill(fBBCx);
@@ -2567,35 +2649,38 @@ void StPicoTrackClusterQA::RunEventQA() {
   fHistBemcvsRefMult->Fill(nBemcMatch,refmult);
   fHistBtofvsRefMult->Fill(nBtofMatch,refmult);
   fHistBemcvsBtof->Fill(nBemcMatch,nBtofMatch);
-
+  fHistNtracksvsRefMult->Fill(ntracks,refmult);
+  
   fHistRefMult->Fill(refmult);        // MB30: refmult distribution
   fHistVzVPDVz->Fill(fZVtx - fVzVPD); // MB30: Vz - VPDVz distribution
   fHistVyvsVx->Fill(fXVtx, fYVtx);    // MB30: Vx vs Vy distribution
   fHistRvtx->Fill(fMag);              // MB30: Radial vertex distribution
 
-  // MB30 histograms filled for QA
-  if(fRunForMB && !fHaveAnyHT) {
-    fHistRefMult_MB30->Fill(refmult);        // MB30: refmult distribution
-    fHistVzVPDVz_MB30->Fill(fZVtx - fVzVPD); // MB30: Vz - VPDVz distribution
-    fHistVyvsVx_MB30->Fill(fXVtx, fYVtx);    // MB30: Vx vs Vy distribution
-    fHistRvtx_MB30->Fill(fMag);              // MB30: Radial vertex distribution
-    fHistPerpvtx_MB30->Fill(fPerp);          // MB30: Transverse vertex distribution
-    fHistZvtx_MB30->Fill(fZVtx);             // MB30: Vz distribution
-    fHistZDCx_MB30->Fill(fZDCx);             // MB30: ZDCx distribution
-    fHistEventID_MB30->Fill(fEventId);       // MB30: Event Id distribution
-    fHistRunID_MB30->Fill(fRunId);           // MB30: Run Id distribution
-
-    // profile plots, run-averaged
-    fProfEventRefMult_MB30->Fill(RunId_Order + 1., refmult); // MB30: refmult
-    fProfEventXvtx_MB30->Fill(RunId_Order + 1., fXVtx);      // MB30: x-vert
-    fProfEventYvtx_MB30->Fill(RunId_Order + 1., fYVtx);      // MB30: y-vert
-    fProfEventZvtx_MB30->Fill(RunId_Order + 1., fZVtx);      // MB30: z-vert
-    fProfEventRvtx_MB30->Fill(RunId_Order + 1., fMag);       // MB30: R-vertex
-    fProfEventPerpvtx_MB30->Fill(RunId_Order + 1., fPerp);   // MB30: transverse - vertex
-    fProfEventBBCx_MB30->Fill(RunId_Order + 1., fBBCx);      // MB30: BBC coincidence
-    fProfEventZDCx_MB30->Fill(RunId_Order + 1., fZDCx);      // MB30: ZDC coincidence
-    fProfEventnBemcMatch_MB30->Fill(RunId_Order + 1., nBemcMatch);
-    fProfEventnBtofMatch_MB30->Fill(RunId_Order + 1., nBtofMatch);
+  fHistEventID->Fill(fEventId);       // MB30: Event Id distribution
+  fHistRunID->Fill(fRunId);           // MB30: Run Id distribution
+  
+  // HT1 histograms filled for QA
+  //if(fRunForMB && !fHaveAnyHT) {
+  if(fHaveHT1){
+    fHistRefMult_HT1->Fill(refmult);        // MB30: refmult distribution
+    fHistVzVPDVz_HT1->Fill(fZVtx - fVzVPD); // MB30: Vz - VPDVz distribution
+    fHistVyvsVx_HT1->Fill(fXVtx, fYVtx);    // MB30: Vx vs Vy distribution
+    fHistRvtx_HT1->Fill(fMag);              // MB30: Radial vertex distribution
+    fHistPerpvtx_HT1->Fill(fPerp);          // MB30: Transverse vertex distribution
+    fHistZvtx_HT1->Fill(fZVtx);             // MB30: Vz distribution
+    fHistZDCx_HT1->Fill(fZDCx);             // MB30: ZDCx distribution
+//    fHistEventID->Fill(fEventId);       // MB30: Event Id distribution
+//    fHistRunID->Fill(fRunId);           // MB30: Run Id distribution
+    fProfEventRefMult_HT1->Fill(RunId_Order + 1., refmult); // MB30: refmult
+    fProfEventXvtx_HT1->Fill(RunId_Order + 1., fXVtx);      // MB30: x-vert
+    fProfEventYvtx_HT1->Fill(RunId_Order + 1., fYVtx);      // MB30: y-vert
+    fProfEventZvtx_HT1->Fill(RunId_Order + 1., fZVtx);      // MB30: z-vert
+    fProfEventRvtx_HT1->Fill(RunId_Order + 1., fMag);       // MB30: R-vertex
+    fProfEventPerpvtx_HT1->Fill(RunId_Order + 1., fPerp);   // MB30: transverse - vertex
+    fProfEventBBCx_HT1->Fill(RunId_Order + 1., fBBCx);      // MB30: BBC coincidence
+    fProfEventZDCx_HT1->Fill(RunId_Order + 1., fZDCx);      // MB30: ZDC coincidence
+    fProfEventnBemcMatch_HT1->Fill(RunId_Order + 1., nBemcMatch);
+    fProfEventnBtofMatch_HT1->Fill(RunId_Order + 1., nBtofMatch);
   }
   // =======================================================================================
 
@@ -2606,9 +2691,11 @@ void StPicoTrackClusterQA::RunEventQA() {
   fProfEventRefMult->Fill(RunId_Order + 1., refmult);
   fProfEventRanking->Fill(RunId_Order + 1., ranking);
   fProfEventZvtx->Fill(RunId_Order + 1., fZVtx);
+  fProfEventZvtxZvpd->Fill(RunId_Order + 1., fZVtx - fVzVPD);
   fProfEventYvtx->Fill(RunId_Order + 1., fYVtx);
   fProfEventXvtx->Fill(RunId_Order + 1., fXVtx);
-  if(fVzVPD > -900.) fProfEventVzVPD->Fill(RunId_Order + 1., fVzVPD); // sometimes this is not set, don't include in average then
+  //if(fVzVPD > -900.) fProfEventVzVPD->Fill(RunId_Order + 1., fVzVPD); // sometimes this is not set, don't include in average then
+  fProfEventVzVPD->Fill(RunId_Order + 1., fVzVPD); // sometimes this is not set, don't include in average then
   fProfEventBBCx->Fill(RunId_Order + 1., fBBCx);
   fProfEventZDCx->Fill(RunId_Order + 1., fZDCx);
 
@@ -2651,7 +2738,7 @@ Int_t StPicoTrackClusterQA::GetRunNo(int runid){
   // Run18 Isobar (27 GeV)
   if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
     // 405 runs on May 23
-    for(int i = 0; i < 82; i++){
+    for(int i = 0; i < 218; i++){ //FIXME
       if(RunIso_IdNo[i] == runid) {
         return i;
       }

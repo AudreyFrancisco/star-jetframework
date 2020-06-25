@@ -38,6 +38,7 @@
 #include "runlistP16ij.h"
 #include "runlistP17id.h" // SL17i - Run14, now SL18b (March20)
 #include "runlistRun14AuAu_P18ih.h" // new Run14 AuAu
+#include "runlistIso.h" //Isobar
 
 // old file, kept for useful constants
 #include "StPicoConstants.h"
@@ -967,11 +968,16 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
 
   // switch on bin selection
   switch(fCentralitySelectionCut) {
+    case kCent005 :  // 0-10%
+      if((centbin>-1) && (centbin<1)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+
     case kCent010 :  // 0-10%
       if((centbin>-1) && (centbin<2)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
       break;
-
+    
     case kCent020 :  // 0-20%
       if((centbin>-1) && (centbin<4)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
@@ -1047,6 +1053,11 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
       else { doAnalysis = kFALSE; }
       break;
 
+    case kCent7080 : // 60-80%
+      if((centbin>13) && (centbin<16)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+
     default : // wrong entry
       doAnalysis = kFALSE;
 
@@ -1116,8 +1127,8 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
   int arrMBnovtx_Run17[] = {570004};
 
   //Run Isobar triggers : 200Gev
-  int arrMB_RunIso[]={610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
-  int arrMB30_RunIso[]={600001, 600011, 600021, 600031, 600002, 600012, 600022, 600032, 600042, 600009, 600019, 600029};
+  int arrMB_RunIso[]={600001, 600011, 600021, 600031};//{610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
+  //int arrMB30_RunIso[]={600001, 600011, 600021, 600031, 600002, 600012, 600022, 600032, 600042, 600009, 600019, 600029};
 
   // run flag selection to check for MB firing
   switch(RunFlag) {
@@ -1207,8 +1218,8 @@ Bool_t StJetFrameworkPicoBase::CheckForMB(int RunFlag, int type) {
          case StJetFrameworkPicoBase::kVPDMB :
 	      if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
     	      break;
-      	 case StJetFrameworkPicoBase::kVPDMB30 :
-	      if((DoComparison(arrMB30_RunIso, sizeof(arrMB30_RunIso)/sizeof(*arrMB30_RunIso)))) { return kTRUE; }
+         case StJetFrameworkPicoBase::kVPDMB30 :
+	      if((DoComparison(arrMB_RunIso, sizeof(arrMB_RunIso)/sizeof(*arrMB_RunIso)))) { return kTRUE; }
 	      break;
 	  /*        case StJetFrameworkPicoBase::kVPDMB100 :
 	   *                      if((DoComparison(arrMB100_RunIso, sizeof(arrMB100_RunIso)/sizeof(*arrMB100_RunIso)))) { return kTRUE; }
@@ -1248,8 +1259,8 @@ Bool_t StJetFrameworkPicoBase::CheckForHT(int RunFlag, int type) {
   int arrHT3_Run17[] = {570201, 590201};
 
   // RunIso triggers: 200 GeV
-  int arrHT1_RunIso[] = {600201, 600202, 600211, 600212, 60221, 600222, 600231, 600232};
-  int arrHT2_RunIso[] = {600203, 600204, 600213, 600214};
+  int arrHT1_RunIso[] = {600201, 600202, 600211, 600212, 600221, 600222, 600231, 600232};
+  int arrHT2_RunIso[] = {600203, 600213}; //no L2G
 
   // run flag selection to check for MB firing
   switch(RunFlag) {
@@ -1741,44 +1752,50 @@ TH1* StJetFrameworkPicoBase::FillEventTriggerQA(TH1* h) {
   }
   //Run18 Isobar
   if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
-    int arrHT1[] = {600201,600211}; //BHT1
-    int arrHT1VPD30[] = {600221,600221}; //BHT1 - vdp30
+    
+    int arrHT1[] = {600201, 600202, 600211, 600212, 600221, 600222, 600231, 600232};
+    int arrHT2[] = {600203, 600213}; //no L2G
+    int arrMB[]={600001, 600011, 600021, 600031};//{610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
+/*    int arrHT1[] = {600201,600211, 600221, 600231, 600202, 600212, 600232}; //BHT1
+    int arrHT1VPD30[] = {600221,600231}; //BHT1 - vdp30
     int arrHT1VPD100[] = {600202, 600212,600222,600232}; //BHT1 - vpd100
     int arrHT2[] = {600203,600213}; //BHT2
     int arrHT2L2G[] = {600204,600214}; //BHT2 - l2gamma
-    int arrMB[] = {610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051};
+    //int arrMB[] = {610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051};
+    int arrMB[]={600001, 600011, 600021, 600031};//{610001, 610011, 610016,  610021,  610026,  610031,  610041,  610051, 600003};
+ // int arrMB30_RunIso[]={600001, 600011, 600021, 600031, 600002, 600012, 600022, 600032, 600042, 600009, 600019, 600029};
     int arrVPDMB[] = {600003};
     int arrVPDMB30[] = {600001, 600011, 600021, 600031};
     int arrVPDMB30HLT[] = {600002, 600012, 600022, 600032, 600042};
     int arrVPDMB30GMT[] = {600009, 600019, 600029};
-    // fill for kAny
+*/    // fill for kAny
      int bin = 0;
      bin = 1; h->Fill(bin);
 
      // check if event triggers meet certain criteria and fill histos
      if(DoComparison(arrHT1, sizeof(arrHT1)/sizeof(*arrHT1))) { bin = 2; h->Fill(bin); } // HT1
-     if(DoComparison(arrHT1VPD30, sizeof(arrHT1VPD30)/sizeof(*arrHT1VPD30))) { bin = 3; h->Fill(bin); } // HT
-     if(DoComparison(arrHT1VPD100, sizeof(arrHT1VPD100)/sizeof(*arrHT1VPD100))) { bin = 4; h->Fill(bin); } // HT
-     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { bin = 5; h->Fill(bin); } // HT2
-     if(DoComparison(arrHT2L2G, sizeof(arrHT2L2G)/sizeof(*arrHT2L2G))) { bin = 6; h->Fill(bin); } // HT2
-     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { bin = 7; h->Fill(bin); }  // MB
-     if(DoComparison(arrVPDMB, sizeof(arrVPDMB)/sizeof(*arrVPDMB))) { bin = 8; h->Fill(bin); }
-     if(DoComparison(arrVPDMB30, sizeof(arrVPDMB30)/sizeof(*arrVPDMB30))) { bin = 9; h->Fill(bin); }
-     if(DoComparison(arrVPDMB30HLT, sizeof(arrVPDMB30HLT)/sizeof(*arrVPDMB30HLT))) { bin = 10; h->Fill(bin); }
-     if(DoComparison(arrVPDMB30GMT, sizeof(arrVPDMB30GMT)/sizeof(*arrVPDMB30GMT))) { bin = 11; h->Fill(bin); }
+  //   if(DoComparison(arrHT1VPD30, sizeof(arrHT1VPD30)/sizeof(*arrHT1VPD30))) { bin = 3; h->Fill(bin); } // HT
+  //   if(DoComparison(arrHT1VPD100, sizeof(arrHT1VPD100)/sizeof(*arrHT1VPD100))) { bin = 4; h->Fill(bin); } // HT
+     if(DoComparison(arrHT2, sizeof(arrHT2)/sizeof(*arrHT2))) { bin = 3; h->Fill(bin); } // HT2
+   //  if(DoComparison(arrHT2L2G, sizeof(arrHT2L2G)/sizeof(*arrHT2L2G))) { bin = 6; h->Fill(bin); } // HT2
+     if(DoComparison(arrMB, sizeof(arrMB)/sizeof(*arrMB))) { bin = 4; h->Fill(bin); }  // MB
+   //  if(DoComparison(arrVPDMB, sizeof(arrVPDMB)/sizeof(*arrVPDMB))) { bin = 8; h->Fill(bin); }
+   //  if(DoComparison(arrVPDMB30, sizeof(arrVPDMB30)/sizeof(*arrVPDMB30))) { bin = 9; h->Fill(bin); }
+   //  if(DoComparison(arrVPDMB30HLT, sizeof(arrVPDMB30HLT)/sizeof(*arrVPDMB30HLT))) { bin = 10; h->Fill(bin); }
+   //  if(DoComparison(arrVPDMB30GMT, sizeof(arrVPDMB30GMT)/sizeof(*arrVPDMB30GMT))) { bin = 11; h->Fill(bin); }
 
      // label bins of the analysis trigger selection summary
      h->GetXaxis()->SetBinLabel(1, "Un-identified trigger");
      h->GetXaxis()->SetBinLabel(2, "HT1");
-     h->GetXaxis()->SetBinLabel(3, "HT1-VPD30");
-     h->GetXaxis()->SetBinLabel(4, "HT1-VPD100");
-     h->GetXaxis()->SetBinLabel(5, "HT2");
-     h->GetXaxis()->SetBinLabel(6, "HT2-L2Gamma");
-     h->GetXaxis()->SetBinLabel(7, "MB");
-     h->GetXaxis()->SetBinLabel(8, "VPDMB");
-     h->GetXaxis()->SetBinLabel(9, "VPDMB30");
-     h->GetXaxis()->SetBinLabel(10, "VPDMB30HLT");
-     h->GetXaxis()->SetBinLabel(11, "VPDMB30GMT");
+     //h->GetXaxis()->SetBinLabel(3, "HT1-VPD30");
+     //h->GetXaxis()->SetBinLabel(4, "HT1-VPD100");
+     h->GetXaxis()->SetBinLabel(3, "HT2");
+     //h->GetXaxis()->SetBinLabel(6, "HT2-L2Gamma");
+     h->GetXaxis()->SetBinLabel(4, "MB");
+     //h->GetXaxis()->SetBinLabel(8, "VPDMB");
+     //h->GetXaxis()->SetBinLabel(9, "VPDMB30");
+     //h->GetXaxis()->SetBinLabel(10, "VPDMB30HLT");
+     //h->GetXaxis()->SetBinLabel(11, "VPDMB30GMT");
   }
 
   // set general label
@@ -1822,6 +1839,15 @@ Int_t StJetFrameworkPicoBase::GetRunNo(int runid){
     for(int i = 0; i < 1359; i++){
       if(Run16AuAu_IdNo[i] == runid) {
         return i;
+      }
+    }
+  }
+
+  //Isobar
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
+    for(int i = 0; i < 218; i++){
+      if(RunIso_IdNo[i] == runid) {
+	return i;
       }
     }
   }
