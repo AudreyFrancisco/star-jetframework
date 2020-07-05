@@ -251,6 +251,7 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   // Destructor
   if(fHistNTrackvsPt)         delete fHistNTrackvsPt;
   if(fHistNTrackvsPhi)        delete fHistNTrackvsPhi;
+  if(fHistNTrackvsPhiTest)        delete fHistNTrackvsPhiTest;
   if(fHistNTrackvsEta)        delete fHistNTrackvsEta;
   if(fHistNTrackvsPhivsEta)   delete fHistNTrackvsPhivsEta;
   if(fHistNHadCorrTowervsE)   delete fHistNHadCorrTowervsE;
@@ -453,7 +454,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   nRunBins = 857 + 43;
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830; //1654;
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 218; //FIXME
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 1428; //FIXME
     Double_t nRunBinsMax = (Double_t)nRunBins + 0.5;
 
     // tweak refmult plot binnings for pp datasets
@@ -477,7 +478,8 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 
     // track histograms
     fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 300, 0., 30.);
-    fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi", "Ntracks vs #phi", 144, 0., 2.0*pi);
+    fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi", "Ntracks vs #phi", 144, -1., 3.0*pi);
+    fHistNTrackvsPhiTest = new TH1F("fHistNTrackvsPhiTest", "Ntracks vs #phi", 144, -1., 3.0*pi);
     fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -2.0, 2.0);
     fHistNTrackvsPhivsEta = new TH2F("fHistNTrackvsPhivsEta", "Ntrack vs #phi vs #eta", 144, 0, 2*pi, 40, -1.0, 1.0);
 
@@ -528,7 +530,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   { runMin = 13000000.; runMax = 13100000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) { runMin = 15050000.; runMax = 15200000.; }
     if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) { runMin = 17050000.; runMax = 17150000.; }
-    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084005.; runMax = 19130027.; nRunBinSize = 1; } //FIXME
+    if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084005.; runMax = 19130031.; nRunBinSize = 1; } //FIXME
 
     // event QA histograms
     fHistZvtx = new TH1F("fHistZvtx", "Z-vertex distribution ", 150, -100., 100.);
@@ -673,6 +675,7 @@ void StPicoTrackClusterQA::WriteHistograms() {
   // track and tower histograms
   fHistNTrackvsPt->Write();
   fHistNTrackvsPhi->Write();
+  fHistNTrackvsPhiTest->Write();
   fHistNTrackvsEta->Write();
   fHistNTrackvsPhivsEta->Write();
   fHistNTrackvsDca->Write();
@@ -1171,6 +1174,11 @@ void StPicoTrackClusterQA::RunTrackQA()
       mTrkMom = trk->gMom(mVertex, Bfield);
     }
 
+    //Prithwish add cuts
+    if( trk->gMom().Mag() < 0.1 || TMath::Abs(trk->gDCAxy(mVertex.x(), mVertex.y()))>50. ) { continue; }
+    //if( trk->isTofTrack() ){
+    	
+    //} 
     // track variables
     double pt = mTrkMom.Perp();
     double phi = mTrkMom.Phi();
@@ -1279,6 +1287,7 @@ void StPicoTrackClusterQA::RunTrackQA()
 void StPicoTrackClusterQA::SetSumw2() {
   fHistNTrackvsPt->Sumw2();
   fHistNTrackvsPhi->Sumw2();
+  fHistNTrackvsPhiTest->Sumw2();
   fHistNTrackvsEta->Sumw2();
   fHistNTrackvsDca->Sumw2();
   fHistNTrackvsnHitsMax->Sumw2();
@@ -1462,11 +1471,18 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
   int nHitsMax = trk->nHitsMax();
   double nHitsRatio = 1.0*nHitsFit/nHitsMax;
 
+  //Prithwish add cuts
+  //if( gTrack->gMom().Mag() < 0.1 || TMath::Abs(gTrack->gDCAxy(pRcVx.x(), pRcVx.y()))>50. ) return kFALSE;
+  // shift track phi (0, 2*pi)
+  if(phi < 0.0)    phi += 2.0*pi;
+  if(phi > 2.0*pi) phi -= 2.0*pi;
+  
   // track pt, eta, phi cut
   if((pt < fTrackPtMinCut) ||(pt > fTrackPtMaxCut)) return kFALSE; // 20.0 STAR -> 30.0 GeV, 100.0 ALICE
   if((eta < fTrackEtaMinCut) || (eta > fTrackEtaMaxCut)) return kFALSE;
   if((phi < fTrackPhiMinCut) || (phi > fTrackPhiMaxCut)) return kFALSE;
   
+  fHistNTrackvsPhiTest->Fill(phi);
   // additional quality cuts for tracks
   if(dca > fTrackDCAcut)            return kFALSE;
   if(nHitsFit < fTracknHitsFit)     return kFALSE;
@@ -2735,10 +2751,10 @@ Int_t StPicoTrackClusterQA::GetRunNo(int runid){
     }
   }
 
-  // Run18 Isobar (27 GeV)
+  // Run18 Isobar (200 GeV)
   if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
     // 405 runs on May 23
-    for(int i = 0; i < 218; i++){ //FIXME
+    for(int i = 0; i < 1428; i++){ //FIXME
       if(RunIso_IdNo[i] == runid) {
         return i;
       }

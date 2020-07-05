@@ -973,6 +973,11 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
       else { doAnalysis = kFALSE; }
       break;
 
+    case kCent510 :  // 0-10%
+      if((centbin>0) && (centbin<2)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+    
     case kCent010 :  // 0-10%
       if((centbin>-1) && (centbin<2)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
@@ -1018,6 +1023,11 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
       else { doAnalysis = kFALSE; }
       break;
 
+    case kCent3040 : // 30-40%
+      if((centbin>5) && (centbin<8)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+    
     case kCent3050 : // 30-50%
       if((centbin>5) && (centbin<10)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
@@ -1028,6 +1038,11 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
       else { doAnalysis = kFALSE; }
       break;
 
+    case kCent4050 : // 40-50%
+      if((centbin>7) && (centbin<10)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+    
     case kCent4060 : // 40-60%
       if((centbin>7) && (centbin<12)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
@@ -1043,8 +1058,18 @@ Bool_t StJetFrameworkPicoBase::SelectAnalysisCentralityBin(Int_t centbin, Int_t 
       else { doAnalysis = kFALSE; }
       break;
 
+    case kCent5060 : // 30-50%
+      if((centbin>9) && (centbin<12)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+    
     case kCent5080 : // 50-80%
       if((centbin>9) && (centbin<16)) { doAnalysis = kTRUE; }
+      else { doAnalysis = kFALSE; }
+      break;
+
+    case kCent6070 : // 30-50%
+      if((centbin>11) && (centbin<14)) { doAnalysis = kTRUE; }
       else { doAnalysis = kFALSE; }
       break;
 

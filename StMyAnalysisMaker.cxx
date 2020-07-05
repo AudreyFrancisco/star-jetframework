@@ -724,7 +724,7 @@ void StMyAnalysisMaker::DeclareHistograms() {
   Int_t nRunBins = 1; // - just a default
   if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) nRunBins = 830;  // 1654;
   if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) nRunBins = 1359;
-  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 82; //May 23
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) nRunBins = 1428; //May 23
   Double_t nRunBinsMax = (Double_t)nRunBins;
 
   // ZDC centering (Run16 binning)

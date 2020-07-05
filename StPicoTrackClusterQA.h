@@ -284,6 +284,7 @@ class StPicoTrackClusterQA : public StMaker {
   // histograms
   TH1F           *fHistNTrackvsPt;//!
   TH1F           *fHistNTrackvsPhi;//!
+  TH1F           *fHistNTrackvsPhiTest;//!
   TH1F           *fHistNTrackvsEta;//!
   TH1F           *fHistNTrackvsDca;//!
   TH1F		 *fHistNTrackvsnHitsMax;//!	

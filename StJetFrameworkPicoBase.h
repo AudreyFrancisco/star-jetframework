@@ -174,13 +174,14 @@ class StJetFrameworkPicoBase : public StMaker {
 
     // centrality bin range
     enum fCentralityBinEnum {
-      kCent005,  kCent010, kCent020,
+      kCent005,  kCent510, kCent010, kCent020,
       kCent1020, kCent1030, kCent1040,
       kCent2030, kCent2040, kCent2050, kCent2060,
-      kCent3050, kCent3060,
-      kCent4060, kCent4070, kCent4080,
-      kCent5080,
-      kCent6080, kCent7080
+      kCent3040, kCent3050, kCent3060,
+      kCent4050, kCent4060, kCent4070, kCent4080,
+      kCent5060, kCent5080,
+      kCent6070, kCent6080, 
+      kCent7080
     };
 
     // enumerator for TPC event plane method
