@@ -108,7 +108,6 @@ StPicoTrackClusterQA::StPicoTrackClusterQA() :
   fTracknHitsRatio(0.2),
   fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
-  fTrackEfficiency(1.),
   fGoodTrackCounter(0),
   fTowerEMinCut(0.2),
   fTowerEMaxCut(100.0),
@@ -193,7 +192,6 @@ StPicoTrackClusterQA::StPicoTrackClusterQA(const char *name, bool doHistos = kFA
   fTracknHitsRatio(0.2),
   fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
-  fTrackEfficiency(1.),
   fGoodTrackCounter(0),
   fTowerEMinCut(0.2),
   fTowerEMaxCut(100.0),
@@ -427,7 +425,6 @@ Int_t StPicoTrackClusterQA::Finish() {
     fout->cd();
     fout->mkdir(GetName());
     fout->cd(GetName());
-
     cout<<GetName()<<endl;
 
     // write histograms and output file before closing
@@ -1228,8 +1225,8 @@ void StPicoTrackClusterQA::RunTrackQA()
 
     // fill track sparse
     Double_t trackEntries[5] = {fCentralityScaled, pt, eta, phi, zVtx};
-    Double_t trefficiency = 1.0; // TODO update
-    fhnTrackQA->Fill(trackEntries, 1.0/trefficiency);
+    Double_t trkEfficiency = 1.0; //= ApplyTrackingEff(fDoEffCorr, pt, eta, ZDCx, fTrackEfficiencyType)   TODO update
+    fhnTrackQA->Fill(trackEntries, 1.0/trkEfficiency);
 
     fGoodTrackCounter++;
   } // track loop

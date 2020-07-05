@@ -1,0 +1,94 @@
+# User additions to .bashrc go in this file
+# add colors
+alias less='less --RAW-CONTROL-CHARS'
+export LS_OPTS='--color=auto'
+alias ls='ls -GFh ${LS_OPTS}'
+
+# bash file
+alias src='source ~/.bashrc'
+alias bashrc='vi ~/.bashrc'
+
+# VIM environment
+alias vi='vim'
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+# grep custom
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# colorize diff output
+alias diffc='colordiff'
+
+# path command format
+alias path='echo -e ${PATH//:/\\n}'
+
+# working repo
+export WORKDIR='/star/u/audrey/analysis/JetFram/Code'
+
+# set fastjet environmental variables
+export FASTJET='/star/u/audrey/analysis/JetFram/FastJet/fastjet-install'
+export FASTJET_CONTRIB='/star/u/audrey/analysis/JetFram/FastJet/fjcontrib-1.026'
+
+# some aliases
+alias star='cd /star/u/audrey/analysis'
+alias mymaker='cd /star/u/audrey/analysis/JetFram/Code/StRoot/StMyAnalysisMaker/'
+#alias myjobs='cd /project/projectdirs/star/pwg/starjetc/jmazer/jobs/' # update
+#alias mySTARdir='cd /star/u/jmazer19/Y2017/STAR/'
+alias root='root -l'
+
+
+# backup star directory files + couple recursive directories
+alias backupdir='cd /gpfs01/star/pwg/audrey/backups/'
+alias homeBU='bash /star/u/audrey/analysis/JetFram/backup_files_snapshots.sh'
+alias rm_backup_lock='rm /gpfs01/star/pwg/audrey/backups/.backup_files_running'
+
+# output dir alias
+alias myOUT='cd /gpfs01/star/pwg/audrey/output/'
+alias myjobs='cd /gpfs01/star/pwg/audrey/output/temp/' # scratch space
+
+# Jobs aliases
+alias condorcheck='condor_q -submitter audrey'
+alias concheck='condor_q restricted-list audrey'
+alias jobsum='concheck | tail -n 3'
+
+# useful aliases 
+alias fixScreen='xrandr -s 1292x843'
+alias fixNew='xrandr -s 1600x900'
+alias sshRCAS='ssh rcas6007'
+alias sshRCAS8='ssh rcas6008'
+alias sshRCAS9='ssh rcas6009'
+
+# load root and switch to bash
+#alias myroot='starver SL17e && starnew && bash'
+alias myroot=' star && bash'
+alias myrootpro='starver pro && star && bash'
+alias myrootnew='starver new && star && bash'
+
+cp_p()
+{
+   strace -q -ewrite cp -- "${1}" "${2}" 2>&1 \
+      | awk '{
+        count += $NF
+            if (count % 10 == 0) {
+               percent = count / total_size * 100
+               printf "%3d%% [", percent
+               for (i=0;i<=percent;i++)
+                  printf "="
+               printf ">"
+               for (i=percent;i<100;i++)
+                  printf " "
+               printf "]\r"
+            }
+         }
+         END { print "" }' total_size=$(stat -c '%s' "${1}") count=0
+}
+
+
+# customizing the command propmt
+# W: dir, w: full path to dir
+#export PS1="\w/ $ "
+#export PS1="\u@\h: \w/ $ "
+#export PS1="\[\e[0;34;41m\][\u\[\e[m\]\[\e[34;41m\]@\[\e[m\]\[\e[34;41m\]\h\[]\e[m\]\w\\$ "
+export PS1="\[\e[1;34;41m\][\u\[\e[m\]\[\e[1;34;41m\]@\[\e[m\]\[\e[1;34;41m\]\h\[]\e[m\]\w\$ "

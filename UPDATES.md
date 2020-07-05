@@ -88,6 +88,150 @@ virtual void            SetMaxEventTowerEt(Double_t mxEt)  { fMaxEventTowerEt = 
 
 
 
+*February 12, 2020 - Part 1:
+1) old(er) event plane correction (recentering and shifting) values were removed and NEW(er) values pushed to the repo
+2) StAnMaker class removed along with its corresponding macro: readPicoDstTest.C - it has a replacement:  StDummyMaker and readPicoDstDummyMaker.C
+3) trackingEfficiency_Run14.h was added, but not used - .root files are instead loaded - they may be added to the repo in upcoming updates, but are located on RCF
+
+
+*February 12, 2020 - Part 2:
+:::: Notable changes ::::
+1) StCentMaker: method added for all luminosities for Run 14 
+```
+getgRefMultCorr_P18ih_VpdMB30_AllLumi()
+```
+2) StEventPlaneMaker: cleaned up, consolidation, added switches for additional jet resolutions (jet R),
+3) StJetFrameworkPicoBase:
+  - added another centrality bin function:  
+  ```
+  Int_t StJetFrameworkPicoBase::GetCentBin10(Int_t cbin) const
+  ```
+  - added luminosity bin function (used for Run 14 tracking efficiency)
+  ```
+  Int_t StJetFrameworkPicoBase::GetLuminosityBin(Double_t lumi) const  
+  ```
+  - updated and cleaned the   ApplyTrackingEff() function.  Tracking efficiency can be called in a class which inherits from the base class via:
+ 
+4) StJetMakerTask:
+  - added switches for tracking efficiency
+  - loads file for tracking efficiency
+  ```
+    // input file - for tracking efficiency: Run14 AuAu and Run12 pp
+  const char *input = "";
+  if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) input=Form("./StRoot/StMyAnalysisMaker/Run14_efficiencySmaller2D.root");
+  if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200)   input=Form("./StRoot/StMyAnalysisMaker/Run12_efficiency_New.root"); // Oct 17, 2019 added
+  if(fDoEffCorr) {
+    fEfficiencyInputFile = new TFile(input, "READ");
+    if(!fEfficiencyInputFile) cout<<Form("do not have input file: %s", input);
+  }
+  ```
+  - switch added for Thomas to correct tracks for efficiency before passing to FastJet (done for charged jets currently) and thus giving back jets with efficiency corrected pt.  Need to set in your readPicoMacro.C
+ ``` 
+    virtual void         SetDoCorrectTracksforEffBeforeJetReco(Bool_t ec) {   doCorrectTracksforEffBeforeJetReco = ec;
+ ```
+where the following is done
+  ```
+      // - NEW TODO - for charged tracks only - CHARGED JETS only (January 22, 2020)
+      // calcualte tracking efficency - calculate single particle track efficiency
+      int effCent   = mCentMaker->GetRef16();
+      double fZDCx  = mPicoEvent->ZDCx();
+      double trkEff = mBaseMaker->ApplyTrackingEff(fDoEffCorr, pt, eta, effCent, fZDCx, fTrackEfficiencyType, fEfficiencyInputFile); // may not need to correct here, just analysis stage
+      double pxCorr = px / trkEff;
+      double pyCorr = py / trkEff;
+      double pzCorr = pz / trkEff;
+      double energyCorr = 1.0*TMath::Sqrt(pxCorr*pxCorr + pyCorr*pyCorr + pzCorr*pzCorr + pi0mass*pi0mass);
+
+      // add track input vector to FastJet
+      if(doCorrectTracksforEffBeforeJetReco) {
+        fjw.AddInputVector(pxCorr, pyCorr, pzCorr, energyCorr, iTracks); // efficiency corrected components
+      } else {
+        // THIS IS DEFAULT !
+        // send track info to FJ wrapper
+        fjw.AddInputVector(px, py, pz, energy, iTracks); // includes E
+      }
+  ```
+    
+  and similarly within the constitutent subtractor switch
+  - consolidation and clean-up
+  - now call a couple methods from the base class
+  - new histograms added for QA with track-tower matching and hadronic corrections
+  - if YOU want to look into jet mass, you *WILL* need to set the recombination scheme in your readPicoMacro.C
+  ```
+  jetTask->SetRecombScheme(E_scheme); 
+  ```
+5) added capabilities to classes which inherit from the base class, to access and apply tracking efficiency for Run 12 pp and Run 14 AuAu.
+
+6) StMyAnalysisMaker3: much has been added/tweaked in my combined class for jet-h and jet shape
+  - added more histograms
+  - updated added tracking efficiency switches / usage, loads efficiency file(s), 
+  - added switches / members for:
+    a) biasing jets
+    b) filtering single particle jets
+    c) removing mixed events with which have cone with specific fractions of energy of signal jet
+    d) running with some systematic uncertainty variations
+    e) jet towers firing trigger requirement function
+  - cleaned
+  - updated main class constructor
+  - added more exclusion checks to hStats histogram
+  - updated event plane option to mixed events
+  - updated event plane type usage to follow scheme of enumerator
+  
+  
+
+*February 13, 2020
+:::: Notable changes to readPicoMacros.C ::::
+1) readPicoDstMultPtBins.C: In addition to the tracking efficiency switches/functions below, additional check and filtering of mixed events which contain a jet cone with a large fraction of the the signal jet in question
+```
+  Bool_t doGenBadMixEventBGcone = kFALSE; // kTRUE changes normalization and removes high frac BGcones
+  
+  EPMaker[i]->SetDoEffCorr(doTrkEff); 
+
+  anaMaker[i] = new StMyAnalysisMaker3(Form("AnalysisMaker_bin%i", i), picoMaker, outputFile, doComments, 10.0, "JetMaker", "StRho_JetsBG");
+  anaMaker[i]->SetdoGenerateBadMixEventBGcone(doGenBadMixEventBGcone); // kFALSE doesn't run cut
+  anaMaker[i]->SetBGConeFractionCut(0.7); // BG cone fraction to cut on and exclude mixed event in question, 0.3 was default
+  if(dopp) {
+    anaMaker[i]->SetDoUseMultBins(kTRUE); // for pp
+    anaMaker[i]->SetdoUseEPBins(kFALSE);  // for pp
+  }
+  anaMaker[i]->SetDoEffCorr(doTrkEff);                      // track reco efficiency switch
+  anaMaker[i]->SetTrackEfficiencyType(effType);             // tracking efficiency type:  pt-eta, pt-based, eta-based
+  anaMaker[i]->SetSystematicUncType(kSystematicUncType);    // systematic uncertainty type to run/toggle
+  anaMaker[i]->SetdoBiasJSjet(doBiasJSjet);                 // bias jet shape jets with leading constituent requirement
+  anaMaker[i]->SetdoRequireJetTowFireTrig(doRequireJetTowFireTrig); // require jets contain constituent tower which fired the events HT trigger
+```
+2) readPicoDstDummyMaker.C:
+These updates were to the steering macros, that correspond to the updates to the classes of the framework pushed last week
+```
+  bool doTrkEff = kTRUE;
+  bool doCorrectTracksforEffBeforeJetReco = kFALSE; // THIS should only be turned on to CORRECT charged tracks for efficiency before giving to FastJet for jet reconstruction
+  
+  jetTask->SetDoEffCorr(doTrkEff);       // Loads efficiency file, tells call to efficiency function to use or not use correction
+  jetTask->SetDoCorrectTracksforEffBeforeJetReco(doCorrectTracksforEffBeforeJetReco); // set above, only use to correct charged tracks before jet reconstruction for efficiency
+```
+and
+```
+  // TODO make sure the next two lines make sense when using this to calculate background kt jets
+  jetTaskBG->SetDoEffCorr(doTrkEff);           // Loads efficiency file, tells call to efficiency function to use or not use correction
+  jetTaskBG->SetDoCorrectTracksforEffBeforeJetReco(doCorrectTracksforEffBeforeJetReco); // set above, only use to correct charged tracks before jet reconstruction for efficiency
+```
+and also
+```
+// enumerator for systematic uncertainty type
+enum ESystematicUncType_t { kDoNothing, kTrkEffMin, kTrkEffMax };
+  
+Int_t effType = StJetFrameworkPicoBase::kNormalPtEtaBased; // options: kNormalPtEtaBased (DEFAULT), kPtBased, kEtaBased, kHeaderArray
+```
+where appropriately.
+
+The jet maker needs to use the "E_scheme" when looking into jet mass
+```
+jetTask->SetRecombScheme(E_scheme); // recomb - this scheme actually doesn't pre-process the 4-vectors during the recombination scheme to set mass to 0 - USED for jet mass
+jetTaskBG->SetRecombScheme(E_scheme); // recomb - this scheme actually doesn't pre-process the 4-vectors during the recombination scheme to set mass to 0 - USED for jet mass
+```
+
+
+
+
 IF THERE IS ANYTHING ELSE - please me know or update this file yourself and push change.
 
 

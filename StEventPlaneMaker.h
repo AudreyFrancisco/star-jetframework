@@ -44,17 +44,6 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
       kDebugEventPlaneCalc
     };
 
-    // enumerator for TPC event plane method
-    enum fTPCEPmethodEnum {
-      kRemoveNothing,
-      kRemoveEtaStrip,
-      kRemoveEtaPhiCone,
-      kRemoveLeadingJetConstituents, // greater than 2 GeV
-      kRemoveEtaStripLeadSub,
-      kRemoveEtaPhiConeLeadSub,
-      kRemoveLeadingSubJetConstituents // greater than 2 GeV
-    };
-
     // detector enum
     enum fDetectorType {
       kNoDetector = 0,
@@ -114,7 +103,7 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
     virtual void            SetTriggerToUse(UInt_t ttu)        { fTriggerToUse = ttu; }
 
     // efficiency correction setter
-    virtual void            SetDoEffCorr(Int_t effcorr)        { fDoEffCorr = effcorr; }
+    virtual void            SetDoEffCorr(Bool_t effcorr)       { fDoEffCorr = effcorr; }
 
     // use rho to correct jet pt in correlation sparses
     virtual void            SetCorrectJetPt(Bool_t cpt)        { fCorrJetPt = cpt; }
@@ -154,11 +143,9 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
     //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
     void                    CalculateEventPlaneResolution(Double_t bbc, Double_t zdc, Double_t tpc, Double_t tpcN, Double_t tpcP, Double_t bbc1, Double_t zdc1);
     static Double_t         CalculateEventPlaneChi(Double_t res);
-    Double_t                GetEventPlaneAngle(TString det, Int_t order, Int_t correctin, TString subevt);
+    Double_t                GetEventPlaneAngle(TString det, Int_t order, Int_t correction, TString subevt);
     Double_t                GetTPCRecenterValue(Double_t randomNum, TString coordinate, Int_t ref9, Int_t region_vz);
-    Double_t                GetTPCRecenterValueNEW(Double_t randomNum, TString coordinate, Int_t ref9, Int_t region_vz);
     Double_t                GetTPCShiftingValue(Double_t tPhi_rcd, Int_t nharm, Int_t ref9, Int_t region_vz);
-    Double_t                GetTPCShiftingValueNEW(Double_t tPhi_rcd, Int_t nharm, Int_t ref9, Int_t region_vz);
 
     // Added from Liang
     void                    QvectorCal(int ref9, int region_vz, int n, int ptbin);
@@ -169,7 +156,7 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
     Double_t                ZDCSMD_GetPosition(int id_order,int eastwest,int verthori,int strip);
 
     // switches
-    Int_t                   fDoEffCorr;              // efficiency correction to tracks
+    Bool_t                  fDoEffCorr;              // efficiency correction to tracks
     Bool_t                  doEventPlaneRes;         // event plane resolution switch
     Bool_t                  doTPCptassocBin;         // TPC event plane calculated on a pt assoc bin basis
     Int_t                   fTPCptAssocBin;          // pt associated bin to calculate event plane for
@@ -338,10 +325,6 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
     TProfile              *fProfV3Resolution[9];//! resolution parameters for v3
     TProfile              *fProfV4Resolution[9];//! resolution parameters for v4
     TProfile              *fProfV5Resolution[9];//! resolution parameters for v5
-//    TH1F                  *fDiffV2Resolution[9];//! difference of event plane angles for n=2
-//    TH1F                  *fDiffV3Resolution[9];//! difference of event plane angles for n=3
-//    TH1F                  *fDiffV4Resolution[9];//! difference of event plane angles for n=4
-//    TH1F                  *fDiffV5Resolution[9];//! difference of event plane angles for n=5
 
     // bad run list 
     std::set<Int_t>        badRuns;
@@ -349,13 +332,8 @@ class StEventPlaneMaker : public StJetFrameworkPicoBase {
     // base class pointer object
     StJetFrameworkPicoBase *mBaseMaker;
 
-    // centrality maker pointer
-    StCentMaker            *mCentMaker;
-
     // maker names
     TString                fAnalysisMakerName;
-//    TString                fJetMakerName;
-//    TString                fRhoMakerName;
                 
     ClassDef(StEventPlaneMaker, 2)
 };

@@ -26,7 +26,6 @@ class StRefMultCorr;
 
 // jet-framework classes
 class StCentMaker;
-class StEmcPosition2;
 class StJetMakerTask;
 class StJet;
 class StRho;
@@ -105,7 +104,6 @@ class StDummyMaker : public StJetFrameworkPicoBase {
     void                    FillEmcTriggers();                          // EmcTrigger counter histo
     Bool_t                  DoComparison(int myarr[], int elems);
     void                    SetSumw2(); // set errors weights 
-    //Double_t                EffCorrection(Double_t trkETA, Double_t trkPT, Int_t effswitch) const; // efficiency correction function
 
     // switches
     Bool_t                  doPrintEventCounter;     // print event # switch
@@ -123,9 +121,6 @@ class StDummyMaker : public StJetFrameworkPicoBase {
 
     // Rho objects
     StRhoParameter         *GetRhoFromEvent(const char *name);
-
-    // position object
-    StEmcPosition2         *mEmcPosition;
 
     // histos
     TH1F *hCentrality;//!

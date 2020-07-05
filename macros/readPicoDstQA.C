@@ -14,7 +14,7 @@ class StMaker;
 class StChain;
 class StPicoDstMaker;
 class StRefMultCorr;
-// my added STAR classes
+// jet-framework STAR classes
 class StJetMakerTask;
 class StJetFrameworkPicoBase;
 class StMyAnalysisMaker;
@@ -127,8 +127,9 @@ void readPicoDstQA(const Char_t *inputFile="Run_15164046_files.list", const Char
 
         // update settings for new centrality definitions
         if(CentralityDefinition == StJetFrameworkPicoBase::kgrefmult_P17id_VpdMB30 ||
-          CentralityDefinition == StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30_AllLumi
-        ) { ZVtxMin = -30.0; ZVtxMax = 30.0; }
+           CentralityDefinition == StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30 ||
+           CentralityDefinition == StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30_AllLumi
+        ) { ZVtxMin = -28.0; ZVtxMax = 28.0; }
 
         // =============================================================================== //
         // =============================================================================== //
@@ -608,7 +609,7 @@ void LoadLibs()
   gSystem->Load("$FASTJET/lib/libfastjettools");
   gSystem->Load("$FASTJET/lib/libfastjetcontribfragile");
 
-  // add include path to use its functionality
+  // add include path to use its functionality - FIXME update with your own path
   gSystem->AddIncludePath("-I/star/u/jmazer19/Y2017/STAR/FastJet/fastjet-install/include");
 
   // load the system libraries - these were defaults

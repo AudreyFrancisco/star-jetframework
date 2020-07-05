@@ -110,19 +110,6 @@ Int_t StRho::Finish() {
     fout->Close();
   }
 
-/*   ===== test ======
-  if(mOutName!="") {
-    cout<<"checking output file in StRhoMaker::Finish().."<<endl;
-    TFile *fout = new TFile(mOutName.Data(),"RECREATE");
-    fout->cd();
-    fout->mkdir(GetName());
-    fout->cd(GetName());
-    WriteHistograms();
-    fout->cd();
-    fout->Close();
-  }
-*/
-
   return kStOK;
 }
 //
@@ -288,8 +275,7 @@ Int_t StRho::Make()
       StJet *jet = static_cast<StJet*>(fJets->At(ij));
       if(!jet) { continue; }
 
-      // NEED TO CHECK DEFAULTS // FIXME
-      //if (!AcceptJet(jet)) continue;
+      //if (!AcceptJet(jet)) continue; // FIXME if wanting additional cuts
       // get some jet parameters
       double jetPt = jet->Pt();
       // some threshold cuts for tests
@@ -328,7 +314,7 @@ Int_t StRho::Make()
     if(!jet) { continue; }
 
     // NEED TO CHECK FOR DEFAULTS - cuts are done at the jet finder level
-    //if(!AcceptJet(jet)) continue; //FIXME
+    //if(!AcceptJet(jet)) continue; //FIXME if wanting additional cuts
     // get some get parameters
     double jetPt = jet->Pt();
     fHistJetPt->Fill(jetPt);
