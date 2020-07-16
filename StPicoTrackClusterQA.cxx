@@ -1173,6 +1173,8 @@ void StPicoTrackClusterQA::RunTrackQA()
 
     //Prithwish add cuts
     if( trk->gMom().Mag() < 0.1 || TMath::Abs(trk->gDCAxy(mVertex.x(), mVertex.y()))>50. ) { continue; }
+    if(TMath::Abs(trk->gDCA(mVertex).Mag())> 3.) { continue; }
+    if(mVertex.z() >40.) { continue; }
     //if( trk->isTofTrack() ){
     	
     //} 
