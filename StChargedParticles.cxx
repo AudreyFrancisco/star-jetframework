@@ -62,6 +62,8 @@ StChargedParticles::StChargedParticles() :
   fRunFlag(0),
   doppAnalysis(kFALSE),
   fCorrPileUp(kFALSE),
+  fDoEffCorr(kFALSE),
+  fMaxEventTrackPt(30.0),
   doRejectBadRuns(kFALSE),
   fEventZVtxMinCut(-40.0),
   fEventZVtxMaxCut(40.0),
@@ -87,16 +89,18 @@ StChargedParticles::StChargedParticles() :
   fCentralityScaled(0.),
   fmycentral(0.),
   ref16(-99), ref9(-99),
+  Bfield(0.0),
   mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
-  fMBEventType(2),  // kVPDMB
   fTriggerToUse(0), // kTriggerANY
+  fMBEventType(2),  // kVPDMB
   mPicoDstMaker(0x0),
   mPicoDst(0x0),
   mPicoEvent(0x0),
   mCentMaker(0x0),
-  mBaseMaker(0x0){
+  mBaseMaker(0x0)
+  {
   // Default constructor.
   cout << "StChargedParticles::DefaultConstructor()\n";
 }
@@ -111,6 +115,7 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   fRunFlag(0),       // see StJetFrameworkPicoBase::fRunFlagEnum
   doppAnalysis(kFALSE),
   fCorrPileUp(kFALSE),
+  fDoEffCorr(kFALSE),
   fMaxEventTrackPt(30.0),
   doRejectBadRuns(kFALSE),
   fEventZVtxMinCut(-40.0),
@@ -141,8 +146,8 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
-  fMBEventType(2),   // kVPDMB
   fTriggerToUse(0),  // kTriggerANY
+  fMBEventType(2),   // kVPDMB
   mPicoDstMaker(0x0),
   mPicoDst(0x0),
   mPicoEvent(0x0),
@@ -158,73 +163,72 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
 //________________________________________________________________________
 StChargedParticles::~StChargedParticles()
 {
-{
   // free up histogram objects if they exist
 
   // Destructor
-  if(VzHist)         delete VzHist;
-  if(ZDCHist)         delete ZDCHist;
-  if(refMultHist)         delete refMultHist;
+  if(VzHist)                    delete VzHist;
+  if(ZDCHist)                   delete ZDCHist;
+  if(refMultHist)               delete refMultHist;
   if(refMultPileupHist)         delete refMultPileupHist;
-  if(refMultNoPileupHist)         delete refMultNoPileupHist;
-  if(RawrefMultHist)         delete RawrefMultHist;
-  if(EventStat)         delete EventStat;
-  if(TrackStat)         delete TrackStat;
-  if(ZDCCoincidence)         delete ZDCCoincidence;
+  if(refMultNoPileupHist)       delete refMultNoPileupHist;
+  if(RawrefMultHist)            delete RawrefMultHist;
+  if(EventStat)                 delete EventStat;
+  if(TrackStat)                 delete TrackStat;
+  if(ZDCCoincidence)            delete ZDCCoincidence;
 
-  if(DcaHist)         delete DcaHist;
-  if(DcaHistBTOFMatched)         delete DcaHistBTOFMatched;
+  if(DcaHist)                   delete DcaHist;
+  if(DcaHistBTOFMatched)        delete DcaHistBTOFMatched;
 
-  if(TOF_ZDCCoincidence)         delete TOF_ZDCCoincidence;
-  if(refMult_ZDCCoincidence)         delete refMult_ZDCCoincidence;
-  if(TOFMult_refMultHist)         delete TOFMult_refMultHist;
-  if(TOF_BEMC)         delete TOF_BEMC;
-  if(BEMC_refMultHist)         delete BEMC_refMultHist;
-  if(Vz_rankVzHist)         delete Vz_rankVzHist;
-  if(TOF_VzHist)         delete TOF_VzHist;
-  if(refMult_VzHist)         delete refMult_VzHist;
-  if(TOF_rankVzHist)         delete TOF_rankVzHist;
-  if(refMult_rankVzHist)         delete refMult_rankVzHist;
+  if(TOF_ZDCCoincidence)        delete TOF_ZDCCoincidence;
+  if(refMult_ZDCCoincidence)    delete refMult_ZDCCoincidence;
+  if(TOFMult_refMultHist)       delete TOFMult_refMultHist;
+  if(TOF_BEMC)                  delete TOF_BEMC;
+  if(BEMC_refMultHist)          delete BEMC_refMultHist;
+  if(Vz_rankVzHist)             delete Vz_rankVzHist;
+  if(TOF_VzHist)                delete TOF_VzHist;
+  if(refMult_VzHist)            delete refMult_VzHist;
+  if(TOF_rankVzHist)            delete TOF_rankVzHist;
+  if(refMult_rankVzHist)        delete refMult_rankVzHist;
 
 
-  if(TOF_refMultHist)         delete TOF_refMultHist;
-  if(Vz_vpdVzHist)         delete Vz_vpdVzHist;
-  if(refMult_ZDCHist)         delete refMult_ZDCHist;
-  if(ZDCEastWestHist)         delete ZDCEastWestHist;
+  if(TOF_refMultHist)           delete TOF_refMultHist;
+  if(Vz_vpdVzHist)              delete Vz_vpdVzHist;
+  if(refMult_ZDCHist)           delete refMult_ZDCHist;
+  if(ZDCEastWestHist)           delete ZDCEastWestHist;
 
   // Histogramming
   // Event
-  if(hVtxXvsY)         delete hVtxXvsY;
+  if(hVtxXvsY)                  delete hVtxXvsY;
   // Track
-  if(hGlobalPtot)         delete hGlobalPtot;
-  if(hGlobalPtotCut)         delete hGlobalPtotCut;
-  if(hPrimaryPtot)         delete hPrimaryPtot;
-  if(hPrimaryPtotCut)         delete hPrimaryPtotCut;
-  if(hTransvMomentum)         delete hTransvMomentum;
-  if(hGlobalPhiVsPt)         delete hGlobalPhiVsPt;
-  if(hNSigmaProton)         delete hNSigmaProton;
-  if(hNSigmaPion)         delete hNSigmaPion;
-  if(hNSigmaElectron)         delete hNSigmaElectron;
-  if(hNSigmaKaon)         delete hNSigmaKaon;
-  if(hTofBeta)         delete hTofBeta;
+  if(hGlobalPtot)               delete hGlobalPtot;
+  if(hGlobalPtotCut)            delete hGlobalPtotCut;
+  if(hPrimaryPtot)              delete hPrimaryPtot;
+  if(hPrimaryPtotCut)           delete hPrimaryPtotCut;
+  if(hTransvMomentum)           delete hTransvMomentum;
+  if(hGlobalPhiVsPt)            delete hGlobalPhiVsPt;
+  if(hNSigmaProton)             delete hNSigmaProton;
+  if(hNSigmaPion)               delete hNSigmaPion;
+  if(hNSigmaElectron)           delete hNSigmaElectron;
+  if(hNSigmaKaon)               delete hNSigmaKaon;
+  if(hTofBeta)                  delete hTofBeta;
 
-  if(Ptdist)         delete Ptdist;
-  if(EventCent)         delete EventCent;
+  if(Ptdist)                    delete Ptdist;
+  if(EventCent)                 delete EventCent;
 
-  if(runidvsrefmult)         delete runidvsrefmult;
-  if(runidvszdcand)         delete runidvszdcand;
-  if(runidvstofmult)         delete runidvstofmult;
+  if(runidvsrefmult)            delete runidvsrefmult;
+  if(runidvszdcand)             delete runidvszdcand;
+  if(runidvstofmult)            delete runidvstofmult;
   if(runidvstofmatched)         delete runidvstofmatched;
-  if(runidvsbemcmatched)         delete runidvsbemcmatched;
-  if(VzvsrefMult)         delete VzvsrefMult;
-  if(DeltaVzvsrefMult)         delete DeltaVzvsrefMult;
+  if(runidvsbemcmatched)        delete runidvsbemcmatched;
+  if(VzvsrefMult)               delete VzvsrefMult;
+  if(DeltaVzvsrefMult)          delete DeltaVzvsrefMult;
 
 
-  if(fHistCentrality)         delete fHistCentrality;
-  if(fHistCentralityAfterCuts)         delete fHistCentralityAfterCuts;
+  if(fHistCentrality)           delete fHistCentrality;
+  if(fHistCentralityAfterCuts)  delete fHistCentralityAfterCuts;
   if(fHistMultiplicity)         delete fHistMultiplicity;
-  if(fHistMultiplicityCorr)         delete fHistMultiplicityCorr;
-  if(fHistEventPileUp)    delete fHistEventPileUp;
+  if(fHistMultiplicityCorr)     delete fHistMultiplicityCorr;
+  if(fHistEventPileUp)          delete fHistEventPileUp;
 }
 //
 //_____________________________________________________________________________

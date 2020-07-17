@@ -94,8 +94,6 @@ class StChargedParticles : public StMaker {
 
   Double_t             fTrackPtMinCut;          // min track pt cut
   Double_t             fTrackPtMaxCut;          // max track pt cut
-  Double_t             fClusterPtMinCut;        // min cluster pt cut
-  Double_t             fClusterPtMaxCut;        // max cluster pt cut
   Double_t             fTrackPhiMinCut;         // min track phi cut
   Double_t             fTrackPhiMaxCut;         // max track phi cut
   Double_t             fTrackEtaMinCut;         // min track eta cut
@@ -107,8 +105,8 @@ class StChargedParticles : public StMaker {
   Int_t                fTrackChargePos;   // track charge sign
   Int_t                fGoodTrackCounter;       // good tracks - passed quality cuts
   // centrality
-  Int_t                fmycentral;       // scaled by 5% centrality
   Double_t             fCentralityScaled;       // scaled by 5% centrality
+  Int_t                fmycentral;       // scaled by 5% centrality
   Int_t                ref16;                   // multiplicity bin (16)
   Int_t                ref9;                    // multiplicity bin (9)
 
@@ -123,20 +121,12 @@ class StChargedParticles : public StMaker {
   UInt_t               fMBEventType;
 
  private:
-  StMuDstMaker        *mMuDstMaker;   // MuDstMaker object
-  StMuDst             *mMuDst;        // muDst object
-  StMuEvent           *mMuInputEvent; // muDst event object
   StPicoDstMaker      *mPicoDstMaker; // PicoDstMaker object
   StPicoDst           *mPicoDst;      // PicoDst object
   StPicoEvent         *mPicoEvent;    // PicoEvent object
   StCentMaker         *mCentMaker;    // Centrality maker object
   StJetFrameworkPicoBase *mBaseMaker; // Base maker object
 
-
-  //bool              *mTowerStatusArr; // tower status array
-
-  // centrality objects
-  StRefMultCorr       *grefmultCorr;
 
   // histograms
   //QA histograms
