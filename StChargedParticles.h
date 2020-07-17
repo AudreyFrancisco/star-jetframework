@@ -19,8 +19,10 @@ class TObjArray;
 class TList;
 class TH1;
 class TH1F;
+class TH1D;
 class TH2;
 class TH2F;
+class TH2D;
 class THnSparse;
 class TProfile;
 class TVector3;
@@ -49,8 +51,7 @@ class StCentMaker;
 class StRefMultCorr;
 
 
-class StPicoTrackClusterQA : public StMaker {
-//class StPicoTrackClusterQA : public StJetFrameworkPicoBase {
+class StChargedParticles : public StMaker {
  public:
 
   // debug flags for specifics
@@ -61,9 +62,9 @@ class StPicoTrackClusterQA : public StMaker {
     kDebugCentrality,
   };
 
-  StPicoTrackClusterQA();
-  StPicoTrackClusterQA(const char *name, bool dohistos, const char* outName);
-  virtual ~StPicoTrackClusterQA();
+  StChargedParticles();
+  StChargedParticles(const char *name, bool dohistos, const char* outName);
+  virtual ~StChargedParticles();
 
   // needed class functions
   virtual Int_t Init();
@@ -92,7 +93,6 @@ class StPicoTrackClusterQA : public StMaker {
   // event setters
   virtual void         SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
   virtual void         SetMaxEventTrackPt(Double_t mxpt)  { fMaxEventTrackPt = mxpt; }
-  virtual void         SetMaxEventTowerEt(Double_t mxEt)  { fMaxEventTowerEt = mxEt; }
   virtual void         SetRejectBadRuns(Bool_t rj)        { doRejectBadRuns = rj; }
 
   // track / cluster setters
@@ -106,16 +106,10 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
   virtual void         SetClusterPtRange(Double_t mi, Double_t ma) { fClusterPtMinCut = mi; fClusterPtMaxCut = ma; }
 
-  // tower setters
-  virtual void         SetTowerERange(Double_t enmi, Double_t enmx) { fTowerEMinCut = enmi; fTowerEMaxCut = enmx; }
-  virtual void         SetTowerEtaRange(Double_t temi, Double_t temx) { fTowerEtaMinCut = temi; fTowerEtaMaxCut = temx; }
-  virtual void         SetTowerPhiRange(Double_t tpmi, Double_t tpmx) { fTowerPhiMinCut = tpmi; fTowerPhiMaxCut = tpmx; }
 
   // event selection
   virtual void         SetTriggerToUse(UInt_t ttu)        { fTriggerToUse = ttu; }
-  virtual void         SetEmcTriggerEventType(UInt_t te)  { fEmcTriggerEventType = te; }
   virtual void         SetMBEventType(UInt_t mbe)         { fMBEventType = mbe; }
-  virtual void         SetDoTowerQAforHT(Bool_t m)        { fDoTowerQAforHT = m; }
   virtual void         SetPileUpCorrection(Bool_t m)      { fCorrPileUp = m; }
 
   // efficiency correction setter
@@ -175,6 +169,7 @@ class StPicoTrackClusterQA : public StMaker {
   Int_t		             fTrackChargePos;		// track charge sign
   Int_t                fGoodTrackCounter;       // good tracks - passed quality cuts
   // centrality
+  Int_t             fmycentral;       // scaled by 5% centrality
   Double_t             fCentralityScaled;       // scaled by 5% centrality
   Int_t                ref16;                   // multiplicity bin (16)
   Int_t                ref9;                    // multiplicity bin (9)
@@ -184,6 +179,10 @@ class StPicoTrackClusterQA : public StMaker {
   TVector3             mVertex;                 // event vertex 3-vector
   Double_t             zVtx;                    // z-vertex component
   Int_t                fRunNumber;              // Run number
+
+  //event
+  UInt_t	      fTriggerToUse;
+  UInt_t	      fMBEventType;
 
  private:
   StMuDstMaker        *mMuDstMaker;   // MuDstMaker object
@@ -264,6 +263,8 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistCentralityAfterCuts;//!
   TH1F           *fHistMultiplicity;//!
   TH1F           *fHistMultiplicityCorr;//!
+  TH1F		 *fHistEventPileUp;//!
+
   // bad and dead tower list
   std::set<Int_t>        badTowers;
   std::set<Int_t>        deadTowers;
@@ -277,6 +278,6 @@ class StPicoTrackClusterQA : public StMaker {
   StChargedParticles(const StChargedParticles&);            // not implemented
   StChargedParticles &operator=(const StChargedParticles&); // not implemented
 
-  ClassDef(StChargedParticles, 1) // track/cluster QA task
+  ClassDef(StChargedParticles, 0) // track/cluster QA task
 };
 #endif

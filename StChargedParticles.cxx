@@ -99,22 +99,15 @@ StChargedParticles::StChargedParticles() :
   fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
   fGoodTrackCounter(0),
-  fTowerEMinCut(0.2),
-  fTowerEMaxCut(100.0),
-  fTowerEtaMinCut(-1.0),
-  fTowerEtaMaxCut(1.0),
-  fTowerPhiMinCut(0.0),
-  fTowerPhiMaxCut(2.0*TMath::Pi()),
   fCentralityScaled(0.),
+  fmycentral(0.),
   ref16(-99), ref9(-99),
   Bfield(0.0),
   //mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
-  fEmcTriggerEventType(0),
   fMBEventType(2),  // kVPDMB
   fTriggerToUse(0), // kTriggerANY
-  mBemcMatchedTracks(),
   mMuDstMaker(0x0),
   mMuDst(0x0),
   mMuInputEvent(0x0),
@@ -139,7 +132,6 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   doppAnalysis(kFALSE),
   fCorrPileUp(kFALSE),
   fMaxEventTrackPt(30.0),
-  fMaxEventTowerEt(1000.0), // 30.0
   doRejectBadRuns(kFALSE),
   fEventZVtxMinCut(-40.0),
   fEventZVtxMaxCut(40.0),
@@ -162,20 +154,15 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   fTracknHitsRatioMax(1.05),
   fTrackChargePos(-1),
   fGoodTrackCounter(0),
-  fTowerEtaMinCut(-1.0),
-  fTowerEtaMaxCut(1.0),
-  fTowerPhiMinCut(0.0),
-  fTowerPhiMaxCut(2.0*TMath::Pi()),
   fCentralityScaled(0.),
+  fmycentral(0.),
   ref16(-99), ref9(-99),
   Bfield(0.0),
   //mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
-  fEmcTriggerEventType(0),
   fMBEventType(2),   // kVPDMB
   fTriggerToUse(0),  // kTriggerANY
-  mBemcMatchedTracks(),
   mMuDstMaker(0x0),
   mMuDst(0x0),
   mMuInputEvent(0x0),
@@ -259,6 +246,7 @@ StChargedParticles::~StChargedParticles()
   if(fHistCentralityAfterCuts)         delete fHistCentralityAfterCuts;
   if(fHistMultiplicity)         delete fHistMultiplicity;
   if(fHistMultiplicityCorr)         delete fHistMultiplicityCorr;
+  if(fHistEventPileUp)		delete fHistEventPileUp;
 }
 //
 //_____________________________________________________________________________
@@ -480,7 +468,9 @@ void StChargedParticles::DeclareHistograms() {
     ZDCEastWestHist->GetXaxis()->SetTitle("zdcE");
     ZDCEastWestHist->GetYaxis()->SetTitle("zdcW");
 
-
+    int runbins = 1428;
+    int runmin = 19084005;
+    int runmax = 19130031;
     //Run-by-run
     runidvsrefmult= new TProfile("runidvsrefmult","Run Id-RefMult",runbins,runmin,runmax);//,5000,0,5000);
     runidvsrefmult->GetXaxis()->SetTitle("RunId");
@@ -519,10 +509,13 @@ void StChargedParticles::DeclareHistograms() {
 
 
     fHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+    fHistCentrality->Sumw2();
     fHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
+    fHistCentralityAfterCuts->Sumw2();
     fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicity->Sumw2();
     fHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
-
+    fHistMultiplicityCorr->Sumw2();
 
     // run range for runID histogram
     int nRunBinSize = 200;
@@ -533,7 +526,7 @@ void StChargedParticles::DeclareHistograms() {
     if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) { runMin = 19084005.; runMax = 19130031.; nRunBinSize = 1; } //FIXME
 
     // Switch on Sumw2 for all histos - (except profiles)
-    SetSumw2();
+    //SetSumw2();
 }
 //
 // write histograms
@@ -579,14 +572,15 @@ void StChargedParticles::WriteHistograms() {
   hPrimaryPtot->Write();
   hPrimaryPtotCut->Write();
   hTransvMomentum->Write();
-  hGlobalPhiVsPt->Write();
+  hGlobalPhiVsPt[0]->Write();
+  hGlobalPhiVsPt[1]->Write();
   hNSigmaProton->Write();
   hNSigmaPion->Write();
   hNSigmaElectron->Write();
   hNSigmaKaon->Write();
   hTofBeta->Write();
 
-  Ptdist->Write();
+  for(int i=0; i<10; i++){ Ptdist[i]->Write();}
   EventCent->Write();
 
   runidvsrefmult->Write();
@@ -601,6 +595,7 @@ void StChargedParticles::WriteHistograms() {
   fHistCentralityAfterCuts->Write();
   fHistMultiplicity->Write();
   fHistMultiplicityCorr->Write();
+  fHistEventPileUp->Write();
 }
 //
 //
@@ -666,10 +661,10 @@ int StChargedParticles::Make()
   vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
   //if(fDebugLevel == kDebugEmcTrigger)
   //cout<<"EventTriggers: ";
-  doule triggers = {600001, 600011, 600021, 600031};
+  double triggerids [4] = {600001, 600011, 600021, 600031};
   bool IsTrigger=false;
-  for(size_t __j=0; __j<triggerids.size(); __j++){
-    IsTrigger = (IsTrigger || mPicoEvent->isTrigger(triggerids.at(__j))==1);
+  for(int j=0; j<4; j++){
+    IsTrigger = (IsTrigger || (mPicoEvent->isTrigger(triggerids[j]))==1);
   }
   if(!IsTrigger){ return kStOk;}
   EventStat->Fill(3);
@@ -678,7 +673,6 @@ int StChargedParticles::Make()
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
   if (nBtofMatch < 1 ) { return kStOk; }
 
-  if(fabs(zVtx) < fEventZVtxMaxCut) fHistMultiplicityCorr->Fill(refCorr2);
 
 // ============================ CENTRALITY ============================== //
   // get CentMaker pointer
@@ -703,14 +697,15 @@ int StChargedParticles::Make()
 
   // cut on unset centrality, > 80%
   //if(cent16 == -1 && fDebugLevel != 99) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them CHECK TODO
-  myCentral = 8-cent9; // WARNING!! RefMultCorr convention 0->peripheral, 8-> central; so we do 8-centrlaity
+  fmycentral = 8-cent9; // WARNING!! RefMultCorr convention 0->peripheral, 8-> central; so we do 8-centrlaity
   // fill histograms
   fHistCentrality->Fill(fCentralityScaled);
   fHistMultiplicity->Fill(grefMult);
 
 
+  if(fabs(zVtx) < fEventZVtxMaxCut) fHistMultiplicityCorr->Fill(refCorr2);
 
-  if(ISRefMultCorrBadRun || myCentral<0 || myCentral>8 ) return kStOK;
+  if( fmycentral<0 || fmycentral>8 ) return kStOK;
 
   EventStat->Fill(4);
 
@@ -738,8 +733,8 @@ int StChargedParticles::Make()
   // get event B (magnetic) field
   Bfield = mPicoEvent->bField();
 
-  VzvsrefMult->Fill(zVtx,refMultCorr);
-  DeltaVzvsrefMult->Fill(vDiff,refMultCorr);
+  VzvsrefMult->Fill(zVtx,grefMult);
+  DeltaVzvsrefMult->Fill(vDiff,grefMult);
 
   // Z-vertex cut - per the Aj analysis (-40, 40)
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
@@ -749,16 +744,16 @@ int StChargedParticles::Make()
   if(vDiff > fEventVzDiffCut) return kStOk;
   EventStat->Fill(10);
 
-
+  int RunId_Order =  GetRunNo(fRunNumber);
   bool doTrackQA = kTRUE;
   if(fCorrPileUp){
-    refMultHist->Fill(refMultCorr);
+    refMultHist->Fill(grefMult);
     if(mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {
-      refMultNoPileupHist->Fill(refMultCorr);
+      refMultNoPileupHist->Fill(grefMult);
       doTrackQA = kTRUE;
     }
     else{
-      refMultPileupHist->Fill(refMultCorr);
+      refMultPileupHist->Fill(grefMult);
       fHistEventPileUp->Fill(RunId_Order + 1., 1);
       doTrackQA = kFALSE;
       return kStOk;
@@ -766,7 +761,7 @@ int StChargedParticles::Make()
   }
   EventStat->Fill(11);
 
-  runidvsrefmult->Fill(mPicoEvent->runId(),refMultCorr);
+  runidvsrefmult->Fill(mPicoEvent->runId(),grefMult);
   runidvstofmult->Fill(mPicoEvent->runId(),mPicoEvent->btofTrayMultiplicity());
   runidvstofmatched->Fill(mPicoEvent->runId(),nBtofMatch);
   runidvsbemcmatched->Fill(mPicoEvent->runId(),mPicoEvent->nBEMCMatch());
@@ -776,35 +771,35 @@ int StChargedParticles::Make()
 
   ZDCHist->Fill(mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
   ZDCEastWestHist->Fill(mPicoEvent->ZdcSumAdcEast(),mPicoEvent->ZdcSumAdcWest());
-  TOFMult_refMultHist->Fill(mPicoEvent->btofTrayMultiplicity(),refMultCorr);
-  TOF_refMultHist->Fill(nBtofMatch,refMultCorr);
+  TOFMult_refMultHist->Fill(mPicoEvent->btofTrayMultiplicity(),grefMult);
+  TOF_refMultHist->Fill(nBtofMatch,grefMult);
 
   TOF_ZDCCoincidence->Fill(nBtofMatch,mPicoEvent->ZDCx());
-  refMult_ZDCCoincidence->Fill(refMultCorr,mPicoEvent->ZDCx());
+  refMult_ZDCCoincidence->Fill(grefMult,mPicoEvent->ZDCx());
 
   TOF_BEMC->Fill(nBtofMatch,mPicoEvent->nBEMCMatch());
-  BEMC_refMultHist->Fill(mPicoEvent->nBEMCMatch(),refMultCorr);
+  BEMC_refMultHist->Fill(mPicoEvent->nBEMCMatch(),grefMult);
   TOF_VzHist->Fill(nBtofMatch,zVtx);
   TOF_rankVzHist->Fill(nBtofMatch,mPicoEvent->ranking());
 
-  refMult_VzHist->Fill(refMultCorr,zVtx);
-  refMult_rankVzHist->Fill(refMultCorr,mPicoEvent->ranking());
+  refMult_VzHist->Fill(grefMult,zVtx);
+  refMult_rankVzHist->Fill(grefMult,mPicoEvent->ranking());
 
-  Vz_vpdVzHist->Fill(zVtx,zVpd);
+  Vz_vpdVzHist->Fill(zVtx,vzVPD);
   Vz_rankVzHist->Fill(zVtx,mPicoEvent->ranking());
-  refMult_ZDCHist->Fill(refMultCorr,mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
+  refMult_ZDCHist->Fill(grefMult,mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
   ZDCCoincidence->Fill(mPicoEvent->ZDCx());
 
 
   ///Add by YU, to check the Event per CENT, Jun.14
-  EventCent->Fill(myCentral);
+  EventCent->Fill(fmycentral);
      // Track loop
   for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
 
     // Retrieve i-th pico track
     StPicoTrack *gTrack = mPicoDst->track(iTrk);
 
-    if(!gTrack) continue;/
+    if(!gTrack) continue;
     //std::cout << "Track #[" <</ (iTrk+1) << "/" << NoGlobalTracks << "]"  << std::endl;
    //------------------------------------------------------------------------
       // Grigory's default histograms QA block for TPC tracks
@@ -841,7 +836,7 @@ int StChargedParticles::Make()
       hTransvMomentum->Fill( gTrack->gMom().Pt() );
 
       // Check if track has TOF signal
-      if( gTrack->isTofTrack() ) {
+      /*if( gTrack->isTofTrack() ) {
         // Retrieve corresponding trait
         StPicoBTofPidTraits *trait = mPicoDst->btofPidTraits( gTrack->bTofPidTraitsIndex() );
         if( !trait ) {
@@ -853,7 +848,7 @@ int StChargedParticles::Make()
         // Fill beta
         hTofBeta->Fill( trait->btofBeta() );
       } //if( isTofTrack() )
-
+      */
       //________________________________________________________________________
       //
       //Grigory's block for TPC tracks ends here
@@ -861,8 +856,8 @@ int StChargedParticles::Make()
       //
 
 
-      DcaHist->Fill(gTrack->gDCA(pRcVx).Mag());
-      if(gTrack->isTofTrack())DcaHistBTOFMatched->Fill(gTrack->gDCA(pRcVx).Mag());
+      DcaHist->Fill(gTrack->gDCA(mVertex).Mag());
+      if(gTrack->isTofTrack())DcaHistBTOFMatched->Fill(gTrack->gDCA(mVertex).Mag());
 
      //------------------------------------------------------------------------
       // Prithwish's analysis cut block
@@ -874,16 +869,16 @@ int StChargedParticles::Make()
       TrackStat->Fill(1);
       if(!gTrack->isPrimary()) continue;
       TrackStat->Fill(2);
-      if(gTrack->nHitsFit()<=MAX_nHitsFit) continue;
+      if(gTrack->nHitsFit()<=fTracknHitsFit) continue;
       TrackStat->Fill(3);
       //if(TMath::Abs(gTrack->gDCA(pRcVx).Mag())>3) continue; //We can also use this cut //PT Jan15, 2018
       //if(TMath::Abs(gTrack->gDCAxy(pRcVx.x(), pRcVx.y())) > MAX_gDCAxy) continue;
-      if(TMath::Abs(gTrack->gDCA(pRcVx).Mag())>MAX_gDCA) continue; //We can also use this cut //PT Jan15, 2018
+      if(TMath::Abs(gTrack->gDCA(mVertex).Mag())>fTrackDCAcut) continue; //We can also use this cut //PT Jan15, 2018
       TrackStat->Fill(4);
 
       ///Add by Yu, just to check the Pt SPECTRUM
-      if(fabs(gTrack->pMom().PseudoRapidity())<=MAX_Abseta){
-        Ptdist[myCentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
+      if(fabs(gTrack->pMom().PseudoRapidity())<=fTrackEtaMaxCut){
+        Ptdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       }
     }
 
@@ -910,7 +905,7 @@ Double_t StChargedParticles::GetMaxTrackPt()
     if(!track) continue;
 
     // apply standard track cuts - (can apply more restrictive cuts below)
-    if(!(AcceptTrack(track, Bfield, mVertex))) { continue; }
+    //if(!(AcceptTrack(track, Bfield, mVertex))) { continue; }
 
     // get momentum vector of track - global or primary track
     TVector3 mTrkMom;
@@ -932,7 +927,6 @@ Double_t StChargedParticles::GetMaxTrackPt()
   return fMaxTrackPt;
 }
 //
-/
 //________________________________________________________________________
 void StChargedParticles::FillTriggerIDs(TH1 *h) {
   // All non-test triggers for Run12 Run14
