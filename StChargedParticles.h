@@ -64,9 +64,45 @@ class StChargedParticles : public StMaker {
   // booking of histograms (optional)
   void    DeclareHistograms();
   void    WriteHistograms();
+ // switches
+  virtual void         SetUsePrimaryTracks(Bool_t P)    { doUsePrimTracks       = P; }
+  virtual void         SetDebugLevel(Int_t l)           { fDebugLevel           = l; }
+  virtual void         SetRunFlag(Int_t f)              { fRunFlag              = f; }
+  virtual void         SetdoppAnalysis(Bool_t pp)       { doppAnalysis          = pp;}
+  virtual void         SetTurnOnCentSelection(Bool_t o) { fRequireCentSelection = o; }
+  virtual void         SetCentralityBinCut(Int_t c)     { fCentralitySelectionCut = c; }
+
+  // event setters
+  virtual void         SetEventZVtxRange(Double_t zmi, Double_t zma) { fEventZVtxMinCut = zmi; fEventZVtxMaxCut = zma; }
+  virtual void         SetMaxEventTrackPt(Double_t mxpt)  { fMaxEventTrackPt = mxpt; }
+  virtual void         SetRejectBadRuns(Bool_t rj)        { doRejectBadRuns = rj; }
+
+  // track / cluster setters
+  virtual void         SetTrackPtRange(Double_t ptmi, Double_t ptma) { fTrackPtMinCut = ptmi; fTrackPtMaxCut = ptma; }
+  virtual void         SetTrackPhiRange(Double_t phimi, Double_t phima) { fTrackPhiMinCut = phimi; fTrackPhiMaxCut = phima; }
+  virtual void         SetTrackEtaRange(Double_t etmi, Double_t etma) { fTrackEtaMinCut = etmi; fTrackEtaMaxCut = etma; }
+  virtual void         SetTrackDCAcut(Double_t d)         { fTrackDCAcut = d       ; }
+  virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
+  virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
+  virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
+  virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
+
+
+  // event selection
+  virtual void         SetTriggerToUse(UInt_t ttu)        { fTriggerToUse = ttu; }
+  virtual void         SetMBEventType(UInt_t mbe)         { fMBEventType = mbe; }
+  virtual void         SetPileUpCorrection(Bool_t m)      { fCorrPileUp = m; }
+
+  // efficiency correction setter
+  virtual void         SetDoEffCorr(Bool_t effcorr)     { fDoEffCorr = effcorr; }
+
+  // common setters
+  void                 SetClusName(const char *n)       { fCaloName      = n;  }
+  void                 SetTracksName(const char *n)     { fTracksName    = n;  }
 
 
  protected:
+  Int_t                GetRunNo(int runid);
   // switches
   Bool_t               doWriteHistos;           // write QA histos
   Bool_t               doUsePrimTracks;         // primary track switch

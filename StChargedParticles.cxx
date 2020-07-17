@@ -642,7 +642,7 @@ int StChargedParticles::Make()
   int ntracks = mPicoDst->numberOfTracks();
   int ntracksCovM = mPicoDst->numberOfTrackCovMatrices();
 
-  EventStat->Fill(2);
+  fEventStat->Fill(2);
 
   // get trigger IDs from PicoEvent class and loop over them
   vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
@@ -654,7 +654,7 @@ int StChargedParticles::Make()
     IsTrigger = (IsTrigger || (mPicoEvent->isTrigger(triggerids[j]))==1);
   }
   if(!IsTrigger){ return kStOk;}
-  EventStat->Fill(3);
+  fEventStat->Fill(3);
 
 
   int nBtofMatch =  mPicoEvent->nBTOFMatch();
@@ -694,7 +694,7 @@ int StChargedParticles::Make()
 
   if( fmycentral<0 || fmycentral>8 ) return kStOK;
 
-  EventStat->Fill(4);
+  fEventStat->Fill(4);
 
 
   // get bad run, dead & bad tower lists
@@ -706,9 +706,9 @@ int StChargedParticles::Make()
     if( !mBaseMaker->IsRunOK(fRunNumber) ) return kStOK;
   }
 
-  EventStat->Fill(5);
-  if(fabs(zVtx)<70) EventStat->Fill(6);
-  if(fabs(zVtx)<50) EventStat->Fill(7);
+  fEventStat->Fill(5);
+  if(fabs(zVtx)<70) fEventStat->Fill(6);
+  if(fabs(zVtx)<50) fEventStat->Fill(7);
 
 
   // cut event on max track pt > 30.0 GeV
@@ -720,66 +720,66 @@ int StChargedParticles::Make()
   // get event B (magnetic) field
   Bfield = mPicoEvent->bField();
 
-  VzvsrefMult->Fill(zVtx,grefMult);
-  DeltaVzvsrefMult->Fill(vDiff,grefMult);
+  fVzvsrefMult->Fill(zVtx,grefMult);
+  fDeltaVzvsrefMult->Fill(vDiff,grefMult);
 
   // Z-vertex cut - per the Aj analysis (-40, 40)
   if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
-  EventStat->Fill(8);
+  fEventStat->Fill(8);
   if(vrVtx > fEventVrCut) return kStOk;
-  EventStat->Fill(9);
+  fEventStat->Fill(9);
   if(vDiff > fEventVzDiffCut) return kStOk;
-  EventStat->Fill(10);
+  fEventStat->Fill(10);
 
   int RunId_Order =  GetRunNo(fRunNumber);
   bool doTrackQA = kTRUE;
+  frefMultHist->Fill(grefMult);
   if(fCorrPileUp){
-    refMultHist->Fill(grefMult);
     if(mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {
-      refMultNoPileupHist->Fill(grefMult);
+      frefMultNoPileupHist->Fill(grefMult);
       doTrackQA = kTRUE;
     }
     else{
-      refMultPileupHist->Fill(grefMult);
+      frefMultPileupHist->Fill(grefMult);
       fHistEventPileUp->Fill(RunId_Order + 1., 1);
       doTrackQA = kFALSE;
       return kStOk;
    }
   }
-  EventStat->Fill(11);
+  fEventStat->Fill(11);
 
-  runidvsrefmult->Fill(mPicoEvent->runId(),grefMult);
-  runidvstofmult->Fill(mPicoEvent->runId(),mPicoEvent->btofTrayMultiplicity());
-  runidvstofmatched->Fill(mPicoEvent->runId(),nBtofMatch);
-  runidvsbemcmatched->Fill(mPicoEvent->runId(),mPicoEvent->nBEMCMatch());
-  runidvszdcand->Fill(mPicoEvent->runId(),mPicoEvent->ZDCx());
-  VzHist->Fill(zVtx);
-  hVtxXvsY->Fill(xVtx,yVtx);
+  frunidvsrefmult->Fill(mPicoEvent->runId(),grefMult);
+  frunidvstofmult->Fill(mPicoEvent->runId(),mPicoEvent->btofTrayMultiplicity());
+  frunidvstofmatched->Fill(mPicoEvent->runId(),nBtofMatch);
+  frunidvsbemcmatched->Fill(mPicoEvent->runId(),mPicoEvent->nBEMCMatch());
+  frunidvszdcand->Fill(mPicoEvent->runId(),mPicoEvent->ZDCx());
+  fVzHist->Fill(zVtx);
+  fhVtxXvsY->Fill(xVtx,yVtx);
 
-  ZDCHist->Fill(mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
-  ZDCEastWestHist->Fill(mPicoEvent->ZdcSumAdcEast(),mPicoEvent->ZdcSumAdcWest());
-  TOFMult_refMultHist->Fill(mPicoEvent->btofTrayMultiplicity(),grefMult);
-  TOF_refMultHist->Fill(nBtofMatch,grefMult);
+  fZDCHist->Fill(mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
+  fZDCEastWestHist->Fill(mPicoEvent->ZdcSumAdcEast(),mPicoEvent->ZdcSumAdcWest());
+  fTOFMult_refMultHist->Fill(mPicoEvent->btofTrayMultiplicity(),grefMult);
+  fTOF_refMultHist->Fill(nBtofMatch,grefMult);
 
-  TOF_ZDCCoincidence->Fill(nBtofMatch,mPicoEvent->ZDCx());
-  refMult_ZDCCoincidence->Fill(grefMult,mPicoEvent->ZDCx());
+  fTOF_ZDCCoincidence->Fill(nBtofMatch,mPicoEvent->ZDCx());
+  frefMult_ZDCCoincidence->Fill(grefMult,mPicoEvent->ZDCx());
 
-  TOF_BEMC->Fill(nBtofMatch,mPicoEvent->nBEMCMatch());
-  BEMC_refMultHist->Fill(mPicoEvent->nBEMCMatch(),grefMult);
-  TOF_VzHist->Fill(nBtofMatch,zVtx);
-  TOF_rankVzHist->Fill(nBtofMatch,mPicoEvent->ranking());
+  fTOF_BEMC->Fill(nBtofMatch,mPicoEvent->nBEMCMatch());
+  fBEMC_refMultHist->Fill(mPicoEvent->nBEMCMatch(),grefMult);
+  fTOF_VzHist->Fill(nBtofMatch,zVtx);
+  fTOF_rankVzHist->Fill(nBtofMatch,mPicoEvent->ranking());
 
-  refMult_VzHist->Fill(grefMult,zVtx);
-  refMult_rankVzHist->Fill(grefMult,mPicoEvent->ranking());
+  frefMult_VzHist->Fill(grefMult,zVtx);
+  frefMult_rankVzHist->Fill(grefMult,mPicoEvent->ranking());
 
-  Vz_vpdVzHist->Fill(zVtx,vzVPD);
-  Vz_rankVzHist->Fill(zVtx,mPicoEvent->ranking());
-  refMult_ZDCHist->Fill(grefMult,mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
-  ZDCCoincidence->Fill(mPicoEvent->ZDCx());
+  fVz_vpdVzHist->Fill(zVtx,vzVPD);
+  fVz_rankVzHist->Fill(zVtx,mPicoEvent->ranking());
+  frefMult_ZDCHist->Fill(grefMult,mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
+  fZDCCoincidence->Fill(mPicoEvent->ZDCx());
 
 
   ///Add by YU, to check the Event per CENT, Jun.14
-  EventCent->Fill(fmycentral);
+  fEventCent->Fill(fmycentral);
      // Track loop
   for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
 
@@ -791,9 +791,9 @@ int StChargedParticles::Make()
    //------------------------------------------------------------------------
       // Grigory's default histograms QA block for TPC tracks
     //________________________________________________________________________
-    hGlobalPtot->Fill( gTrack->gMom().Mag() );
+    fhGlobalPtot->Fill( gTrack->gMom().Mag() );
       if( gTrack->isPrimary() ) {
-      hPrimaryPtot->Fill( gTrack->pMom().Mag() );
+      fhPrimaryPtot->Fill( gTrack->pMom().Mag() );
     }
      // Simple single-track cut
       if( gTrack->gMom().Mag() < 0.1 ||
@@ -803,24 +803,24 @@ int StChargedParticles::Make()
           continue;
         }
 
-      hGlobalPtotCut->Fill( gTrack->gMom().Mag() );
+      fhGlobalPtotCut->Fill( gTrack->gMom().Mag() );
       if( gTrack->isPrimary() ) {
-        hPrimaryPtotCut->Fill( gTrack->pMom().Mag() );
+        fhPrimaryPtotCut->Fill( gTrack->pMom().Mag() );
       }
       if( gTrack->charge() > 0 ) {
-        hGlobalPhiVsPt[0]->Fill( gTrack->gMom().Pt(),
+        fhGlobalPhiVsPt[0]->Fill( gTrack->gMom().Pt(),
             gTrack->gMom().Phi() );
       }
       else {
-        hGlobalPhiVsPt[1]->Fill( gTrack->gMom().Pt(),
+        fhGlobalPhiVsPt[1]->Fill( gTrack->gMom().Pt(),
             gTrack->gMom().Phi() );
       }
-      hNSigmaElectron->Fill( gTrack->nSigmaElectron() );
-      hNSigmaPion->Fill( gTrack->nSigmaPion() );
-      hNSigmaKaon->Fill( gTrack->nSigmaKaon() );
-      hNSigmaProton->Fill( gTrack->nSigmaProton() );
+      fhNSigmaElectron->Fill( gTrack->nSigmaElectron() );
+      fhNSigmaPion->Fill( gTrack->nSigmaPion() );
+      fhNSigmaKaon->Fill( gTrack->nSigmaKaon() );
+      fhNSigmaProton->Fill( gTrack->nSigmaProton() );
 
-      hTransvMomentum->Fill( gTrack->gMom().Pt() );
+      fhTransvMomentum->Fill( gTrack->gMom().Pt() );
 
       // Check if track has TOF signal
       /*if( gTrack->isTofTrack() ) {
@@ -843,8 +843,8 @@ int StChargedParticles::Make()
       //
 
 
-      DcaHist->Fill(gTrack->gDCA(mVertex).Mag());
-      if(gTrack->isTofTrack())DcaHistBTOFMatched->Fill(gTrack->gDCA(mVertex).Mag());
+      fDcaHist->Fill(gTrack->gDCA(mVertex).Mag());
+      if(gTrack->isTofTrack())fDcaHistBTOFMatched->Fill(gTrack->gDCA(mVertex).Mag());
 
      //------------------------------------------------------------------------
       // Prithwish's analysis cut block
@@ -853,22 +853,65 @@ int StChargedParticles::Make()
       //if(sqrt(pRcVx.x()*pRcVx.x()+yVtx*yVtx) >2.0) continue;
       //if(fabs(zTpc-zVpd)>2) continue;
       //if(nBTOFMatch<10) continue;
-      TrackStat->Fill(1);
+      fTrackStat->Fill(1);
       if(!gTrack->isPrimary()) continue;
-      TrackStat->Fill(2);
+      fTrackStat->Fill(2);
       if(gTrack->nHitsFit()<=fTracknHitsFit) continue;
-      TrackStat->Fill(3);
+      fTrackStat->Fill(3);
       //if(TMath::Abs(gTrack->gDCA(pRcVx).Mag())>3) continue; //We can also use this cut //PT Jan15, 2018
       //if(TMath::Abs(gTrack->gDCAxy(pRcVx.x(), pRcVx.y())) > MAX_gDCAxy) continue;
       if(TMath::Abs(gTrack->gDCA(mVertex).Mag())>fTrackDCAcut) continue; //We can also use this cut //PT Jan15, 2018
-      TrackStat->Fill(4);
+      fTrackStat->Fill(4);
 
       ///Add by Yu, just to check the Pt SPECTRUM
       if(fabs(gTrack->pMom().PseudoRapidity())<=fTrackEtaMaxCut){
-        Ptdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
+        fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       }
     }
 
   return kStOK;
 }
-//________________________________________________________________________
+//// function to do some event QA
+//________________________________________________________________________________________
+// FIXME TODO - this function needs to be updated when ADDING runs
+// _________________________________________________________________________________
+Int_t StChargedParticles::GetRunNo(int runid){
+  // Run12 pp (200 GeV) - 857
+  if(fRunFlag == StJetFrameworkPicoBase::Run12_pp200) {
+    for(int i = 0; i < 857; i++) {
+      if(Run12pp_IdNo[i] == runid) {
+        return i;
+      }
+    }
+  }
+
+  // Run14 AuAu (200 GeV) - new picoDst production is 830
+  if(fRunFlag == StJetFrameworkPicoBase::Run14_AuAu200) {
+    for(int i = 0; i < 830; i++) {
+      if(Run14AuAu_P18ih_IdNo[i] == runid) {
+        return i;
+      }
+    }
+  }
+
+  // Run16 AuAu (200 GeV) -  1359 for Run16 AuAu
+  if(fRunFlag == StJetFrameworkPicoBase::Run16_AuAu200) {
+    for(int i = 0; i < 1359; i++){
+      if(Run16AuAu_IdNo[i] == runid) {
+        return i;
+      }
+    }
+  }
+
+  // Run18 Isobar (200 GeV)
+  if(fRunFlag == StJetFrameworkPicoBase::RunIsobar) {
+    // 405 runs on May 23
+    for(int i = 0; i < 1428; i++){ //FIXME
+      if(RunIso_IdNo[i] == runid) {
+        return i;
+      }
+    }
+  }
+  cout<<" *********** RunID not matched with list ************!!!! "<<endl;
+  return -999;
+}
