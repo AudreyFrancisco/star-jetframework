@@ -127,6 +127,8 @@ class StChargedParticles : public StMaker {
   StCentMaker         *mCentMaker;    // Centrality maker object
   StJetFrameworkPicoBase *mBaseMaker; // Base maker object
 
+  // centrality objects
+  StRefMultCorr       *grefmultCorr;
 
   // histograms
   //QA histograms
