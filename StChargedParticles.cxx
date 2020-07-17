@@ -55,8 +55,48 @@ ClassImp(StChargedParticles)
 //
 //________________________________________________________________________
 StChargedParticles::StChargedParticles() :
-  StMaker()
-{
+  StMaker(),
+  doWriteHistos(kFALSE),
+  doUsePrimTracks(kFALSE),
+  fDebugLevel(0),
+  fRunFlag(0),
+  doppAnalysis(kFALSE),
+  fCorrPileUp(kFALSE),
+  doRejectBadRuns(kFALSE),
+  fEventZVtxMinCut(-40.0),
+  fEventZVtxMaxCut(40.0),
+  fEventVzDiffCut(5.),
+  fEventVrCut(2.),
+  fCentralitySelectionCut(-99),
+  fRequireCentSelection(kFALSE),
+  mOutName(""),
+  fAnalysisMakerName(""),
+  fTracksName(""),
+  fTrackPtMinCut(0.2),
+  fTrackPtMaxCut(30.0),
+  fTrackPhiMinCut(0.0),
+  fTrackPhiMaxCut(2.0*TMath::Pi()),
+  fTrackEtaMinCut(-1.0),
+  fTrackEtaMaxCut(1.0),
+  fTrackDCAcut(3.0),
+  fTracknHitsFit(15),
+  fTracknHitsRatio(0.2),
+  fTracknHitsRatioMax(1.05),
+  fTrackChargePos(-1),
+  fGoodTrackCounter(0),
+  fCentralityScaled(0.),
+  fmycentral(0.),
+  ref16(-99), ref9(-99),
+  mVertex(0x0),
+  zVtx(0.0),
+  fRunNumber(0),
+  fMBEventType(2),  // kVPDMB
+  fTriggerToUse(0), // kTriggerANY
+  mPicoDstMaker(0x0),
+  mPicoDst(0x0),
+  mPicoEvent(0x0),
+  mCentMaker(0x0),
+  mBaseMaker(0x0){
   // Default constructor.
   cout << "StChargedParticles::DefaultConstructor()\n";
 }
@@ -64,7 +104,50 @@ StChargedParticles::StChargedParticles() :
 //________________________________________________________________________
 StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE, const char* outName = "") :
 //  StJetFrameworkPicoBase(name),
-  StMaker(name)
+  StMaker(name),
+  doWriteHistos(doHistos),
+  doUsePrimTracks(kFALSE),
+  fDebugLevel(0),
+  fRunFlag(0),       // see StJetFrameworkPicoBase::fRunFlagEnum
+  doppAnalysis(kFALSE),
+  fCorrPileUp(kFALSE),
+  fMaxEventTrackPt(30.0),
+  doRejectBadRuns(kFALSE),
+  fEventZVtxMinCut(-40.0),
+  fEventZVtxMaxCut(40.0),
+  fEventVzDiffCut(5.),
+  fEventVrCut(2.),
+  fCentralitySelectionCut(-99),
+  fRequireCentSelection(kFALSE),
+  mOutName(outName),
+  fAnalysisMakerName(name),
+  fTracksName("Tracks"),
+  fTrackPtMinCut(0.2),
+  fTrackPtMaxCut(30.0),
+  fTrackPhiMinCut(0.0),
+  fTrackPhiMaxCut(2.0*TMath::Pi()),
+  fTrackEtaMinCut(-1.0),
+  fTrackEtaMaxCut(1.0),
+  fTrackDCAcut(3.0),
+  fTracknHitsFit(15),
+  fTracknHitsRatio(0.2),
+  fTracknHitsRatioMax(1.05),
+  fTrackChargePos(-1),
+  fGoodTrackCounter(0),
+  fCentralityScaled(0.),
+  fmycentral(0.),
+  ref16(-99), ref9(-99),
+  Bfield(0.0),
+  mVertex(0x0),
+  zVtx(0.0),
+  fRunNumber(0),
+  fMBEventType(2),   // kVPDMB
+  fTriggerToUse(0),  // kTriggerANY
+  mPicoDstMaker(0x0),
+  mPicoDst(0x0),
+  mPicoEvent(0x0),
+  mCentMaker(0x0),
+  mBaseMaker(0x0)
 {
   cout << "StChargedParticles::StandardConstructor()\n";
   // Standard constructor.
@@ -75,7 +158,73 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
 //________________________________________________________________________
 StChargedParticles::~StChargedParticles()
 {
+{
   // free up histogram objects if they exist
+
+  // Destructor
+  if(VzHist)         delete VzHist;
+  if(ZDCHist)         delete ZDCHist;
+  if(refMultHist)         delete refMultHist;
+  if(refMultPileupHist)         delete refMultPileupHist;
+  if(refMultNoPileupHist)         delete refMultNoPileupHist;
+  if(RawrefMultHist)         delete RawrefMultHist;
+  if(EventStat)         delete EventStat;
+  if(TrackStat)         delete TrackStat;
+  if(ZDCCoincidence)         delete ZDCCoincidence;
+
+  if(DcaHist)         delete DcaHist;
+  if(DcaHistBTOFMatched)         delete DcaHistBTOFMatched;
+
+  if(TOF_ZDCCoincidence)         delete TOF_ZDCCoincidence;
+  if(refMult_ZDCCoincidence)         delete refMult_ZDCCoincidence;
+  if(TOFMult_refMultHist)         delete TOFMult_refMultHist;
+  if(TOF_BEMC)         delete TOF_BEMC;
+  if(BEMC_refMultHist)         delete BEMC_refMultHist;
+  if(Vz_rankVzHist)         delete Vz_rankVzHist;
+  if(TOF_VzHist)         delete TOF_VzHist;
+  if(refMult_VzHist)         delete refMult_VzHist;
+  if(TOF_rankVzHist)         delete TOF_rankVzHist;
+  if(refMult_rankVzHist)         delete refMult_rankVzHist;
+
+
+  if(TOF_refMultHist)         delete TOF_refMultHist;
+  if(Vz_vpdVzHist)         delete Vz_vpdVzHist;
+  if(refMult_ZDCHist)         delete refMult_ZDCHist;
+  if(ZDCEastWestHist)         delete ZDCEastWestHist;
+
+  // Histogramming
+  // Event
+  if(hVtxXvsY)         delete hVtxXvsY;
+  // Track
+  if(hGlobalPtot)         delete hGlobalPtot;
+  if(hGlobalPtotCut)         delete hGlobalPtotCut;
+  if(hPrimaryPtot)         delete hPrimaryPtot;
+  if(hPrimaryPtotCut)         delete hPrimaryPtotCut;
+  if(hTransvMomentum)         delete hTransvMomentum;
+  if(hGlobalPhiVsPt)         delete hGlobalPhiVsPt;
+  if(hNSigmaProton)         delete hNSigmaProton;
+  if(hNSigmaPion)         delete hNSigmaPion;
+  if(hNSigmaElectron)         delete hNSigmaElectron;
+  if(hNSigmaKaon)         delete hNSigmaKaon;
+  if(hTofBeta)         delete hTofBeta;
+
+  if(Ptdist)         delete Ptdist;
+  if(EventCent)         delete EventCent;
+
+  if(runidvsrefmult)         delete runidvsrefmult;
+  if(runidvszdcand)         delete runidvszdcand;
+  if(runidvstofmult)         delete runidvstofmult;
+  if(runidvstofmatched)         delete runidvstofmatched;
+  if(runidvsbemcmatched)         delete runidvsbemcmatched;
+  if(VzvsrefMult)         delete VzvsrefMult;
+  if(DeltaVzvsrefMult)         delete DeltaVzvsrefMult;
+
+
+  if(fHistCentrality)         delete fHistCentrality;
+  if(fHistCentralityAfterCuts)         delete fHistCentralityAfterCuts;
+  if(fHistMultiplicity)         delete fHistMultiplicity;
+  if(fHistMultiplicityCorr)         delete fHistMultiplicityCorr;
+  if(fHistEventPileUp)    delete fHistEventPileUp;
 }
 //
 //_____________________________________________________________________________
@@ -88,9 +237,24 @@ cout << "StChargedParticles::Init()\n";
 //_____________________________________________________________________________
 Int_t StChargedParticles::Finish() {
   cout << "StChargedParticles::Finish()\n";
-  StMemStat::PrintMem("End of Finish...");
 
-  return kStOK;
+  // open output file
+  if(doWriteHistos && mOutName!="") {
+    TFile *fout = new TFile(mOutName.Data(), "UPDATE"); //"RECREATE");
+    fout->cd();
+    fout->mkdir(GetName());
+    fout->cd(GetName());
+    cout<<GetName()<<endl;
+
+    // write histograms and output file before closing
+    WriteHistograms();
+    fout->cd();
+    fout->Write();
+    fout->Close();
+  }
+
+  cout<<"End of StChargedParticles::Finish"<<endl;
+  StMemStat::PrintMem("End of Finish...");
 }
 //
 //________________________________________________________________________
