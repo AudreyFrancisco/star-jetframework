@@ -132,62 +132,62 @@ class StChargedParticles : public StMaker {
 
   // histograms
   //QA histograms
-  TH1F *VzHist;//!
-  TH1F *ZDCHist;//!
-  TH1F *refMultHist;//!
-  TH1F *refMultPileupHist;//!
-  TH1F *refMultNoPileupHist;//!
-  TH1F *RawrefMultHist;//!
-  TH1F *EventStat;//!
-  TH1F *TrackStat;//!
-  TH1F *ZDCCoincidence;//!
+  TH1F *fVzHist;//!
+  TH1F *fZDCHist;//!
+  TH1F *frefMultHist;//!
+  TH1F *frefMultPileupHist;//!
+  TH1F *frefMultNoPileupHist;//!
+  TH1F *fRawrefMultHist;//!
+  TH1F *fEventStat;//!
+  TH1F *fTrackStat;//!
+  TH1F *fZDCCoincidence;//!
 
-  TH1F *DcaHist;//!
-  TH1F *DcaHistBTOFMatched;//!
+  TH1F *fDcaHist;//!
+  TH1F *fDcaHistBTOFMatched;//!
 
-  TH2F *TOF_ZDCCoincidence;//!
-  TH2F *refMult_ZDCCoincidence;//!
-  TH2F *TOFMult_refMultHist;//!
-  TH2F *TOF_BEMC;//!
-  TH2F *BEMC_refMultHist;//!
-  TH2F *Vz_rankVzHist;//!
-  TH2F *TOF_VzHist;//!
-  TH2F *refMult_VzHist;//!
-  TH2F *TOF_rankVzHist;//!
-  TH2F *refMult_rankVzHist;//!
+  TH2F *fTOF_ZDCCoincidence;//!
+  TH2F *frefMult_ZDCCoincidence;//!
+  TH2F *fTOFMult_refMultHist;//!
+  TH2F *fTOF_BEMC;//!
+  TH2F *fBEMC_refMultHist;//!
+  TH2F *fVz_rankVzHist;//!
+  TH2F *fTOF_VzHist;//!
+  TH2F *frefMult_VzHist;//!
+  TH2F *fTOF_rankVzHist;//!
+  TH2F *frefMult_rankVzHist;//!
 
 
-  TH2F *TOF_refMultHist;//!
-  TH2F *Vz_vpdVzHist;//!
-  TH2F *refMult_ZDCHist;//!
-  TH2F *ZDCEastWestHist;//!
+  TH2F *fTOF_refMultHist;//!
+  TH2F *fVz_vpdVzHist;//!
+  TH2F *frefMult_ZDCHist;//!
+  TH2F *fZDCEastWestHist;//!
 
   // Histogramming
   // Event
-  TH2F *hVtxXvsY;//!
+  TH2F *fhVtxXvsY;//!
   // Track
-  TH1F *hGlobalPtot;//!
-  TH1F *hGlobalPtotCut;//!
-  TH1F *hPrimaryPtot;//!
-  TH1F *hPrimaryPtotCut;//!
-  TH1F *hTransvMomentum;//!
-  TH2F *hGlobalPhiVsPt[2];//!
-  TH1F *hNSigmaProton;//!
-  TH1F *hNSigmaPion;//!
-  TH1F *hNSigmaElectron;//!
-  TH1F *hNSigmaKaon;//!
-  TH1F *hTofBeta;//!
+  TH1F *fhGlobalPtot;//!
+  TH1F *fhGlobalPtotCut;//!
+  TH1F *fhPrimaryPtot;//!
+  TH1F *fhPrimaryPtotCut;//!
+  TH1F *fhTransvMomentum;//!
+  TH2F *fhGlobalPhiVsPt[2];//!
+  TH1F *fhNSigmaProton;//!
+  TH1F *fhNSigmaPion;//!
+  TH1F *fhNSigmaElectron;//!
+  TH1F *fhNSigmaKaon;//!
+  TH1F *fhTofBeta;//!
 
-  TH1F *Ptdist[10];//!
-  TH1F *EventCent;//!
+  TH1F *fPtdist[10];//!
+  TH1F *fEventCent;//!
 
-  TProfile * runidvsrefmult;//!
-  TProfile * runidvszdcand;//!
-  TProfile * runidvstofmult;//!
-  TProfile * runidvstofmatched;//!
-  TProfile * runidvsbemcmatched;//!
-  TProfile * VzvsrefMult;//!
-  TProfile * DeltaVzvsrefMult;//!
+  TProfile *frunidvsrefmult;//!
+  TProfile *frunidvszdcand;//!
+  TProfile *frunidvstofmult;//!
+  TProfile *frunidvstofmatched;//!
+  TProfile *frunidvsbemcmatched;//!
+  TProfile *fVzvsrefMult;//!
+  TProfile *fDeltaVzvsrefMult;//!
 
   TH1F     *fHistCentrality;//!
   TH1F     *fHistCentralityAfterCuts;//!

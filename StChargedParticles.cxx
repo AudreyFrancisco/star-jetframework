@@ -168,62 +168,62 @@ StChargedParticles::~StChargedParticles()
   // free up histogram objects if they exist
 
   // Destructor
-  if(VzHist)                    delete VzHist;
-  if(ZDCHist)                   delete ZDCHist;
-  if(refMultHist)               delete refMultHist;
-  if(refMultPileupHist)         delete refMultPileupHist;
-  if(refMultNoPileupHist)       delete refMultNoPileupHist;
-  if(RawrefMultHist)            delete RawrefMultHist;
-  if(EventStat)                 delete EventStat;
-  if(TrackStat)                 delete TrackStat;
-  if(ZDCCoincidence)            delete ZDCCoincidence;
+  if(fVzHist)                    delete fVzHist;
+  if(fZDCHist)                   delete fZDCHist;
+  if(frefMultHist)               delete frefMultHist;
+  if(frefMultPileupHist)         delete frefMultPileupHist;
+  if(frefMultNoPileupHist)       delete frefMultNoPileupHist;
+  if(fRawrefMultHist)            delete fRawrefMultHist;
+  if(fEventStat)                 delete fEventStat;
+  if(fTrackStat)                 delete fTrackStat;
+  if(fZDCCoincidence)            delete fZDCCoincidence;
 
-  if(DcaHist)                   delete DcaHist;
-  if(DcaHistBTOFMatched)        delete DcaHistBTOFMatched;
+  if(fDcaHist)                   delete fDcaHist;
+  if(fDcaHistBTOFMatched)        delete fDcaHistBTOFMatched;
 
-  if(TOF_ZDCCoincidence)        delete TOF_ZDCCoincidence;
-  if(refMult_ZDCCoincidence)    delete refMult_ZDCCoincidence;
-  if(TOFMult_refMultHist)       delete TOFMult_refMultHist;
-  if(TOF_BEMC)                  delete TOF_BEMC;
-  if(BEMC_refMultHist)          delete BEMC_refMultHist;
-  if(Vz_rankVzHist)             delete Vz_rankVzHist;
-  if(TOF_VzHist)                delete TOF_VzHist;
-  if(refMult_VzHist)            delete refMult_VzHist;
-  if(TOF_rankVzHist)            delete TOF_rankVzHist;
-  if(refMult_rankVzHist)        delete refMult_rankVzHist;
+  if(fTOF_ZDCCoincidence)        delete fTOF_ZDCCoincidence;
+  if(frefMult_ZDCCoincidence)    delete frefMult_ZDCCoincidence;
+  if(fTOFMult_refMultHist)       delete fTOFMult_refMultHist;
+  if(fTOF_BEMC)                  delete fTOF_BEMC;
+  if(fBEMC_refMultHist)          delete fBEMC_refMultHist;
+  if(fVz_rankVzHist)             delete fVz_rankVzHist;
+  if(fTOF_VzHist)                delete fTOF_VzHist;
+  if(frefMult_VzHist)            delete frefMult_VzHist;
+  if(fTOF_rankVzHist)            delete fTOF_rankVzHist;
+  if(frefMult_rankVzHist)        delete frefMult_rankVzHist;
 
 
-  if(TOF_refMultHist)           delete TOF_refMultHist;
-  if(Vz_vpdVzHist)              delete Vz_vpdVzHist;
-  if(refMult_ZDCHist)           delete refMult_ZDCHist;
-  if(ZDCEastWestHist)           delete ZDCEastWestHist;
+  if(fTOF_refMultHist)           delete fTOF_refMultHist;
+  if(fVz_vpdVzHist)              delete fVz_vpdVzHist;
+  if(frefMult_ZDCHist)           delete frefMult_ZDCHist;
+  if(fZDCEastWestHist)           delete fZDCEastWestHist;
 
   // Histogramming
   // Event
-  if(hVtxXvsY)                  delete hVtxXvsY;
+  if(fhVtxXvsY)                  delete fhVtxXvsY;
   // Track
-  if(hGlobalPtot)               delete hGlobalPtot;
-  if(hGlobalPtotCut)            delete hGlobalPtotCut;
-  if(hPrimaryPtot)              delete hPrimaryPtot;
-  if(hPrimaryPtotCut)           delete hPrimaryPtotCut;
-  if(hTransvMomentum)           delete hTransvMomentum;
-  if(hGlobalPhiVsPt)            delete hGlobalPhiVsPt;
-  if(hNSigmaProton)             delete hNSigmaProton;
-  if(hNSigmaPion)               delete hNSigmaPion;
-  if(hNSigmaElectron)           delete hNSigmaElectron;
-  if(hNSigmaKaon)               delete hNSigmaKaon;
-  if(hTofBeta)                  delete hTofBeta;
+  if(fhGlobalPtot)               delete fhGlobalPtot;
+  if(fhGlobalPtotCut)            delete fhGlobalPtotCut;
+  if(fhPrimaryPtot)              delete fhPrimaryPtot;
+  if(fhPrimaryPtotCut)           delete fhPrimaryPtotCut;
+  if(fhTransvMomentum)           delete fhTransvMomentum;
+  if(fhGlobalPhiVsPt)            delete fhGlobalPhiVsPt;
+  if(fhNSigmaProton)             delete fhNSigmaProton;
+  if(fhNSigmaPion)               delete fhNSigmaPion;
+  if(fhNSigmaElectron)           delete fhNSigmaElectron;
+  if(fhNSigmaKaon)               delete fhNSigmaKaon;
+  if(fhTofBeta)                  delete fhTofBeta;
 
-  if(Ptdist)                    delete Ptdist;
-  if(EventCent)                 delete EventCent;
+  if(fPtdist)                    delete fPtdist;
+  if(fEventCent)                 delete fEventCent;
 
-  if(runidvsrefmult)            delete runidvsrefmult;
-  if(runidvszdcand)             delete runidvszdcand;
-  if(runidvstofmult)            delete runidvstofmult;
-  if(runidvstofmatched)         delete runidvstofmatched;
-  if(runidvsbemcmatched)        delete runidvsbemcmatched;
-  if(VzvsrefMult)               delete VzvsrefMult;
-  if(DeltaVzvsrefMult)          delete DeltaVzvsrefMult;
+  if(frunidvsrefmult)            delete frunidvsrefmult;
+  if(frunidvszdcand)             delete frunidvszdcand;
+  if(frunidvstofmult)            delete frunidvstofmult;
+  if(frunidvstofmatched)         delete frunidvstofmatched;
+  if(frunidvsbemcmatched)        delete frunidvsbemcmatched;
+  if(fVzvsrefMult)               delete fVzvsrefMult;
+  if(fDeltaVzvsrefMult)          delete fDeltaVzvsrefMult;
 
 
   if(fHistCentrality)           delete fHistCentrality;
@@ -261,6 +261,8 @@ Int_t StChargedParticles::Finish() {
 
   cout<<"End of StChargedParticles::Finish"<<endl;
   StMemStat::PrintMem("End of Finish...");
+
+  return kStOK;
 }
 //
 // Declare histograms and global objects for running
@@ -289,213 +291,187 @@ void StChargedParticles::DeclareHistograms() {
 
     // basic event QA'
     //Event
-    hVtxXvsY = new TH2F("hVtxXvsY",
-    "hVtxXvsY",
-    200,-10.,10.,200,-10.,10.);
+    fhVtxXvsY = new TH2F("hVtxXvsY", "hVtxXvsY",200,-10.,10.,200,-10.,10.);
     // Track
-    hGlobalPtot = new TH1F("hGlobalPtot",
-        "Global track momentum;p (GeV/c)",
-        100, 0., 1. );
-    hGlobalPtotCut = new TH1F("hGlobalPtotCut",
-        "Global track momentum after cut;p (GeV/c)",
-        100, 0., 1. );
-    hPrimaryPtot = new TH1F("hPrimaryPtot",
-        "Primary track momentum;p (GeV/c)",
-        100, 0., 1. );
-    hPrimaryPtotCut = new TH1F("hPrimaryPtotCut",
-        "Primary track momentum after cut;p (GeV/c)",
-        100, 0., 1. );
-    hTransvMomentum = new TH1F("hTransvMomentum",
-        "Track transverse momentum;p_{T} (GeV/c)",
-        200, 0., 2.);
+    fhGlobalPtot = new TH1F("hGlobalPtot", "Global track momentum;p (GeV/c)", 100, 0., 1. );
+    hGlobalPtotCut = new TH1F("hGlobalPtotCut", "Global track momentum after cut;p (GeV/c)", 100, 0., 1. );
+    hPrimaryPtot = new TH1F("hPrimaryPtot", "Primary track momentum;p (GeV/c)", 100, 0., 1. );
+    hPrimaryPtotCut = new TH1F("hPrimaryPtotCut", "Primary track momentum after cut;p (GeV/c)", 100, 0., 1. );
+    hTransvMomentum = new TH1F("hTransvMomentum", "Track transverse momentum;p_{T} (GeV/c)", 200, 0., 2.);
 
     for(int i=0; i<2; i++) {
-      hGlobalPhiVsPt[i] = new TH2F(Form("hGlobalPhiVsPt_%d",i),
-          Form("#phi vs. p_{T} for charge: %d;p_{T} (GeV/c);#phi (rad)", (i==0) ? 1 : -1),
-          300, 0., 3.,
-          630, -3.15, 3.15);
+      fhGlobalPhiVsPt[i] = new TH2F(Form("hGlobalPhiVsPt_%d",i), Form("#phi vs. p_{T} for charge: %d;p_{T} (GeV/c);#phi (rad)", (i==0) ? 1 : -1),
+          300, 0., 3., 630, -3.15, 3.15);
     }
 
     for(int i=0; i<10; i++) {
-      Ptdist[i] = new TH1F(Form("Ptdist_%d",i),
-          Form("p_{T} for centrality bin %d", i),
+      fPtdist[i] = new TH1F(Form("Ptdist_%d",i), Form("p_{T} for centrality bin %d", i),
                100, 0, 10);
     }
 
-    EventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
+    fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
 
-    hNSigmaPion = new TH1F("hNSigmaPion",
-        "n#sigma(#pi);n#sigma(#pi)",
-        400, -10., 10.);
-    hNSigmaElectron = new TH1F("hNSigmaElectron",
-        "n#sigma(e);n#sigma(e)",
-        400,-10.,10.);
-    hNSigmaKaon = new TH1F("hNSigmaKaon",
-        "n#sigma(K);n#sigma(K)",
-        400, -10., 10.);
-    hNSigmaProton = new TH1F("hNSigmaProton",
-        "n#sigma(p);n#sigma(p)",
-        400, -10., 10.);
+    fhNSigmaPion = new TH1F("hNSigmaPion", "n#sigma(#pi);n#sigma(#pi)",400, -10., 10.);
+    fhNSigmaElectron = new TH1F("hNSigmaElectron","n#sigma(e);n#sigma(e)",400,-10.,10.);
+    fhNSigmaKaon = new TH1F("hNSigmaKaon","n#sigma(K);n#sigma(K)",400, -10., 10.);
+    fhNSigmaProton = new TH1F("hNSigmaProton","n#sigma(p);n#sigma(p)",400, -10., 10.);
 
     // TofPidTrait
-    hTofBeta = new TH1F("hTofBeta",
-        "BTofPidTraits #beta;#beta",
-        2000, 0., 2.);
+    fhTofBeta = new TH1F("hTofBeta","BTofPidTraits #beta;#beta",2000, 0., 2.);
 
     //QA histograms
 
-    DcaHist = new TH1F("Dca","Dca",200,0,3.1);
-    DcaHist->GetXaxis()->SetTitle("DCA");
-    DcaHist->GetYaxis()->SetTitle("Counts");
+    fDcaHist = new TH1F("Dca","Dca",200,0,3.1);
+    fDcaHist->GetXaxis()->SetTitle("DCA");
+    fDcaHist->GetYaxis()->SetTitle("Counts");
 
 
-    DcaHistBTOFMatched = new TH1F("DcaBTOFMatched","DcaBTOFMatched",200,0,3.1);
-    DcaHistBTOFMatched->GetXaxis()->SetTitle("DCA(BTOFMatched)");
-    DcaHistBTOFMatched->GetYaxis()->SetTitle("Counts");
+    fDcaHistBTOFMatched = new TH1F("DcaBTOFMatched","DcaBTOFMatched",200,0,3.1);
+    fDcaHistBTOFMatched->GetXaxis()->SetTitle("DCA(BTOFMatched)");
+    fDcaHistBTOFMatched->GetYaxis()->SetTitle("Counts");
 
-    VzHist = new TH1F("Vz","Vz",350,-35,35);
-    VzHist->GetXaxis()->SetTitle("Vz");
-    VzHist->GetYaxis()->SetTitle("Counts");
+    fVzHist = new TH1F("Vz","Vz",350,-35,35);
+    fVzHist->GetXaxis()->SetTitle("Vz");
+    fVzHist->GetYaxis()->SetTitle("Counts");
 
-    ZDCHist = new TH1F("ZDC","ZDC",1000,0,5000);
-    ZDCHist->GetXaxis()->SetTitle("ZDC");
-    ZDCHist->GetYaxis()->SetTitle("Counts");
+    fZDCHist = new TH1F("ZDC","ZDC",1000,0,5000);
+    fZDCHist->GetXaxis()->SetTitle("ZDC");
+    fZDCHist->GetYaxis()->SetTitle("Counts");
 
-    refMultHist = new TH1F("refMult","refMult",800,-0.5,799.5);
-    refMultHist->GetXaxis()->SetTitle("refMult");
-    refMultHist->GetYaxis()->SetTitle("Counts");
-
-
-    refMultPileupHist = new TH1F("refMultPileup","refMultPileup",800,-0.5,799.5);
-    refMultPileupHist->GetXaxis()->SetTitle("refMultPileup");
-    refMultPileupHist->GetYaxis()->SetTitle("Counts");
-    refMultNoPileupHist = new TH1F("refMultNoPileup","refMultNoPileup",800,-0.5,799.5);
-    refMultNoPileupHist->GetXaxis()->SetTitle("refMultNoPileup");
-    refMultNoPileupHist->GetYaxis()->SetTitle("Counts");
+    frefMultHist = new TH1F("refMult","refMult",800,-0.5,799.5);
+    frefMultHist->GetXaxis()->SetTitle("refMult");
+    frefMultHist->GetYaxis()->SetTitle("Counts");
 
 
-    RawrefMultHist = new TH1F("RawrefMult","refMult",800,-0.5,799.5);
-    RawrefMultHist->GetXaxis()->SetTitle("refMult");
-    RawrefMultHist->GetYaxis()->SetTitle("Counts");
-
-    EventStat = new TH1F("EventStat","Event Stat.",20,-0.5,19.5);
-    EventStat->GetXaxis()->SetTitle("CutsId");
-    EventStat->GetYaxis()->SetTitle("Counts");
-
-    TrackStat = new TH1F("TrackStat","Track Stat.",20,-0.5,19.5);
-    TrackStat->GetXaxis()->SetTitle("CutsId");
-    TrackStat->GetYaxis()->SetTitle("Counts");
-
-    TOFMult_refMultHist = new TH2F("TOFMult_refMult","TOFMult v.s. refMult",700,-0.5,3499.5,700,-0.5,699.5);
-    TOFMult_refMultHist->GetXaxis()->SetTitle("TOFMult");
-    TOFMult_refMultHist->GetYaxis()->SetTitle("refMult");
-
-    TOF_ZDCCoincidence = new TH2F("TOF_ZDCCoincidence","TOF v.s. ZDCCoincidence",700,-0.5,699.5,1000,0,60000);
-    TOF_ZDCCoincidence->GetXaxis()->SetTitle("TOF Matched");
-    TOF_ZDCCoincidence->GetYaxis()->SetTitle("ZDCCoincidence");
-
-    refMult_ZDCCoincidence = new TH2F("refMult_ZDCCoincidence","refMult v.s. ZDCCoincidence",700,-0.5,699.5,1000,0,60000);
-    refMult_ZDCCoincidence->GetXaxis()->SetTitle("refMult");
-    refMult_ZDCCoincidence->GetYaxis()->SetTitle("ZDCCoincidence");
+    frefMultPileupHist = new TH1F("refMultPileup","refMultPileup",800,-0.5,799.5);
+    frefMultPileupHist->GetXaxis()->SetTitle("refMultPileup");
+    frefMultPileupHist->GetYaxis()->SetTitle("Counts");
+    frefMultNoPileupHist = new TH1F("refMultNoPileup","refMultNoPileup",800,-0.5,799.5);
+    frefMultNoPileupHist->GetXaxis()->SetTitle("refMultNoPileup");
+    frefMultNoPileupHist->GetYaxis()->SetTitle("Counts");
 
 
-    TOF_refMultHist = new TH2F("TOF_refMult","TOF v.s. refMult",700,-0.5,699.5,700,-0.5,699.5);
-    TOF_refMultHist->GetXaxis()->SetTitle("TOF Matched");
-    TOF_refMultHist->GetYaxis()->SetTitle("refMult");
+    fRawrefMultHist = new TH1F("RawrefMult","refMult",800,-0.5,799.5);
+    fRawrefMultHist->GetXaxis()->SetTitle("refMult");
+    fRawrefMultHist->GetYaxis()->SetTitle("Counts");
+
+    fEventStat = new TH1F("EventStat","Event Stat.",20,-0.5,19.5);
+    fEventStat->GetXaxis()->SetTitle("CutsId");
+    fEventStat->GetYaxis()->SetTitle("Counts");
+
+    fTrackStat = new TH1F("TrackStat","Track Stat.",20,-0.5,19.5);
+    fTrackStat->GetXaxis()->SetTitle("CutsId");
+    fTrackStat->GetYaxis()->SetTitle("Counts");
+
+    fTOFMult_refMultHist = new TH2F("TOFMult_refMult","TOFMult v.s. refMult",700,-0.5,3499.5,700,-0.5,699.5);
+    fTOFMult_refMultHist->GetXaxis()->SetTitle("TOFMult");
+    fTOFMult_refMultHist->GetYaxis()->SetTitle("refMult");
+
+    fTOF_ZDCCoincidence = new TH2F("TOF_ZDCCoincidence","TOF v.s. ZDCCoincidence",700,-0.5,699.5,1000,0,60000);
+    fTOF_ZDCCoincidence->GetXaxis()->SetTitle("TOF Matched");
+    fTOF_ZDCCoincidence->GetYaxis()->SetTitle("ZDCCoincidence");
+
+    frefMult_ZDCCoincidence = new TH2F("refMult_ZDCCoincidence","refMult v.s. ZDCCoincidence",700,-0.5,699.5,1000,0,60000);
+    frefMult_ZDCCoincidence->GetXaxis()->SetTitle("refMult");
+    frefMult_ZDCCoincidence->GetYaxis()->SetTitle("ZDCCoincidence");
+
+
+    fTOF_refMultHist = new TH2F("TOF_refMult","TOF v.s. refMult",700,-0.5,699.5,700,-0.5,699.5);
+    fTOF_refMultHist->GetXaxis()->SetTitle("TOF Matched");
+    fTOF_refMultHist->GetYaxis()->SetTitle("refMult");
 
     //BEMC_refMultHist = new TH2F("BEMC_refMult","BEMC v.s. refMult",1000,0,3000,700,-0.5,699.5);
-    BEMC_refMultHist = new TH2F("BEMC_refMult","BEMC v.s. refMult",700,-0.5,699.5,700,-0.5,699.5);
-    BEMC_refMultHist->GetXaxis()->SetTitle("BEMC Matched");
-    BEMC_refMultHist->GetYaxis()->SetTitle("refMult");
+    fBEMC_refMultHist = new TH2F("BEMC_refMult","BEMC v.s. refMult",700,-0.5,699.5,700,-0.5,699.5);
+    fBEMC_refMultHist->GetXaxis()->SetTitle("BEMC Matched");
+    fBEMC_refMultHist->GetYaxis()->SetTitle("refMult");
 
-    TOF_BEMC = new TH2F("TOF_BEMC","TOF v.s. BEMC Matched",700,-0.5,699.5,700,-0.5,699.5);
-    TOF_BEMC->GetXaxis()->SetTitle("TOF Matched");
-    TOF_BEMC->GetYaxis()->SetTitle("BEMC Matched");
+    fTOF_BEMC = new TH2F("TOF_BEMC","TOF v.s. BEMC Matched",700,-0.5,699.5,700,-0.5,699.5);
+    fTOF_BEMC->GetXaxis()->SetTitle("TOF Matched");
+    fTOF_BEMC->GetYaxis()->SetTitle("BEMC Matched");
 
-    refMult_VzHist= new TH2F("refMult_Vz","refMult v.s Vz",700,-0.5,699.5,350,-35,35);
-    refMult_VzHist->GetXaxis()->SetTitle("refMult");
-    refMult_VzHist->GetYaxis()->SetTitle("Vz");
+    frefMult_VzHist= new TH2F("refMult_Vz","refMult v.s Vz",700,-0.5,699.5,350,-35,35);
+    frefMult_VzHist->GetXaxis()->SetTitle("refMult");
+    frefMult_VzHist->GetYaxis()->SetTitle("Vz");
 
-    TOF_VzHist= new TH2F("TOF_Vz","TOF v.s Vz",700,-0.5,699.5,350,-35,35);
-    TOF_VzHist->GetXaxis()->SetTitle("TOF");
-    TOF_VzHist->GetYaxis()->SetTitle("Vz");
+    fTOF_VzHist= new TH2F("TOF_Vz","TOF v.s Vz",700,-0.5,699.5,350,-35,35);
+    fTOF_VzHist->GetXaxis()->SetTitle("TOF");
+    fTOF_VzHist->GetYaxis()->SetTitle("Vz");
 
-    TOF_rankVzHist= new TH2F("TOF_rankVz","TOF v.s rankVz",700,-0.5,699.5,350,-35,35);
-    TOF_rankVzHist->GetXaxis()->SetTitle("TOF");
-    TOF_rankVzHist->GetYaxis()->SetTitle("rankVz");
+    fTOF_rankVzHist= new TH2F("TOF_rankVz","TOF v.s rankVz",700,-0.5,699.5,350,-35,35);
+    fTOF_rankVzHist->GetXaxis()->SetTitle("TOF");
+    fTOF_rankVzHist->GetYaxis()->SetTitle("rankVz");
 
-    refMult_rankVzHist= new TH2F("refMult_rankVz","refMult v.s rankVz",700,-0.5,699.5,350,-35,35);
-    refMult_rankVzHist->GetXaxis()->SetTitle("refMult");
-    refMult_rankVzHist->GetYaxis()->SetTitle("rankVz");
+    frefMult_rankVzHist= new TH2F("refMult_rankVz","refMult v.s rankVz",700,-0.5,699.5,350,-35,35);
+    frefMult_rankVzHist->GetXaxis()->SetTitle("refMult");
+    frefMult_rankVzHist->GetYaxis()->SetTitle("rankVz");
 
-    Vz_rankVzHist= new TH2F("Vz_rankVz","Vz v.s rankVz",350,-35,35,350,-35,35);
-    Vz_rankVzHist->GetXaxis()->SetTitle("Vz");
-    Vz_rankVzHist->GetYaxis()->SetTitle("rankVz");
+    fVz_rankVzHist= new TH2F("Vz_rankVz","Vz v.s rankVz",350,-35,35,350,-35,35);
+    fVz_rankVzHist->GetXaxis()->SetTitle("Vz");
+    fVz_rankVzHist->GetYaxis()->SetTitle("rankVz");
 
-    Vz_vpdVzHist= new TH2F("Vz_vpdVz","Vz v.s vpdVz",350,-35,35,350,-35,35);
-    Vz_vpdVzHist->GetXaxis()->SetTitle("Vz");
-    Vz_vpdVzHist->GetYaxis()->SetTitle("vpdVz");
+    fVz_vpdVzHist= new TH2F("Vz_vpdVz","Vz v.s vpdVz",350,-35,35,350,-35,35);
+    fVz_vpdVzHist->GetXaxis()->SetTitle("Vz");
+    fVz_vpdVzHist->GetYaxis()->SetTitle("vpdVz");
 
-    refMult_ZDCHist= new TH2F("refMult_ZDC","refMult v.s. ZDC",700,-0.5,699.5,1000,0,5000);
-    refMult_ZDCHist->GetXaxis()->SetTitle("refMult");
-    refMult_ZDCHist->GetYaxis()->SetTitle("ZDC");
+    frefMult_ZDCHist= new TH2F("refMult_ZDC","refMult v.s. ZDC",700,-0.5,699.5,1000,0,5000);
+    frefMult_ZDCHist->GetXaxis()->SetTitle("refMult");
+    frefMult_ZDCHist->GetYaxis()->SetTitle("ZDC");
 
-    ZDCCoincidence = new TH1F("ZDCCoincidence","ZDCCoincidence",1000,0,60000);
-    ZDCCoincidence->GetXaxis()->SetTitle("ZDC X Rate");
-    ZDCCoincidence->GetYaxis()->SetTitle("Counts");
+    fZDCCoincidence = new TH1F("ZDCCoincidence","ZDCCoincidence",1000,0,60000);
+    fZDCCoincidence->GetXaxis()->SetTitle("ZDC X Rate");
+    fZDCCoincidence->GetYaxis()->SetTitle("Counts");
 
-    ZDCEastWestHist= new TH2F("ZDCEastWest","zdc East v.s. West",500,0,2500,500,0,2500);
-    ZDCEastWestHist->GetXaxis()->SetTitle("zdcE");
-    ZDCEastWestHist->GetYaxis()->SetTitle("zdcW");
+    fZDCEastWestHist= new TH2F("ZDCEastWest","zdc East v.s. West",500,0,2500,500,0,2500);
+    fZDCEastWestHist->GetXaxis()->SetTitle("zdcE");
+    fZDCEastWestHist->GetYaxis()->SetTitle("zdcW");
 
     int runbins = 1428;
     int runmin = 19084005;
     int runmax = 19130031;
     //Run-by-run
-    runidvsrefmult= new TProfile("runidvsrefmult","Run Id-RefMult",runbins,runmin,runmax);//,5000,0,5000);
-    runidvsrefmult->GetXaxis()->SetTitle("RunId");
-    runidvsrefmult->GetYaxis()->SetTitle("RefMult");
-    runidvsrefmult->Sumw2();
+    frunidvsrefmult= new TProfile("runidvsrefmult","Run Id-RefMult",runbins,runmin,runmax);//,5000,0,5000);
+    frunidvsrefmult->GetXaxis()->SetTitle("RunId");
+    frunidvsrefmult->GetYaxis()->SetTitle("RefMult");
+    frunidvsrefmult->Sumw2();
 
-    runidvszdcand= new TProfile("runidvszdcand","Run Id-ZDC coincidence",runbins,runmin,runmax);//,5000,0,5000);
-    runidvszdcand->GetXaxis()->SetTitle("RunId");
-    runidvszdcand->GetYaxis()->SetTitle("ZDCAnd");
-    runidvszdcand->Sumw2();
+    frunidvszdcand= new TProfile("runidvszdcand","Run Id-ZDC coincidence",runbins,runmin,runmax);//,5000,0,5000);
+    frunidvszdcand->GetXaxis()->SetTitle("RunId");
+    frunidvszdcand->GetYaxis()->SetTitle("ZDCAnd");
+    frunidvszdcand->Sumw2();
 
-    runidvstofmatched= new TProfile("runidvstofmatched","Run Id-TOFMatched",runbins,runmin,runmax);//,5000,0,5000);
-    runidvstofmatched->GetXaxis()->SetTitle("RunId");
-    runidvstofmatched->GetYaxis()->SetTitle("TOFMatched");
-    runidvstofmatched->Sumw2();
+    frunidvstofmatched= new TProfile("runidvstofmatched","Run Id-TOFMatched",runbins,runmin,runmax);//,5000,0,5000);
+    frunidvstofmatched->GetXaxis()->SetTitle("RunId");
+    frunidvstofmatched->GetYaxis()->SetTitle("TOFMatched");
+    frunidvstofmatched->Sumw2();
 
-    runidvsbemcmatched= new TProfile("runidvsbemcmatched","Run Id-BEMCMatched",runbins,runmin,runmax);//,5000,0,5000);
-    runidvsbemcmatched->GetXaxis()->SetTitle("RunId");
-    runidvsbemcmatched->GetYaxis()->SetTitle("BEMCMatched");
-    runidvsbemcmatched->Sumw2();
+    frunidvsbemcmatched= new TProfile("runidvsbemcmatched","Run Id-BEMCMatched",runbins,runmin,runmax);//,5000,0,5000);
+    frunidvsbemcmatched->GetXaxis()->SetTitle("RunId");
+    frunidvsbemcmatched->GetYaxis()->SetTitle("BEMCMatched");
+    frunidvsbemcmatched->Sumw2();
 
-    runidvstofmult= new TProfile("runidvstofmult","Run Id-TOFMult",runbins,runmin,runmax);//,5000,0,5000);
-    runidvstofmult->GetXaxis()->SetTitle("RunId");
-    runidvstofmult->GetYaxis()->SetTitle("TOFMult");
-    runidvstofmult->Sumw2();
+    frunidvstofmult= new TProfile("runidvstofmult","Run Id-TOFMult",runbins,runmin,runmax);//,5000,0,5000);
+    frunidvstofmult->GetXaxis()->SetTitle("RunId");
+    frunidvstofmult->GetYaxis()->SetTitle("TOFMult");
+    frunidvstofmult->Sumw2();
 
-    VzvsrefMult = new TProfile("VzvsrefMult","Vz-refMult",350,-35,35);
-    VzvsrefMult->GetXaxis()->SetTitle("Vz");
-    VzvsrefMult->GetYaxis()->SetTitle("refMult");
-    VzvsrefMult->Sumw2();
+    fVzvsrefMult = new TProfile("VzvsrefMult","Vz-refMult",350,-35,35);
+    fVzvsrefMult->GetXaxis()->SetTitle("Vz");
+    fVzvsrefMult->GetYaxis()->SetTitle("refMult");
+    fVzvsrefMult->Sumw2();
 
-    DeltaVzvsrefMult = new TProfile("DeltaVzvsrefMult","Delta(Vz)-refMult",350,-35,35);
-    DeltaVzvsrefMult->GetXaxis()->SetTitle("Delta(Vz)");
-    DeltaVzvsrefMult->GetYaxis()->SetTitle("refMult");
-    DeltaVzvsrefMult->Sumw2();
+    fDeltaVzvsrefMult = new TProfile("DeltaVzvsrefMult","Delta(Vz)-refMult",350,-35,35);
+    fDeltaVzvsrefMult->GetXaxis()->SetTitle("Delta(Vz)");
+    fDeltaVzvsrefMult->GetYaxis()->SetTitle("refMult");
+    fDeltaVzvsrefMult->Sumw2();
 
-
-    fHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
-    fHistCentrality->Sumw2();
-    fHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
-    fHistCentralityAfterCuts->Sumw2();
-    fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
-    fHistMultiplicity->Sumw2();
-    fHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
-    fHistMultiplicityCorr->Sumw2();
+    ffHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+    ffHistCentrality->Sumw2();
+    ffHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
+    ffHistCentralityAfterCuts->Sumw2();
+    ffHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+    ffHistMultiplicity->Sumw2();
+    ffHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
+    ffHistMultiplicityCorr->Sumw2();
 
     // run range for runID histogram
     int nRunBinSize = 200;
@@ -513,69 +489,69 @@ void StChargedParticles::DeclareHistograms() {
 //________________________________________________________________________
 void StChargedParticles::WriteHistograms() {
 
-  VzHist->Write();
-  ZDCHist->Write();
-  refMultHist->Write();
-  refMultPileupHist->Write();
-  refMultNoPileupHist->Write();
-  RawrefMultHist->Write();
-  EventStat->Write();
-  TrackStat->Write();
-  ZDCCoincidence->Write();
+  fVzHist->Write();
+  fZDCHist->Write();
+  frefMultHist->Write();
+  frefMultPileupHist->Write();
+  frefMultNoPileupHist->Write();
+  fRawrefMultHist->Write();
+  fEventStat->Write();
+  fTrackStat->Write();
+  fZDCCoincidence->Write();
 
-  DcaHist->Write();
-  DcaHistBTOFMatched->Write();
+  fDcaHist->Write();
+  fDcaHistBTOFMatched->Write();
 
-  TOF_ZDCCoincidence->Write();
-  refMult_ZDCCoincidence->Write();
-  TOFMult_refMultHist->Write();
-  TOF_BEMC->Write();
-  BEMC_refMultHist->Write();
-  Vz_rankVzHist->Write();
-  TOF_VzHist->Write();
-  refMult_VzHist->Write();
-  TOF_rankVzHist->Write();
-  refMult_rankVzHist->Write();
+  fTOF_ZDCCoincidence->Write();
+  frefMult_ZDCCoincidence->Write();
+  fTOFMult_refMultHist->Write();
+  fTOF_BEMC->Write();
+  fBEMC_refMultHist->Write();
+  fVz_rankVzHist->Write();
+  fTOF_VzHist->Write();
+  frefMult_VzHist->Write();
+  fTOF_rankVzHist->Write();
+  frefMult_rankVzHist->Write();
 
 
-  TOF_refMultHist->Write();
-  Vz_vpdVzHist->Write();
-  refMult_ZDCHist->Write();
-  ZDCEastWestHist->Write();
+  fTOF_refMultHist->Write();
+  fVz_vpdVzHist->Write();
+  frefMult_ZDCHist->Write();
+  fZDCEastWestHist->Write();
 
   // Histogramming
   // Event
-  hVtxXvsY->Write();
+  fhVtxXvsY->Write();
   // Track
-  hGlobalPtot->Write();
-  hGlobalPtotCut->Write();
-  hPrimaryPtot->Write();
-  hPrimaryPtotCut->Write();
-  hTransvMomentum->Write();
-  hGlobalPhiVsPt[0]->Write();
-  hGlobalPhiVsPt[1]->Write();
-  hNSigmaProton->Write();
-  hNSigmaPion->Write();
-  hNSigmaElectron->Write();
-  hNSigmaKaon->Write();
-  hTofBeta->Write();
+  fhGlobalPtot->Write();
+  fhGlobalPtotCut->Write();
+  fhPrimaryPtot->Write();
+  fhPrimaryPtotCut->Write();
+  fhTransvMomentum->Write();
+  fhGlobalPhiVsPt[0]->Write();
+  fhGlobalPhiVsPt[1]->Write();
+  fhNSigmaProton->Write();
+  fhNSigmaPion->Write();
+  fhNSigmaElectron->Write();
+  fhNSigmaKaon->Write();
+  fhTofBeta->Write();
 
-  for(int i=0; i<10; i++){ Ptdist[i]->Write();}
-  EventCent->Write();
+  for(int i=0; i<10; i++){ fPtdist[i]->Write();}
+  fEventCent->Write();
 
-  runidvsrefmult->Write();
-  runidvszdcand->Write();
-  runidvstofmult->Write();
-  runidvstofmatched->Write();
-  runidvsbemcmatched->Write();
-  VzvsrefMult->Write();
-  DeltaVzvsrefMult->Write();
+  frunidvsrefmult->Write();
+  frunidvszdcand->Write();
+  frunidvstofmult->Write();
+  frunidvstofmatched->Write();
+  frunidvsbemcmatched->Write();
+  fVzvsrefMult->Write();
+  fDeltaVzvsrefMult->Write();
 
-  fHistCentrality->Write();
-  fHistCentralityAfterCuts->Write();
-  fHistMultiplicity->Write();
-  fHistMultiplicityCorr->Write();
-  fHistEventPileUp->Write();
+  ffHistCentrality->Write();
+  ffHistCentralityAfterCuts->Write();
+  ffHistMultiplicity->Write();
+  ffHistMultiplicityCorr->Write();
+  ffHistEventPileUp->Write();
 }
 //
 //
@@ -589,7 +565,7 @@ void StChargedParticles::Clear(Option_t *opt) {
 //________________________________________________________________________
 int StChargedParticles::Make()
 {
-  EventStat->Fill(1);
+  fEventStat->Fill(1);
   // zero out these global variables
   fCentralityScaled = 0.0, ref9 = 0, ref16 = 0;
 
