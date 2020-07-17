@@ -130,6 +130,11 @@ class StChargedParticles : public StMaker {
   // centrality objects
   StRefMultCorr       *grefmultCorr;
 
+
+
+
+
+
   // histograms
   //QA histograms
   TH1F *fVzHist;//!
@@ -171,14 +176,24 @@ class StChargedParticles : public StMaker {
   TH1F *fhPrimaryPtot;//!
   TH1F *fhPrimaryPtotCut;//!
   TH1F *fhTransvMomentum;//!
-  TH2F *fhGlobalPhiVsPt[2];//!
+  TH2F *fhGlobalPhiVsPt0;//!
+  TH2F *fhGlobalPhiVsPt1;//!
   TH1F *fhNSigmaProton;//!
   TH1F *fhNSigmaPion;//!
   TH1F *fhNSigmaElectron;//!
   TH1F *fhNSigmaKaon;//!
   TH1F *fhTofBeta;//!
 
-  TH1F *fPtdist[10];//!
+  TH1F *fPtdist0;//!
+  TH1F *fPtdist1;//!
+  TH1F *fPtdist2;//!
+  TH1F *fPtdist3;//!
+  TH1F *fPtdist4;//!
+  TH1F *fPtdist5;//!
+  TH1F *fPtdist6;//!
+  TH1F *fPtdist7;//!
+  TH1F *fPtdist8;//!
+  TH1F *fPtdist9;//!
   TH1F *fEventCent;//!
 
   TProfile *frunidvsrefmult;//!

@@ -166,7 +166,6 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
 StChargedParticles::~StChargedParticles()
 {
   // free up histogram objects if they exist
-
   // Destructor
   if(fVzHist)                    delete fVzHist;
   if(fZDCHist)                   delete fZDCHist;
@@ -207,14 +206,24 @@ StChargedParticles::~StChargedParticles()
   if(fhPrimaryPtot)              delete fhPrimaryPtot;
   if(fhPrimaryPtotCut)           delete fhPrimaryPtotCut;
   if(fhTransvMomentum)           delete fhTransvMomentum;
-  if(fhGlobalPhiVsPt)            delete fhGlobalPhiVsPt;
+  if(fhGlobalPhiVsPt0)            delete fhGlobalPhiVsPt0;
+  if(fhGlobalPhiVsPt1)            delete fhGlobalPhiVsPt1;
   if(fhNSigmaProton)             delete fhNSigmaProton;
   if(fhNSigmaPion)               delete fhNSigmaPion;
   if(fhNSigmaElectron)           delete fhNSigmaElectron;
   if(fhNSigmaKaon)               delete fhNSigmaKaon;
   if(fhTofBeta)                  delete fhTofBeta;
 
-  if(fPtdist)                    delete fPtdist;
+  if(fPtdist0)                    delete fPtdist0;
+  if(fPtdist1)                    delete fPtdist1;
+  if(fPtdist2)                    delete fPtdist2;
+  if(fPtdist3)                    delete fPtdist3;
+  if(fPtdist4)                    delete fPtdist4;
+  if(fPtdist5)                    delete fPtdist5;
+  if(fPtdist6)                    delete fPtdist6;
+  if(fPtdist7)                    delete fPtdist7;
+  if(fPtdist8)                    delete fPtdist8;
+  if(fPtdist9)                    delete fPtdist9;
   if(fEventCent)                 delete fEventCent;
 
   if(frunidvsrefmult)            delete frunidvsrefmult;
@@ -225,7 +234,6 @@ StChargedParticles::~StChargedParticles()
   if(fVzvsrefMult)               delete fVzvsrefMult;
   if(fDeltaVzvsrefMult)          delete fDeltaVzvsrefMult;
 
-
   if(fHistCentrality)           delete fHistCentrality;
   if(fHistCentralityAfterCuts)  delete fHistCentralityAfterCuts;
   if(fHistMultiplicity)         delete fHistMultiplicity;
@@ -235,6 +243,8 @@ StChargedParticles::~StChargedParticles()
 //
 //_____________________________________________________________________________
 Int_t StChargedParticles::Init() {
+  // declare histograms
+  DeclareHistograms();
 cout << "StChargedParticles::Init()\n";
   return kStOK;
 }
@@ -294,20 +304,28 @@ void StChargedParticles::DeclareHistograms() {
     fhVtxXvsY = new TH2F("hVtxXvsY", "hVtxXvsY",200,-10.,10.,200,-10.,10.);
     // Track
     fhGlobalPtot = new TH1F("hGlobalPtot", "Global track momentum;p (GeV/c)", 100, 0., 1. );
-    hGlobalPtotCut = new TH1F("hGlobalPtotCut", "Global track momentum after cut;p (GeV/c)", 100, 0., 1. );
-    hPrimaryPtot = new TH1F("hPrimaryPtot", "Primary track momentum;p (GeV/c)", 100, 0., 1. );
-    hPrimaryPtotCut = new TH1F("hPrimaryPtotCut", "Primary track momentum after cut;p (GeV/c)", 100, 0., 1. );
-    hTransvMomentum = new TH1F("hTransvMomentum", "Track transverse momentum;p_{T} (GeV/c)", 200, 0., 2.);
+    fhGlobalPtotCut = new TH1F("hGlobalPtotCut", "Global track momentum after cut;p (GeV/c)", 100, 0., 1. );
+    fhPrimaryPtot = new TH1F("hPrimaryPtot", "Primary track momentum;p (GeV/c)", 100, 0., 1. );
+    fhPrimaryPtotCut = new TH1F("hPrimaryPtotCut", "Primary track momentum after cut;p (GeV/c)", 100, 0., 1. );
+    fhTransvMomentum = new TH1F("hTransvMomentum", "Track transverse momentum;p_{T} (GeV/c)", 200, 0., 2.);
 
-    for(int i=0; i<2; i++) {
-      fhGlobalPhiVsPt[i] = new TH2F(Form("hGlobalPhiVsPt_%d",i), Form("#phi vs. p_{T} for charge: %d;p_{T} (GeV/c);#phi (rad)", (i==0) ? 1 : -1),
+
+    fhGlobalPhiVsPt0 = new TH2F("hGlobalPhiVsPt0", "#phi vs. p_{T} for charge: 1;p_{T} (GeV/c);#phi (rad)",
           300, 0., 3., 630, -3.15, 3.15);
-    }
+    fhGlobalPhiVsPt1 = new TH2F("hGlobalPhiVsPt1", "#phi vs. p_{T} for charge: -1;p_{T} (GeV/c);#phi (rad)",
+          300, 0., 3., 630, -3.15, 3.15);
 
-    for(int i=0; i<10; i++) {
-      fPtdist[i] = new TH1F(Form("Ptdist_%d",i), Form("p_{T} for centrality bin %d", i),
-               100, 0, 10);
-    }
+
+    fPtdist0= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist1= new TH1F("Ptdist1", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist2= new TH1F("Ptdist2", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist3= new TH1F("Ptdist3", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist4= new TH1F("Ptdist4", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist5= new TH1F("Ptdist5", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist6= new TH1F("Ptdist6", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist7= new TH1F("Ptdist7", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist8= new TH1F("Ptdist8", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist9= new TH1F("Ptdist9", "p_{T} for centrality bin 0",100, 0, 10);
 
     fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
 
@@ -464,14 +482,17 @@ void StChargedParticles::DeclareHistograms() {
     fDeltaVzvsrefMult->GetYaxis()->SetTitle("refMult");
     fDeltaVzvsrefMult->Sumw2();
 
-    ffHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
-    ffHistCentrality->Sumw2();
-    ffHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
-    ffHistCentralityAfterCuts->Sumw2();
-    ffHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
-    ffHistMultiplicity->Sumw2();
-    ffHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
-    ffHistMultiplicityCorr->Sumw2();
+    fHistCentrality = new TH1F("fHistCentrality", "No. events vs centrality", nHistCentBins, 0, 100);
+    fHistCentrality->Sumw2();
+    fHistCentralityAfterCuts = new TH1F("fHistCentralityAfterCuts", "No. events vs centrality after cuts", nHistCentBins, 0, 100);
+    fHistCentralityAfterCuts->Sumw2();
+    fHistMultiplicity = new TH1F("fHistMultiplicity", "No. events vs multiplicity", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicity->Sumw2();
+    fHistMultiplicityCorr = new TH1F("fHistMultiplicityCorr", "No. events vs corr. multiplicity", kHistMultBins, 0, kHistMultMax);
+    fHistMultiplicityCorr->Sumw2();
+
+    fHistEventPileUp = new TH1F("fHistEventPileUp", "PileUp events", nRunBins, 0.5, nRunBinsMax);
+    fHistEventPileUp->Sumw2();
 
     // run range for runID histogram
     int nRunBinSize = 200;
@@ -528,15 +549,24 @@ void StChargedParticles::WriteHistograms() {
   fhPrimaryPtot->Write();
   fhPrimaryPtotCut->Write();
   fhTransvMomentum->Write();
-  fhGlobalPhiVsPt[0]->Write();
-  fhGlobalPhiVsPt[1]->Write();
+  fhGlobalPhiVsPt0->Write();
+  fhGlobalPhiVsPt1->Write();
   fhNSigmaProton->Write();
   fhNSigmaPion->Write();
   fhNSigmaElectron->Write();
   fhNSigmaKaon->Write();
   fhTofBeta->Write();
 
-  for(int i=0; i<10; i++){ fPtdist[i]->Write();}
+  fPtdist0->Write();
+  fPtdist1->Write();
+  fPtdist2->Write();
+  fPtdist3->Write();
+  fPtdist4->Write();
+  fPtdist5->Write();
+  fPtdist6->Write();
+  fPtdist7->Write();
+  fPtdist8->Write();
+  fPtdist9->Write();
   fEventCent->Write();
 
   frunidvsrefmult->Write();
@@ -547,11 +577,11 @@ void StChargedParticles::WriteHistograms() {
   fVzvsrefMult->Write();
   fDeltaVzvsrefMult->Write();
 
-  ffHistCentrality->Write();
-  ffHistCentralityAfterCuts->Write();
-  ffHistMultiplicity->Write();
-  ffHistMultiplicityCorr->Write();
-  ffHistEventPileUp->Write();
+  fHistCentrality->Write();
+  fHistCentralityAfterCuts->Write();
+  fHistMultiplicity->Write();
+  fHistMultiplicityCorr->Write();
+  fHistEventPileUp->Write();
 }
 //
 //
