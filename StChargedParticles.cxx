@@ -214,16 +214,16 @@ StChargedParticles::~StChargedParticles()
   if(fhNSigmaKaon)               delete fhNSigmaKaon;
   if(fhTofBeta)                  delete fhTofBeta;
 
-  if(fPtdist0)                    delete fPtdist0;
-  if(fPtdist1)                    delete fPtdist1;
-  if(fPtdist2)                    delete fPtdist2;
-  if(fPtdist3)                    delete fPtdist3;
-  if(fPtdist4)                    delete fPtdist4;
-  if(fPtdist5)                    delete fPtdist5;
-  if(fPtdist6)                    delete fPtdist6;
-  if(fPtdist7)                    delete fPtdist7;
-  if(fPtdist8)                    delete fPtdist8;
-  if(fPtdist9)                    delete fPtdist9;
+  if(fPtdist[0])                    delete fPtdist[0];
+  if(fPtdist[1])                    delete fPtdist[1];
+  if(fPtdist[2])                    delete fPtdist[2];
+  if(fPtdist[3])                    delete fPtdist[3];
+  if(fPtdist[4])                    delete fPtdist[4];
+  if(fPtdist[5])                    delete fPtdist[5];
+  if(fPtdist[6])                    delete fPtdist[6];
+  if(fPtdist[7])                    delete fPtdist[7];
+  if(fPtdist[8])                    delete fPtdist[8];
+  if(fPtdist[9])                    delete fPtdist[9];
   if(fEventCent)                 delete fEventCent;
 
   if(frunidvsrefmult)            delete frunidvsrefmult;
@@ -310,22 +310,22 @@ void StChargedParticles::DeclareHistograms() {
     fhTransvMomentum = new TH1F("hTransvMomentum", "Track transverse momentum;p_{T} (GeV/c)", 200, 0., 2.);
 
 
-    fhGlobalPhiVsPt0 = new TH2F("hGlobalPhiVsPt0", "#phi vs. p_{T} for charge: 1;p_{T} (GeV/c);#phi (rad)",
+    fhGlobalPhiVsPt[0] = new TH2F("hGlobalPhiVsPt0", "#phi vs. p_{T} for charge: 1;p_{T} (GeV/c);#phi (rad)",
           300, 0., 3., 630, -3.15, 3.15);
-    fhGlobalPhiVsPt1 = new TH2F("hGlobalPhiVsPt1", "#phi vs. p_{T} for charge: -1;p_{T} (GeV/c);#phi (rad)",
+    fhGlobalPhiVsPt[1] = new TH2F("hGlobalPhiVsPt1", "#phi vs. p_{T} for charge: -1;p_{T} (GeV/c);#phi (rad)",
           300, 0., 3., 630, -3.15, 3.15);
 
 
-    fPtdist0= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist1= new TH1F("Ptdist1", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist2= new TH1F("Ptdist2", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist3= new TH1F("Ptdist3", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist4= new TH1F("Ptdist4", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist5= new TH1F("Ptdist5", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist6= new TH1F("Ptdist6", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist7= new TH1F("Ptdist7", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist8= new TH1F("Ptdist8", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist9= new TH1F("Ptdist9", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",100, 0, 10);
+    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",100, 0, 10);
+    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",100, 0, 10);
+    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",100, 0, 10);
+    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",100, 0, 10);
+    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",100, 0, 10);
+    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",100, 0, 10);
+    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",100, 0, 10);
+    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",100, 0, 10);
 
     fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
 
@@ -549,24 +549,24 @@ void StChargedParticles::WriteHistograms() {
   fhPrimaryPtot->Write();
   fhPrimaryPtotCut->Write();
   fhTransvMomentum->Write();
-  fhGlobalPhiVsPt0->Write();
-  fhGlobalPhiVsPt1->Write();
+  fhGlobalPhiVsPt[0]->Write();
+  fhGlobalPhiVsPt[1]->Write();
   fhNSigmaProton->Write();
   fhNSigmaPion->Write();
   fhNSigmaElectron->Write();
   fhNSigmaKaon->Write();
   fhTofBeta->Write();
 
-  fPtdist0->Write();
-  fPtdist1->Write();
-  fPtdist2->Write();
-  fPtdist3->Write();
-  fPtdist4->Write();
-  fPtdist5->Write();
-  fPtdist6->Write();
-  fPtdist7->Write();
-  fPtdist8->Write();
-  fPtdist9->Write();
+  fPtdist[0]->Write();
+  fPtdist[1]->Write();
+  fPtdist[2]->Write();
+  fPtdist[3]->Write();
+  fPtdist[4]->Write();
+  fPtdist[5]->Write();
+  fPtdist[6]->Write();
+  fPtdist[7]->Write();
+  fPtdist[8]->Write();
+  fPtdist[9]->Write();
   fEventCent->Write();
 
   frunidvsrefmult->Write();
@@ -627,6 +627,247 @@ int StChargedParticles::Make()
     LOG_WARN << " No baseMaker! Skip! " << endm;
     return kStWarn;
   }
+
+  // get vertex 3-vector and declare variables
+  mVertex = mPicoEvent->primaryVertex(); //pRcVx
+  zVtx = mVertex.z(); //zTpc
+
+  float yVtx = mVertex.y();
+  float xVtx = mVertex.x();
+  float vzVPD = mPicoEvent->vzVpd();
+  float vDiff = TMath::Abs(zVtx - vzVPD);
+  float vrVtx = TMath::Sqrt(xVtx*xVtx+yVtx*yVtx);
+
+  // track variables
+  int ntracks = mPicoDst->numberOfTracks();
+  int ntracksCovM = mPicoDst->numberOfTrackCovMatrices();
+
+  EventStat->Fill(2);
+
+  // get trigger IDs from PicoEvent class and loop over them
+  vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
+  //if(fDebugLevel == kDebugEmcTrigger)
+  //cout<<"EventTriggers: ";
+  double triggerids [4] = {600001, 600011, 600021, 600031};
+  bool IsTrigger=false;
+  for(int j=0; j<4; j++){
+    IsTrigger = (IsTrigger || (mPicoEvent->isTrigger(triggerids[j]))==1);
+  }
+  if(!IsTrigger){ return kStOk;}
+  EventStat->Fill(3);
+
+
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if (nBtofMatch < 1 ) { return kStOk; }
+
+
+// ============================ CENTRALITY ============================== //
+  // get CentMaker pointer
+  mCentMaker = static_cast<StCentMaker*>(GetMaker("CentMaker"));
+  if(!mCentMaker) {
+    LOG_WARN << " No CenttMaker! Skip! " << endm;
+    return kStWarn;
+  }
+
+  // centrality variables
+  int grefMult = mCentMaker->GetgrefMult(); // see StPicoEvent
+  int refMult =  mCentMaker->GetrefMult();  // see StPicoEvent
+  ref9 = mCentMaker->GetRef9();   // binning from central -> peripheral
+  ref16 = mCentMaker->GetRef16(); // binning from central -> peripheral
+  int cent16 = mCentMaker->GetCent16(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
+  int cent9 = mCentMaker->GetCent9(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
+  int centbin = mCentMaker->GetRef16();
+  double refCorr2 = mCentMaker->GetRefCorr2();
+  fCentralityScaled = mCentMaker->GetCentScaled();
+  //double refCorr = mCentMaker->GetCorrectedMultiplicity(refMult, zVtx, zdcCoincidenceRate, 0); // example usage
+  // for pp analyses:    centbin = 0, cent9 = 0, cent16 = 0, refCorr2 = 0.0, ref9 = 0, ref16 = 0;
+
+  // cut on unset centrality, > 80%
+  //if(cent16 == -1 && fDebugLevel != 99) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them CHECK TODO
+  fmycentral = 8-cent9; // WARNING!! RefMultCorr convention 0->peripheral, 8-> central; so we do 8-centrlaity
+  // fill histograms
+  fHistCentrality->Fill(fCentralityScaled);
+  fHistMultiplicity->Fill(grefMult);
+
+
+  if(fabs(zVtx) < fEventZVtxMaxCut) fHistMultiplicityCorr->Fill(refCorr2);
+
+  if( fmycentral<0 || fmycentral>8 ) return kStOK;
+
+  EventStat->Fill(4);
+
+
+  // get bad run, dead & bad tower lists
+  badRuns = mBaseMaker->GetBadRuns();
+
+  // get run number, check bad runs list if desired (kFALSE if bad)
+  fRunNumber = mPicoEvent->runId();
+  if(doRejectBadRuns) {
+    if( !mBaseMaker->IsRunOK(fRunNumber) ) return kStOK;
+  }
+
+  EventStat->Fill(5);
+  if(fabs(zVtx)<70) EventStat->Fill(6);
+  if(fabs(zVtx)<50) EventStat->Fill(7);
+
+
+  // cut event on max track pt > 30.0 GeV
+  // if(GetMaxTrackPt() > fMaxEventTrackPt) return kStOK;
+
+  // cut event on max tower Et > 30.0 GeV
+  //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
+
+  // get event B (magnetic) field
+  Bfield = mPicoEvent->bField();
+
+  VzvsrefMult->Fill(zVtx,grefMult);
+  DeltaVzvsrefMult->Fill(vDiff,grefMult);
+
+  // Z-vertex cut - per the Aj analysis (-40, 40)
+  if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
+  EventStat->Fill(8);
+  if(vrVtx > fEventVrCut) return kStOk;
+  EventStat->Fill(9);
+  if(vDiff > fEventVzDiffCut) return kStOk;
+  EventStat->Fill(10);
+
+  int RunId_Order =  GetRunNo(fRunNumber);
+  bool doTrackQA = kTRUE;
+  if(fCorrPileUp){
+    refMultHist->Fill(grefMult);
+    if(mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {
+      refMultNoPileupHist->Fill(grefMult);
+      doTrackQA = kTRUE;
+    }
+    else{
+      refMultPileupHist->Fill(grefMult);
+      fHistEventPileUp->Fill(RunId_Order + 1., 1);
+      doTrackQA = kFALSE;
+      return kStOk;
+   }
+  }
+  EventStat->Fill(11);
+
+  runidvsrefmult->Fill(mPicoEvent->runId(),grefMult);
+  runidvstofmult->Fill(mPicoEvent->runId(),mPicoEvent->btofTrayMultiplicity());
+  runidvstofmatched->Fill(mPicoEvent->runId(),nBtofMatch);
+  runidvsbemcmatched->Fill(mPicoEvent->runId(),mPicoEvent->nBEMCMatch());
+  runidvszdcand->Fill(mPicoEvent->runId(),mPicoEvent->ZDCx());
+  VzHist->Fill(zVtx);
+  hVtxXvsY->Fill(xVtx,yVtx);
+
+  ZDCHist->Fill(mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
+  ZDCEastWestHist->Fill(mPicoEvent->ZdcSumAdcEast(),mPicoEvent->ZdcSumAdcWest());
+  TOFMult_refMultHist->Fill(mPicoEvent->btofTrayMultiplicity(),grefMult);
+  TOF_refMultHist->Fill(nBtofMatch,grefMult);
+
+  TOF_ZDCCoincidence->Fill(nBtofMatch,mPicoEvent->ZDCx());
+  refMult_ZDCCoincidence->Fill(grefMult,mPicoEvent->ZDCx());
+
+  TOF_BEMC->Fill(nBtofMatch,mPicoEvent->nBEMCMatch());
+  BEMC_refMultHist->Fill(mPicoEvent->nBEMCMatch(),grefMult);
+  TOF_VzHist->Fill(nBtofMatch,zVtx);
+  TOF_rankVzHist->Fill(nBtofMatch,mPicoEvent->ranking());
+
+  refMult_VzHist->Fill(grefMult,zVtx);
+  refMult_rankVzHist->Fill(grefMult,mPicoEvent->ranking());
+
+  Vz_vpdVzHist->Fill(zVtx,vzVPD);
+  Vz_rankVzHist->Fill(zVtx,mPicoEvent->ranking());
+  refMult_ZDCHist->Fill(grefMult,mPicoEvent->ZdcSumAdcEast()+mPicoEvent->ZdcSumAdcWest());
+  ZDCCoincidence->Fill(mPicoEvent->ZDCx());
+
+
+  ///Add by YU, to check the Event per CENT, Jun.14
+  EventCent->Fill(fmycentral);
+     // Track loop
+  for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
+
+    // Retrieve i-th pico track
+    StPicoTrack *gTrack = mPicoDst->track(iTrk);
+
+    if(!gTrack) continue;
+    //std::cout << "Track #[" <</ (iTrk+1) << "/" << NoGlobalTracks << "]"  << std::endl;
+   //------------------------------------------------------------------------
+      // Grigory's default histograms QA block for TPC tracks
+    //________________________________________________________________________
+    hGlobalPtot->Fill( gTrack->gMom().Mag() );
+      if( gTrack->isPrimary() ) {
+      hPrimaryPtot->Fill( gTrack->pMom().Mag() );
+    }
+     // Simple single-track cut
+      if( gTrack->gMom().Mag() < 0.1 ||
+          //          gTrack->gDCA(pRcVx).Mag()>50. ) {
+        TMath::Abs(gTrack->gDCAxy(xVtx, yVtx))>50. ){
+
+          continue;
+        }
+
+      hGlobalPtotCut->Fill( gTrack->gMom().Mag() );
+      if( gTrack->isPrimary() ) {
+        hPrimaryPtotCut->Fill( gTrack->pMom().Mag() );
+      }
+      if( gTrack->charge() > 0 ) {
+        hGlobalPhiVsPt[0]->Fill( gTrack->gMom().Pt(),
+            gTrack->gMom().Phi() );
+      }
+      else {
+        hGlobalPhiVsPt[1]->Fill( gTrack->gMom().Pt(),
+            gTrack->gMom().Phi() );
+      }
+      hNSigmaElectron->Fill( gTrack->nSigmaElectron() );
+      hNSigmaPion->Fill( gTrack->nSigmaPion() );
+      hNSigmaKaon->Fill( gTrack->nSigmaKaon() );
+      hNSigmaProton->Fill( gTrack->nSigmaProton() );
+
+      hTransvMomentum->Fill( gTrack->gMom().Pt() );
+
+      // Check if track has TOF signal
+      /*if( gTrack->isTofTrack() ) {
+        // Retrieve corresponding trait
+        StPicoBTofPidTraits *trait = mPicoDst->btofPidTraits( gTrack->bTofPidTraitsIndex() );
+        if( !trait ) {
+          std::cout << "O-oh... No BTofPidTrait # " << gTrack->bTofPidTraitsIndex()
+            << " for track # " << iTrk << std::endl;
+          std::cout << "Check that you turned on the branch!" << std::endl;
+          continue;
+        }
+        // Fill beta
+        hTofBeta->Fill( trait->btofBeta() );
+      } //if( isTofTrack() )
+      */
+      //________________________________________________________________________
+      //
+      //Grigory's block for TPC tracks ends here
+      //________________________________________________________________________
+      //
+
+
+      DcaHist->Fill(gTrack->gDCA(mVertex).Mag());
+      if(gTrack->isTofTrack())DcaHistBTOFMatched->Fill(gTrack->gDCA(mVertex).Mag());
+
+     //------------------------------------------------------------------------
+      // Prithwish's analysis cut block
+      //________________________________________________________________________
+      //if(fabs(zTpc)>20.) continue;
+      //if(sqrt(pRcVx.x()*pRcVx.x()+yVtx*yVtx) >2.0) continue;
+      //if(fabs(zTpc-zVpd)>2) continue;
+      //if(nBTOFMatch<10) continue;
+      TrackStat->Fill(1);
+      if(!gTrack->isPrimary()) continue;
+      TrackStat->Fill(2);
+      if(gTrack->nHitsFit()<=fTracknHitsFit) continue;
+      TrackStat->Fill(3);
+      //if(TMath::Abs(gTrack->gDCA(pRcVx).Mag())>3) continue; //We can also use this cut //PT Jan15, 2018
+      //if(TMath::Abs(gTrack->gDCAxy(pRcVx.x(), pRcVx.y())) > MAX_gDCAxy) continue;
+      if(TMath::Abs(gTrack->gDCA(mVertex).Mag())>fTrackDCAcut) continue; //We can also use this cut //PT Jan15, 2018
+      TrackStat->Fill(4);
+
+      ///Add by Yu, just to check the Pt SPECTRUM
+      if(fabs(gTrack->pMom().PseudoRapidity())<=fTrackEtaMaxCut){
+        Ptdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
+      }
+    }
 
   return kStOK;
 }
