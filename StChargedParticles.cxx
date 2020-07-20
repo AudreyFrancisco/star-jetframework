@@ -103,7 +103,7 @@ StChargedParticles::StChargedParticles() :
   grefmultCorr(0x0)
   {
   // Default constructor.
-  cout << "StChargedParticles::DefaultConstructor()\n";
+  //cout << "StChargedParticles::DefaultConstructor()\n";
 }
 //
 //________________________________________________________________________
@@ -156,7 +156,7 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   mBaseMaker(0x0),
   grefmultCorr(0x0)
 {
-  cout << "StChargedParticles::StandardConstructor()\n";
+  //cout << "StChargedParticles::StandardConstructor()\n";
   // Standard constructor.
   if (!name) return;
   SetName(name);
@@ -245,14 +245,14 @@ StChargedParticles::~StChargedParticles()
 Int_t StChargedParticles::Init() {
   // declare histograms
   DeclareHistograms();
-cout << "StChargedParticles::Init()\n";
+//cout << "StChargedParticles::Init()\n";
   return kStOK;
 }
 //
 // finish running - write to output file and close
 //_____________________________________________________________________________
 Int_t StChargedParticles::Finish() {
-  cout << "StChargedParticles::Finish()\n";
+  //cout << "StChargedParticles::Finish()\n";
 
   // open output file
   if(doWriteHistos && mOutName!="") {
@@ -269,7 +269,7 @@ Int_t StChargedParticles::Finish() {
     fout->Close();
   }
 
-  cout<<"End of StChargedParticles::Finish"<<endl;
+  //cout<<"End of StChargedParticles::Finish"<<endl;
   StMemStat::PrintMem("End of Finish...");
 
   return kStOK;
@@ -588,7 +588,7 @@ void StChargedParticles::WriteHistograms() {
 //________________________________________________________________________
 void StChargedParticles::Clear(Option_t *opt) {
 
-  cout << "StChargedParticles::Clear()\n";
+  //cout << "StChargedParticles::Clear()\n";
 }
 //
 // Main loop, called for each event.
@@ -599,7 +599,7 @@ int StChargedParticles::Make()
   // zero out these global variables
   fCentralityScaled = 0.0, ref9 = 0, ref16 = 0;
 
-  cout << "StChargedParticles::Make()\n";
+  //cout << "StChargedParticles::Make()\n";
   // get PicoDstMaker
   mPicoDstMaker = static_cast<StPicoDstMaker*>(GetMaker("picoDst"));
   if(!mPicoDstMaker) {
@@ -688,7 +688,7 @@ int StChargedParticles::Make()
   // fill histograms
   fHistCentrality->Fill(fCentralityScaled);
   fHistMultiplicity->Fill(grefMult);
-
+  fRawrefMultHist->Fill(grefMult);
 
   if(fabs(zVtx) < fEventZVtxMaxCut) fHistMultiplicityCorr->Fill(refCorr2);
 
