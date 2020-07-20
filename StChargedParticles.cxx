@@ -65,8 +65,8 @@ StChargedParticles::StChargedParticles() :
   fCorrPileUp(kFALSE),
   fMaxEventTrackPt(30.0),
   doRejectBadRuns(kFALSE),
-  fEventZVtxMinCut(-40.0),
-  fEventZVtxMaxCut(40.0),
+  fEventZVtxMinCut(-35.0),
+  fEventZVtxMaxCut(25.0),
   fEventVzDiffCut(5.),
   fEventVrCut(2.),
   fCentralitySelectionCut(-99),
@@ -245,7 +245,15 @@ StChargedParticles::~StChargedParticles()
 Int_t StChargedParticles::Init() {
   // declare histograms
   DeclareHistograms();
-//cout << "StChargedParticles::Init()\n";
+cout << "StChargedParticles::Init()\n";
+cout << "Cuts : " << endl;
+cout << "vertex :" <<fEventZVtxMinCut < " - " << fEventZVtxMaxCut << " diff vz " << fEventVzDiffCut << " diff Vr " << fEventVrCut(2.) <<endl;
+cout << "pt : " << fTrackPtMinCut << " - " << fTrackPtMaxCut << " phi : " <<
+  fTrackPhiMinCut << " - " <<fTrackPhiMaxCut << " eta : " <<
+  fTrackEtaMinCut << " - " << fTrackEtaMaxCut <<endl;
+cout << "DCA :" <<fTrackDCAcut << " nHitsFit : " << fTracknHitsFit << " ratio " <<
+  fTracknHitsRatio << " max " <<
+  fTracknHitsRatioMax << " charge " <<  fTrackChargePos <<endl;
   return kStOK;
 }
 //
@@ -780,6 +788,7 @@ int StChargedParticles::Make()
 
   ///Add by YU, to check the Event per CENT, Jun.14
   fEventCent->Fill(fmycentral);
+  fHistCentralityAfterCuts->Fill(fCentralityScaled);
      // Track loop
   for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
 
@@ -864,9 +873,25 @@ int StChargedParticles::Make()
       fTrackStat->Fill(4);
 
       ///Add by Yu, just to check the Pt SPECTRUM
-      if(fabs(gTrack->pMom().PseudoRapidity())<=fTrackEtaMaxCut){
-        fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
-      }
+      if(fabs(gTrack->pMom().PseudoRapidity())>fTrackEtaMaxCut) continue;
+
+      double phi = gTrack->gMom().Phi();
+      if(phi < 0.0)    phi += 2.0*pi;
+      if(phi > 2.0*pi) phi -= 2.0*pi;
+      if((phi < fTrackPhiMinCut) || (phi > fTrackPhiMaxCut)) continue;
+
+      double dca = gTrack->gDCA(mVertex).Mag();
+      int nHitsFit = gTrack->nHitsFit();
+      int nHitsMax = gTrack->nHitsMax();
+      double nHitsRatio = 1.0*nHitsFit/nHitsMax;
+      if(dca > fTrackDCAcut)             continue;
+      if(nHitsFit < fTracknHitsFit)      continue;
+      if((nHitsRatio < fTracknHitsRatio) || (nHitsRatio > fTracknHitsRatioMax))  continue;
+      if((fTrackChargePos == 1) && (gTrack->charge() < 0) ) return kFALSE;
+      if((fTrackChargePos == 0) && (gTrack->charge() > 0) ) return kFALSE;
+
+      fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
+
     }
 
   return kStOK;
