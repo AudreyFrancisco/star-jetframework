@@ -97,7 +97,6 @@ class StChargedParticles : public StMaker {
   virtual void         SetDoEffCorr(Bool_t effcorr)     { fDoEffCorr = effcorr; }
 
   // common setters
-  void                 SetClusName(const char *n)       { fCaloName      = n;  }
   void                 SetTracksName(const char *n)     { fTracksName    = n;  }
 
 

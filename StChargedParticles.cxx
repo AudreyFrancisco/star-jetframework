@@ -206,8 +206,8 @@ StChargedParticles::~StChargedParticles()
   if(fhPrimaryPtot)              delete fhPrimaryPtot;
   if(fhPrimaryPtotCut)           delete fhPrimaryPtotCut;
   if(fhTransvMomentum)           delete fhTransvMomentum;
-  if(fhGlobalPhiVsPt0)            delete fhGlobalPhiVsPt0;
-  if(fhGlobalPhiVsPt1)            delete fhGlobalPhiVsPt1;
+  if(fhGlobalPhiVsPt[0])         delete fhGlobalPhiVsPt[0];
+  if(fhGlobalPhiVsPt[1])         delete fhGlobalPhiVsPt[1];
   if(fhNSigmaProton)             delete fhNSigmaProton;
   if(fhNSigmaPion)               delete fhNSigmaPion;
   if(fhNSigmaElectron)           delete fhNSigmaElectron;
@@ -698,7 +698,7 @@ int StChargedParticles::Make()
 
 
   // get bad run, dead & bad tower lists
-  badRuns = mBaseMaker->GetBadRuns();
+  //badRuns = mBaseMaker->GetBadRuns();
 
   // get run number, check bad runs list if desired (kFALSE if bad)
   fRunNumber = mPicoEvent->runId();
