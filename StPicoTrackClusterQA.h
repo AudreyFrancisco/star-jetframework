@@ -279,6 +279,8 @@ class StPicoTrackClusterQA : public StMaker {
   StRefMultCorr       *grefmultCorr;
 
   // histograms
+  
+  TH1F 	 	 *fPtdist[10];//!
   TH1F           *fHistNTrackvsPt;//!
   TH1F           *fHistNTrackvsPhi;//!
   TH1F           *fHistNTrackvsPhiTest;//!

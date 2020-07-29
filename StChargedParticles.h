@@ -219,6 +219,8 @@ class StChargedParticles : public StMaker {
   TH1F *fhTofBeta;//!
 
   TH1F *fPtdist[10];//!
+  TH1F *fHistNTrackvsEta;//!
+  TH1F *fHistNTrackvsPhi;//!
   TH1F *fEventCent;//!
 
   TProfile *frunidvsrefmult;//!

@@ -246,6 +246,16 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
 {
   // free up histogram objects if they exist
 
+  if(fPtdist[0])                    delete fPtdist[0];
+  if(fPtdist[1])                    delete fPtdist[1];
+  if(fPtdist[2])                    delete fPtdist[2];
+  if(fPtdist[3])                    delete fPtdist[3];
+  if(fPtdist[4])                    delete fPtdist[4];
+  if(fPtdist[5])                    delete fPtdist[5];
+  if(fPtdist[6])                    delete fPtdist[6];
+  if(fPtdist[7])                    delete fPtdist[7];
+  if(fPtdist[8])                    delete fPtdist[8];
+  if(fPtdist[9])                    delete fPtdist[9];
   // Destructor
   if(fHistNTrackvsPt)         delete fHistNTrackvsPt;
   if(fHistNTrackvsPhi)        delete fHistNTrackvsPhi;
@@ -644,6 +654,19 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistNFiredJP1vsADC = new TH1F("fHistNFiredJP1vsADC", "NTowers fired JP1 vs ADC", 100, 0., 100.);
     fHistNFiredJP2vsADC = new TH1F("fHistNFiredJP2vsADC", "NTowers fired JP2 vs ADC", 100, 0., 100.);
 
+
+    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
+    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",100, 0, 10);
+    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",100, 0, 10);
+    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",100, 0, 10);
+    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",100, 0, 10);
+    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",100, 0, 10);
+    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",100, 0, 10);
+    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",100, 0, 10);
+    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",100, 0, 10);
+    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",100, 0, 10);
+
+
     // set up track and tower sparse
     UInt_t bitcodeTrack = 0; // bit coded, see GetDimParams() below
     bitcodeTrack = 1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<4;
@@ -815,6 +838,17 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistNFiredJP1vsADC->Write();
   fHistNFiredJP2vsADC->Write();
 
+
+  fPtdist[0]->Write();
+  fPtdist[1]->Write();
+  fPtdist[2]->Write();
+  fPtdist[3]->Write();
+  fPtdist[4]->Write();
+  fPtdist[5]->Write();
+  fPtdist[6]->Write();
+  fPtdist[7]->Write();
+  fPtdist[8]->Write();
+  fPtdist[9]->Write();
   // sparses
   //fhnTrackQA->Write();
   //fhnTowerQA->Write();
@@ -1200,7 +1234,18 @@ void StPicoTrackClusterQA::RunTrackQA()
 
     // fill some QA histograms
 
-    fHistNTrackvsPt->Fill(pt);
+  int cent9 = mCentMaker->GetCent9(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
+  int centbin = mCentMaker->GetRef16();
+  double refCorr2 = mCentMaker->GetRefCorr2();
+  fCentralityScaled = mCentMaker->GetCentScaled();
+  //double refCorr = mCentMaker->GetCorrectedMultiplicity(refMult, zVtx, zdcCoincidenceRate, 0); // example usage
+  // for pp analyses:    centbin = 0, cent9 = 0, cent16 = 0, refCorr2 = 0.0, ref9 = 0, ref16 = 0;
+
+  // cut on unset centrality, > 80%
+  //if(cent16 == -1 && fDebugLevel != 99) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them CHECK TODO
+  int fmycentral = 8-cent9; // WARNING!! RefMultCorr convention 0->peripheral, 8-> central; so we do 8-centrlaity 
+  fPtdist[fmycentral]->Fill(pt); 
+  fHistNTrackvsPt->Fill(pt);
     fHistNTrackvsPhi->Fill(phi);
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);

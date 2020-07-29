@@ -224,6 +224,8 @@ StChargedParticles::~StChargedParticles()
   if(fPtdist[7])                    delete fPtdist[7];
   if(fPtdist[8])                    delete fPtdist[8];
   if(fPtdist[9])                    delete fPtdist[9];
+  if(fHistNTrackvsEta)		    delete fHistNTrackvsEta;
+  if(fHistNTrackvsPhi)		    delete fHistNTrackvsPhi;  
   if(fEventCent)                 delete fEventCent;
 
   if(frunidvsrefmult)            delete frunidvsrefmult;
@@ -247,7 +249,7 @@ Int_t StChargedParticles::Init() {
   DeclareHistograms();
 cout << "StChargedParticles::Init()\n";
 cout << "Cuts : " << endl;
-cout << "vertex :" <<fEventZVtxMinCut < " - " << fEventZVtxMaxCut << " diff vz " << fEventVzDiffCut << " diff Vr " << fEventVrCut(2.) <<endl;
+cout << "vertex :" <<fEventZVtxMinCut << " - " << fEventZVtxMaxCut << " diff vz " << fEventVzDiffCut << " diff Vr " << fEventVrCut <<endl;
 cout << "pt : " << fTrackPtMinCut << " - " << fTrackPtMaxCut << " phi : " <<
   fTrackPhiMinCut << " - " <<fTrackPhiMaxCut << " eta : " <<
   fTrackEtaMinCut << " - " << fTrackEtaMaxCut <<endl;
@@ -335,6 +337,9 @@ void StChargedParticles::DeclareHistograms() {
     fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",100, 0, 10);
     fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",100, 0, 10);
 
+
+    fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -1.1, 1.1);
+    fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi","Ntracks vs #phi",200,0.,6.3);
     fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
 
     fhNSigmaPion = new TH1F("hNSigmaPion", "n#sigma(#pi);n#sigma(#pi)",400, -10., 10.);
@@ -575,6 +580,8 @@ void StChargedParticles::WriteHistograms() {
   fPtdist[7]->Write();
   fPtdist[8]->Write();
   fPtdist[9]->Write();
+  fHistNTrackvsPhi->Write();
+  fHistNTrackvsEta->Write();
   fEventCent->Write();
 
   frunidvsrefmult->Write();
@@ -891,7 +898,8 @@ int StChargedParticles::Make()
       if((fTrackChargePos == 0) && (gTrack->charge() > 0) ) return kFALSE;
 
       fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
-
+      fHistNTrackvsEta->Fill(gTrack->pMom().PseudoRapidity());
+      fHistNTrackvsPhi->Fill(phi);
     }
 
   return kStOK;
