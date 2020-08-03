@@ -84,7 +84,7 @@ StChargedParticles::StChargedParticles() :
   fTracknHitsFit(15),
   fTracknHitsRatio(0.2),
   fTracknHitsRatioMax(1.05),
-  fTrackChargePos(-1),
+  fTrackChargePos(0),
   fGoodTrackCounter(0),
   fCentralityScaled(0.),
   fmycentral(0.),
@@ -138,7 +138,7 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   fTracknHitsFit(15),
   fTracknHitsRatio(0.2),
   fTracknHitsRatioMax(1.05),
-  fTrackChargePos(-1),
+  fTrackChargePos(0),
   fGoodTrackCounter(0),
   fCentralityScaled(0.),
   fmycentral(0.),
@@ -326,16 +326,16 @@ void StChargedParticles::DeclareHistograms() {
           300, 0., 3., 630, -3.15, 3.15);
 
 
-    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",100, 0, 10);
-    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",100, 0, 10);
-    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",100, 0, 10);
-    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",100, 0, 10);
-    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",100, 0, 10);
-    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",100, 0, 10);
-    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",100, 0, 10);
-    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",100, 0, 10);
-    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",100, 0, 10);
+    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",150, 0, 30);
+    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",150, 0, 30);
+    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",150, 0, 30);
+    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",150, 0, 30);
+    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",150, 0, 30);
+    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",150, 0, 30);
+    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",150, 0, 30);
+    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",150, 0, 30);
+    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",150, 0, 30);
+    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",150, 0, 30);
 
 
     fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -1.1, 1.1);
@@ -880,7 +880,7 @@ int StChargedParticles::Make()
       fTrackStat->Fill(4);
 
       ///Add by Yu, just to check the Pt SPECTRUM
-      if(fabs(gTrack->pMom().PseudoRapidity())>fTrackEtaMaxCut) continue;
+      if(gTrack->pMom().PseudoRapidity()>fTrackEtaMaxCut || gTrack->pMom().PseudoRapidity()<fTrackEtaMinCut) continue;
 
       double phi = gTrack->gMom().Phi();
       if(phi < 0.0)    phi += 2.0*pi;
@@ -894,9 +894,10 @@ int StChargedParticles::Make()
       if(dca > fTrackDCAcut)             continue;
       if(nHitsFit < fTracknHitsFit)      continue;
       if((nHitsRatio < fTracknHitsRatio) || (nHitsRatio > fTracknHitsRatioMax))  continue;
-      if((fTrackChargePos == 1) && (gTrack->charge() < 0) ) return kFALSE;
-      if((fTrackChargePos == 0) && (gTrack->charge() > 0) ) return kFALSE;
-
+      
+      if((fTrackChargePos == 1) && (gTrack->charge() < 0) ) continue;
+      if((fTrackChargePos == -1) && (gTrack->charge() > 0) ) continue;
+      
       fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       fHistNTrackvsEta->Fill(gTrack->pMom().PseudoRapidity());
       fHistNTrackvsPhi->Fill(phi);

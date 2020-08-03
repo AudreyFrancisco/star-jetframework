@@ -85,7 +85,7 @@ class StChargedParticles : public StMaker {
   virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
   virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
   virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
-  virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
+  virtual void         SetTrackSign(int pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
 
 
   // event selection
