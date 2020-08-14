@@ -90,6 +90,10 @@ StChargedParticles::StChargedParticles() :
   fmycentral(0.),
   ref16(-99), ref9(-99),
   Bfield(0.0),
+  ptmax(30.),
+  nptbins(150),
+  ptW0(0.1),ptW1(0.2),ptW2(0.5),ptW3(1.),ptW4(2.),ptW5(5.),
+  maxpt0(4.),maxpt1(6.),maxpt2(8.),maxpt3(12.),maxpt4(20.),
   // mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
@@ -144,6 +148,10 @@ StChargedParticles::StChargedParticles(const char *name, bool doHistos = kFALSE,
   fmycentral(0.),
   ref16(-99), ref9(-99),
   Bfield(0.0),
+  ptmax(30.),
+  nptbins(150),
+  ptW0(0.1),ptW1(0.2),ptW2(0.5),ptW3(1.),ptW4(2.),ptW5(5.),
+  maxpt0(4.),maxpt1(6.),maxpt2(8.),maxpt3(12.),maxpt4(20.),
   // mVertex(0x0),
   zVtx(0.0),
   fRunNumber(0),
@@ -214,16 +222,14 @@ StChargedParticles::~StChargedParticles()
   if(fhNSigmaKaon)               delete fhNSigmaKaon;
   if(fhTofBeta)                  delete fhTofBeta;
 
-  if(fPtdist[0])                    delete fPtdist[0];
-  if(fPtdist[1])                    delete fPtdist[1];
-  if(fPtdist[2])                    delete fPtdist[2];
-  if(fPtdist[3])                    delete fPtdist[3];
-  if(fPtdist[4])                    delete fPtdist[4];
-  if(fPtdist[5])                    delete fPtdist[5];
-  if(fPtdist[6])                    delete fPtdist[6];
-  if(fPtdist[7])                    delete fPtdist[7];
-  if(fPtdist[8])                    delete fPtdist[8];
-  if(fPtdist[9])                    delete fPtdist[9];
+  if(fIntPtdist)                 delete fIntPtdist;
+  if(fIntVarPtdist)              delete fIntVarPtdist;
+
+
+  for(int i=0; i<10; i++){
+  	if(fPtdist[i])           delete fPtdist[i];
+  	if(fVarPtdist[i])        delete fVarPtdist[i];
+  }
   if(fHistNTrackvsEta)		    delete fHistNTrackvsEta;
   if(fHistNTrackvsPhi)		    delete fHistNTrackvsPhi;  
   if(fEventCent)                 delete fEventCent;
@@ -325,17 +331,56 @@ void StChargedParticles::DeclareHistograms() {
     fhGlobalPhiVsPt[1] = new TH2F("hGlobalPhiVsPt1", "#phi vs. p_{T} for charge: -1;p_{T} (GeV/c);#phi (rad)",
           300, 0., 3., 630, -3.15, 3.15);
 
+     
+    Int_t nedges=maxpt0/ptW0;
+    Double_t binW[6]={ptW0,ptW1,ptW2,ptW3,ptW4,ptW5};
+    Double_t binMax[5]={maxpt0,maxpt1,maxpt2,maxpt3,maxpt4};
+    Int_t nbins[6];
+    nbins[0]=nedges;
+    for (int i = 1; i < 5; ++i){
+        nbins[i]=(binMax[i]-binMax[i-1])/binW[i];
+	nedges+= nbins[i];
+    }
+    nbins[5] = (ptmax-binMax[4])/binW[5];
+    nedges+= nbins[5];
+    Double_t edge[nedges];
+    edge[0]=0.;
+    Int_t x=0;
+    cout << "nedges " << nedges <<endl;
+    for (int i = 0; i < 6; ++i){
+        cout << " binWidth number " << i << " nbins " << nbins[i]<<endl;
+	 for (int bin = 0; bin < nbins[i]; ++bin) {
+		 x++;
+		 edge[x]=edge[x-1]+binW[i];
+		 cout << " bin : " << bin << " so : " << x << " edge = " << edge[x]<<endl;
+	 }
+    }
 
-    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",150, 0, 30);
-    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",150, 0, 30);
-    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",150, 0, 30);
-    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",150, 0, 30);
-    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",150, 0, 30);
-    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",150, 0, 30);
-    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",150, 0, 30);
-    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",150, 0, 30);
-    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",150, 0, 30);
-    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",150, 0, 30);
+    fIntPtdist= new TH1F("IntPtdist", "p_{T} integrated over centrality",nptbins, 0., ptmax);
+    fIntVarPtdist= new TH1F("IntVarPtdist", "(var) p_{T} integrated over centrality",nedges, edge);
+    
+    fVarPtdist[0]= new TH1F("VarPtdist0", "(var) p_{T} for centrality bin 0",nedges, edge);
+    fVarPtdist[1]= new TH1F("VarPtdist1", "(var) p_{T} for centrality bin 1",nedges, edge);
+    fVarPtdist[2]= new TH1F("VarPtdist2", "(var) p_{T} for centrality bin 2",nedges, edge);
+    fVarPtdist[3]= new TH1F("VarPtdist3", "(var) p_{T} for centrality bin 3",nedges, edge);
+    fVarPtdist[4]= new TH1F("VarPtdist4", "(var) p_{T} for centrality bin 4",nedges, edge);
+    fVarPtdist[5]= new TH1F("VarPtdist5", "(var) p_{T} for centrality bin 5",nedges, edge);
+    fVarPtdist[6]= new TH1F("VarPtdist6", "(var) p_{T} for centrality bin 6",nedges, edge);
+    fVarPtdist[7]= new TH1F("VarPtdist7", "(var) p_{T} for centrality bin 7",nedges, edge);
+    fVarPtdist[8]= new TH1F("VarPtdist8", "(var) p_{T} for centrality bin 8",nedges, edge);
+    fVarPtdist[9]= new TH1F("VarPtdist9", "(var) p_{T} for centrality bin 9",nedges, edge);
+
+
+    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",nptbins, 0., ptmax);
+    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",nptbins, 0., ptmax);
+    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",nptbins, 0., ptmax);
+    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",nptbins, 0., ptmax);
+    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",nptbins, 0., ptmax);
+    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",nptbins, 0., ptmax);
+    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",nptbins, 0., ptmax);
+    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",nptbins, 0., ptmax);
+    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",nptbins, 0., ptmax);
+    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",nptbins, 0., ptmax);
 
 
     fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -1.1, 1.1);
@@ -570,16 +615,13 @@ void StChargedParticles::WriteHistograms() {
   fhNSigmaKaon->Write();
   fhTofBeta->Write();
 
-  fPtdist[0]->Write();
-  fPtdist[1]->Write();
-  fPtdist[2]->Write();
-  fPtdist[3]->Write();
-  fPtdist[4]->Write();
-  fPtdist[5]->Write();
-  fPtdist[6]->Write();
-  fPtdist[7]->Write();
-  fPtdist[8]->Write();
-  fPtdist[9]->Write();
+  fIntPtdist->Write();
+  fIntVarPtdist->Write();
+  
+  for(int i=0; i<10; i++){
+     fPtdist[i]->Write();
+     fVarPtdist[i]->Write();
+  }
   fHistNTrackvsPhi->Write();
   fHistNTrackvsEta->Write();
   fEventCent->Write();
@@ -897,8 +939,11 @@ int StChargedParticles::Make()
       
       if((fTrackChargePos == 1) && (gTrack->charge() < 0) ) continue;
       if((fTrackChargePos == -1) && (gTrack->charge() > 0) ) continue;
-      
+  
+      fIntPtdist->Fill(gTrack->gMom().Pt());
+      fIntVarPtdist->Fill(gTrack->gMom().Pt());
       fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
+      fVarPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       fHistNTrackvsEta->Fill(gTrack->pMom().PseudoRapidity());
       fHistNTrackvsPhi->Fill(phi);
     }

@@ -87,6 +87,12 @@ class StChargedParticles : public StMaker {
   virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
   virtual void         SetTrackSign(int pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
 
+  //pt histos
+  virtual void	       SetHistoPtMax(Double_t pt) 	  { ptmax = pt; }
+  virtual void         SetHistoNPtBins(Int_t n)		  { nptbins = n; }
+
+  virtual void	       SetVarPtHistBinWidths(Double_t w0, Double_t w1, Double_t w2, Double_t w3, Double_t w4, Double_t w5)	{ ptW0 = w0, ptW1 = w1, ptW2 = w2, ptW3 = w3, ptW4 = w4, ptW5 = w5; }
+  virtual void	       SetVarPtHistUpperLims(Double_t lim0, Double_t lim1, Double_t lim2, Double_t lim3, Double_t lim4)	{maxpt0 = lim0, maxpt1 = lim1, maxpt2 = lim2, maxpt3 = lim3, maxpt4 = lim4; }
 
   // event selection
   virtual void         SetTriggerToUse(UInt_t ttu)        { fTriggerToUse = ttu; }
@@ -145,6 +151,11 @@ class StChargedParticles : public StMaker {
   Int_t                ref16;                   // multiplicity bin (16)
   Int_t                ref9;                    // multiplicity bin (9)
 
+  // pt histos
+  Double_t 	       ptmax;			//max pt 
+  Int_t		       nptbins;			//number of pt bins
+  Double_t 	       ptW0,ptW1,ptW2,ptW3,ptW4,ptW5;	//pt bin widths
+  Double_t	       maxpt0,maxpt1,maxpt2,maxpt3,maxpt4; //pt bin upper limits
   // event
   Float_t              Bfield;                  // event Bfield
   TVector3             mVertex;                 // event vertex 3-vector
@@ -218,7 +229,11 @@ class StChargedParticles : public StMaker {
   TH1F *fhNSigmaKaon;//!
   TH1F *fhTofBeta;//!
 
+  TH1F *fIntPtdist;//!
+  TH1F *fIntVarPtdist;//!
+  
   TH1F *fPtdist[10];//!
+  TH1F *fVarPtdist[10];//!
   TH1F *fHistNTrackvsEta;//!
   TH1F *fHistNTrackvsPhi;//!
   TH1F *fEventCent;//!
