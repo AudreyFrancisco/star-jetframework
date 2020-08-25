@@ -225,6 +225,7 @@ class StPicoTrackClusterQA : public StMaker {
 
   // centrality
   Double_t             fCentralityScaled;       // scaled by 5% centrality
+  Int_t                fmycentral;       // scaled by 5% centrality
   Int_t                ref16;                   // multiplicity bin (16)
   Int_t                ref9;                    // multiplicity bin (9)
 
@@ -320,6 +321,11 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *hEmcTriggers;//!
   TH1F           *fHistTriggerIDs;//!
 
+  //new 
+  
+  TH1F *fEventStat;//!
+  TH1F *fTrackStat;//!
+  TH1F *fEventCent;//!
   // event QA
   TH1F           *fHistZvtx;//!
   TH1F           *fHistZDCx;//!

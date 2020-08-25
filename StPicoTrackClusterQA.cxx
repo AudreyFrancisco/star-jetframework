@@ -117,6 +117,7 @@ StPicoTrackClusterQA::StPicoTrackClusterQA() :
   fTowerPhiMaxCut(2.0*TMath::Pi()),
   fCentralityScaled(0.),
   ref16(-99), ref9(-99),
+  fmycentral(0.),
   Bfield(0.0),
   //mVertex(0x0),
   zVtx(0.0),
@@ -200,6 +201,7 @@ StPicoTrackClusterQA::StPicoTrackClusterQA(const char *name, bool doHistos = kFA
   fTowerPhiMinCut(0.0),
   fTowerPhiMaxCut(2.0*TMath::Pi()),
   fCentralityScaled(0.),
+  fmycentral(0.),
   ref16(-99), ref9(-99),
   Bfield(0.0),
   //mVertex(0x0),
@@ -246,17 +248,13 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
 {
   // free up histogram objects if they exist
 
-  if(fPtdist[0])                    delete fPtdist[0];
-  if(fPtdist[1])                    delete fPtdist[1];
-  if(fPtdist[2])                    delete fPtdist[2];
-  if(fPtdist[3])                    delete fPtdist[3];
-  if(fPtdist[4])                    delete fPtdist[4];
-  if(fPtdist[5])                    delete fPtdist[5];
-  if(fPtdist[6])                    delete fPtdist[6];
-  if(fPtdist[7])                    delete fPtdist[7];
-  if(fPtdist[8])                    delete fPtdist[8];
-  if(fPtdist[9])                    delete fPtdist[9];
   // Destructor
+
+  if(fEventStat)                 delete fEventStat;
+  if(fTrackStat)                 delete fTrackStat;
+  if(fEventCent)                 delete fEventCent;
+
+  //
   if(fHistNTrackvsPt)         delete fHistNTrackvsPt;
   if(fHistNTrackvsPhi)        delete fHistNTrackvsPhi;
   if(fHistNTrackvsPhiTest)        delete fHistNTrackvsPhiTest;
@@ -483,6 +481,17 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistMultiplicityCorrAfterCuts = new TH1F("fHistMultiplicityCorrAfterCuts", "No. events vs corr. multiplicity after cuts", kHistMultBins, 0, kHistMultMax);
     hGoodEvents = new TH1F("hGoodEvents", "No. good tracks", 100, 0, 5000);
 
+// new histos
+
+    fEventStat = new TH1F("EventStat","Event Stat.",20,-0.5,19.5);
+    fEventStat->GetXaxis()->SetTitle("CutsId");
+    fEventStat->GetYaxis()->SetTitle("Counts");
+
+
+    fTrackStat = new TH1F("TrackStat","Track Stat.",20,-0.5,19.5);
+    fTrackStat->GetXaxis()->SetTitle("CutsId");
+    fTrackStat->GetYaxis()->SetTitle("Counts");
+
     // track histograms
     fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 300, 0., 30.);
     fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi", "Ntracks vs #phi", 144, -1., 3.0*pi);
@@ -654,19 +663,6 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fHistNFiredJP1vsADC = new TH1F("fHistNFiredJP1vsADC", "NTowers fired JP1 vs ADC", 100, 0., 100.);
     fHistNFiredJP2vsADC = new TH1F("fHistNFiredJP2vsADC", "NTowers fired JP2 vs ADC", 100, 0., 100.);
 
-
-    fPtdist[0]= new TH1F("Ptdist0", "p_{T} for centrality bin 0",100, 0, 10);
-    fPtdist[1]= new TH1F("Ptdist1", "p_{T} for centrality bin 1",100, 0, 10);
-    fPtdist[2]= new TH1F("Ptdist2", "p_{T} for centrality bin 2",100, 0, 10);
-    fPtdist[3]= new TH1F("Ptdist3", "p_{T} for centrality bin 3",100, 0, 10);
-    fPtdist[4]= new TH1F("Ptdist4", "p_{T} for centrality bin 4",100, 0, 10);
-    fPtdist[5]= new TH1F("Ptdist5", "p_{T} for centrality bin 5",100, 0, 10);
-    fPtdist[6]= new TH1F("Ptdist6", "p_{T} for centrality bin 6",100, 0, 10);
-    fPtdist[7]= new TH1F("Ptdist7", "p_{T} for centrality bin 7",100, 0, 10);
-    fPtdist[8]= new TH1F("Ptdist8", "p_{T} for centrality bin 8",100, 0, 10);
-    fPtdist[9]= new TH1F("Ptdist9", "p_{T} for centrality bin 9",100, 0, 10);
-
-
     // set up track and tower sparse
     UInt_t bitcodeTrack = 0; // bit coded, see GetDimParams() below
     bitcodeTrack = 1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<4;
@@ -684,6 +680,10 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 // write histograms
 //________________________________________________________________________
 void StPicoTrackClusterQA::WriteHistograms() {
+
+  fEventStat->Write();
+  fTrackStat->Write();
+  fEventCent->Write();
   // basic QA
   fHistCentrality->Write();
   fHistCentralityAfterCuts->Write();
@@ -838,17 +838,6 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fHistNFiredJP1vsADC->Write();
   fHistNFiredJP2vsADC->Write();
 
-
-  fPtdist[0]->Write();
-  fPtdist[1]->Write();
-  fPtdist[2]->Write();
-  fPtdist[3]->Write();
-  fPtdist[4]->Write();
-  fPtdist[5]->Write();
-  fPtdist[6]->Write();
-  fPtdist[7]->Write();
-  fPtdist[8]->Write();
-  fPtdist[9]->Write();
   // sparses
   //fhnTrackQA->Write();
   //fhnTowerQA->Write();
@@ -864,6 +853,7 @@ void StPicoTrackClusterQA::Clear(Option_t *opt) {
 //________________________________________________________________________
 int StPicoTrackClusterQA::Make()
 {
+  fEventStat->Fill(1);
   // zero out these global variables
   fCentralityScaled = 0.0, ref9 = 0, ref16 = 0;
 
@@ -903,14 +893,8 @@ int StPicoTrackClusterQA::Make()
   deadTowers = mBaseMaker->GetDeadTowers();
   badTowers = mBaseMaker->GetBadTowers();
 
-  // get run number, check bad runs list if desired (kFALSE if bad)
-  fRunNumber = mPicoEvent->runId();
-  if(doRejectBadRuns) {
-    if( !mBaseMaker->IsRunOK(fRunNumber) ) return kStOK;
-  }
-
   // cut event on max track pt > 30.0 GeV
-  if(GetMaxTrackPt() > fMaxEventTrackPt) return kStOK;
+ // if(GetMaxTrackPt() > fMaxEventTrackPt) return kStOK;
 
   // cut event on max tower Et > 30.0 GeV
   //if(GetMaxTowerEt() > fMaxEventTowerEt) return kStOK;
@@ -918,19 +902,24 @@ int StPicoTrackClusterQA::Make()
   // get event B (magnetic) field
   Bfield = mPicoEvent->bField();
 
-  // get vertex 3-vector and declare variables
-  mVertex = mPicoEvent->primaryVertex();
-  zVtx = mVertex.z();
 
-  float yVtx = mVertex.y();
-  float xVtx = mVertex.x();
-  float vzVPD = mPicoEvent->vzVpd();
-  float vDiff = TMath::Abs(zVtx - vzVPD); 
-  float vrVtx = TMath::Sqrt(xVtx*xVtx+yVtx*yVtx); 
-  // Z-vertex cut - per the Aj analysis (-40, 40)
-  if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
-  if(vDiff > fEventVzDiffCut) return kStOk;
-  if(vrVtx > fEventVrCut) return kStOk;
+  fEventStat->Fill(2);
+
+  // get trigger IDs from PicoEvent class and loop over them
+  vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
+  //if(fDebugLevel == kDebugEmcTrigger)
+  //cout<<"EventTriggers: ";
+  double triggerids [4] = {600001, 600011, 600021, 600031};
+  bool IsTrigger=false;
+  for(int j=0; j<4; j++){
+    IsTrigger = (IsTrigger || (mPicoEvent->isTrigger(triggerids[j]))==1);
+  }
+  if(!IsTrigger){ return kStOk;}
+  fEventStat->Fill(3);
+
+
+  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  if (nBtofMatch < 1 ) { return kStOk; }
 
   // ============================ CENTRALITY ============================== //
   // get CentMaker pointer
@@ -945,25 +934,85 @@ int StPicoTrackClusterQA::Make()
   int refMult =  mCentMaker->GetrefMult();  // see StPicoEvent
   ref9 = mCentMaker->GetRef9();   // binning from central -> peripheral
   ref16 = mCentMaker->GetRef16(); // binning from central -> peripheral
+  int cent9 = mCentMaker->GetCent9(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
   int cent16 = mCentMaker->GetCent16(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
   int centbin = mCentMaker->GetRef16();
   double refCorr2 = mCentMaker->GetRefCorr2();
   fCentralityScaled = mCentMaker->GetCentScaled();
   //double refCorr = mCentMaker->GetCorrectedMultiplicity(refMult, zVtx, zdcCoincidenceRate, 0); // example usage
   // for pp analyses:    centbin = 0, cent9 = 0, cent16 = 0, refCorr2 = 0.0, ref9 = 0, ref16 = 0;
-
+  fmycentral = 8-cent9;
   // cut on unset centrality, > 80%
   if(cent16 == -1 && fDebugLevel != 99) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them
-
+  if( fmycentral<0 || fmycentral>8 ) return kStOK;
   // fill histograms
   fHistCentrality->Fill(fCentralityScaled);
   fHistMultiplicity->Fill(refMult);
   fHistMultiplicityCorr->Fill(refCorr2);
 
+  // get vertex 3-vector and declare variables
+  mVertex = mPicoEvent->primaryVertex();
+  zVtx = mVertex.z();
+
+  float yVtx = mVertex.y();
+  float xVtx = mVertex.x();
+  float vzVPD = mPicoEvent->vzVpd();
+  float vDiff = TMath::Abs(zVtx - vzVPD); 
+  float vrVtx = TMath::Sqrt(xVtx*xVtx+yVtx*yVtx); 
+  // Z-vertex cut - per the Aj analysis (-40, 40)
+  //if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
+
+
+  if( fmycentral<0 || fmycentral>8 ) return kStOK;
+
+  fEventStat->Fill(4);
+
+
+  // get run number, check bad runs list if desired (kFALSE if bad)
+  fRunNumber = mPicoEvent->runId();
+  if(doRejectBadRuns) {
+    if( !mBaseMaker->IsRunOK(fRunNumber) ) return kStOK;
+  }
+
+  fEventStat->Fill(5);
+  if(fabs(zVtx)<70) fEventStat->Fill(6);
+  if(fabs(zVtx)<50) fEventStat->Fill(7);
+
+
+  // Z-vertex cut - per the Aj analysis (-40, 40)
+  if((zVtx < fEventZVtxMinCut) || (zVtx > fEventZVtxMaxCut)) return kStOk;
+  fEventStat->Fill(8);
+  if(vrVtx > fEventVrCut) return kStOk;
+  fEventStat->Fill(9);
+  if(vDiff > fEventVzDiffCut) return kStOk;
+  fEventStat->Fill(10);
+
+
+ 
+  int RunId_Order =  GetRunNo(fRunNumber);
+  bool doTrackQA = kTRUE;
+  frefMultHist->Fill(grefMult);
+  if(fCorrPileUp){
+    if(mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {
+      frefMultNoPileupHist->Fill(grefMult);
+      doTrackQA = kTRUE;
+    }
+    else{
+      frefMultPileupHist->Fill(grefMult);
+      fHistEventPileUp->Fill(RunId_Order + 1., 1);
+      doTrackQA = kFALSE;
+      return kStOk;
+   }
+  }
+  fEventStat->Fill(11);
+
+  fEventCent->Fill(fmycentral);
+
+
   // cut on centrality for analysis before doing anything
   if(fRequireCentSelection) { if(!mBaseMaker->SelectAnalysisCentralityBin(centbin, fCentralitySelectionCut)) return kStOk; }
   // ============================ end of CENTRALITY ============================== //
-
+ 
   // ========================= Trigger Info =============================== //
   // fill Event Trigger QA
   FillEventTriggerQA(fHistEventSelectionQA);
@@ -1234,18 +1283,7 @@ void StPicoTrackClusterQA::RunTrackQA()
 
     // fill some QA histograms
 
-  int cent9 = mCentMaker->GetCent9(); // centrality bin from StRefMultCorr (increasing bin corresponds to decreasing cent %) - Don't use except for cut below
-  int centbin = mCentMaker->GetRef16();
-  double refCorr2 = mCentMaker->GetRefCorr2();
-  fCentralityScaled = mCentMaker->GetCentScaled();
-  //double refCorr = mCentMaker->GetCorrectedMultiplicity(refMult, zVtx, zdcCoincidenceRate, 0); // example usage
-  // for pp analyses:    centbin = 0, cent9 = 0, cent16 = 0, refCorr2 = 0.0, ref9 = 0, ref16 = 0;
-
-  // cut on unset centrality, > 80%
-  //if(cent16 == -1 && fDebugLevel != 99) return kStOk; // this is for lowest multiplicity events 80%+ centrality, cut on them CHECK TODO
-  int fmycentral = 8-cent9; // WARNING!! RefMultCorr convention 0->peripheral, 8-> central; so we do 8-centrlaity 
-  fPtdist[fmycentral]->Fill(pt); 
-  fHistNTrackvsPt->Fill(pt);
+    fHistNTrackvsPt->Fill(pt);
     fHistNTrackvsPhi->Fill(phi);
     fHistNTrackvsEta->Fill(eta);
     fHistNTrackvsPhivsEta->Fill(phi, eta);
