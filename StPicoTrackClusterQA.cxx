@@ -254,6 +254,9 @@ StPicoTrackClusterQA::~StPicoTrackClusterQA()
   if(fTrackStat)                 delete fTrackStat;
   if(fEventCent)                 delete fEventCent;
 
+  if(frefMultHist)               delete frefMultHist;
+  if(frefMultPileupHist)         delete frefMultPileupHist;
+  if(frefMultNoPileupHist)       delete frefMultNoPileupHist;
   //
   if(fHistNTrackvsPt)         delete fHistNTrackvsPt;
   if(fHistNTrackvsPhi)        delete fHistNTrackvsPhi;
@@ -483,6 +486,20 @@ void StPicoTrackClusterQA::DeclareHistograms() {
 
 // new histos
 
+
+    frefMultHist = new TH1F("refMult","refMult",800,-0.5,799.5);
+    frefMultHist->GetXaxis()->SetTitle("refMult");
+    frefMultHist->GetYaxis()->SetTitle("Counts");
+
+
+    frefMultPileupHist = new TH1F("refMultPileup","refMultPileup",800,-0.5,799.5);
+    frefMultPileupHist->GetXaxis()->SetTitle("refMultPileup");
+    frefMultPileupHist->GetYaxis()->SetTitle("Counts");
+    frefMultNoPileupHist = new TH1F("refMultNoPileup","refMultNoPileup",800,-0.5,799.5);
+    frefMultNoPileupHist->GetXaxis()->SetTitle("refMultNoPileup");
+    frefMultNoPileupHist->GetYaxis()->SetTitle("Counts");
+
+
     fEventStat = new TH1F("EventStat","Event Stat.",20,-0.5,19.5);
     fEventStat->GetXaxis()->SetTitle("CutsId");
     fEventStat->GetYaxis()->SetTitle("Counts");
@@ -684,6 +701,9 @@ void StPicoTrackClusterQA::WriteHistograms() {
   fEventStat->Write();
   fTrackStat->Write();
   fEventCent->Write();
+  frefMultHist->Write();
+  frefMultPileupHist->Write();
+  frefMultNoPileupHist->Write();
   // basic QA
   fHistCentrality->Write();
   fHistCentralityAfterCuts->Write();
@@ -906,7 +926,7 @@ int StPicoTrackClusterQA::Make()
   fEventStat->Fill(2);
 
   // get trigger IDs from PicoEvent class and loop over them
-  vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
+ // vector<unsigned int> mytriggers = mPicoEvent->triggerIds();
   //if(fDebugLevel == kDebugEmcTrigger)
   //cout<<"EventTriggers: ";
   double triggerids [4] = {600001, 600011, 600021, 600031};
@@ -1063,14 +1083,14 @@ int StPicoTrackClusterQA::Make()
   bool fHaveEmcTrigger = mBaseMaker->CheckForHT(fRunFlag, fEmcTriggerEventType);                // HT trigger, set in readMacro
   bool fRunForMB = kFALSE;  // used to differentiate pp and AuAu
 
-  int nBtofMatch =  mPicoEvent->nBTOFMatch();
+  //int nBtofMatch =  mPicoEvent->nBTOFMatch();
 //  if(nBtofMatch<=0) {cout << "notofmtch " <<endl; return kStOk;} // cutting on events without nBTofMatch
 
   if(doppAnalysis)  fRunForMB = (fHaveMBevent) ? kTRUE : kFALSE;                    // pp analysis
   if(!doppAnalysis) fRunForMB = (fHaveMB5event || fHaveMB30event) ? kTRUE : kFALSE; // NON-pp analysis
 
   // check for HT event - only used for below historgrams
-  int RunId_Order = GetRunNo(fRunNumber);
+  //int RunId_Order = GetRunNo(fRunNumber);
   bool fHaveHT1   = mBaseMaker->CheckForHT(fRunFlag, StJetFrameworkPicoBase::kIsHT1);  // HT1
   bool fHaveHT2   = mBaseMaker->CheckForHT(fRunFlag, StJetFrameworkPicoBase::kIsHT2);  // HT2
   bool fHaveHT3   = mBaseMaker->CheckForHT(fRunFlag, StJetFrameworkPicoBase::kIsHT3);  // HT3
@@ -1091,9 +1111,9 @@ int StPicoTrackClusterQA::Make()
   if(fHaveHT1) { fHistEventNTrig_HT1->Fill(RunId_Order + 1., 1); }
   if(fHaveHT2) { fHistEventNTrig_HT2->Fill(RunId_Order + 1., 1); }
 
-  bool doTrackQA = kTRUE;
+  //bool doTrackQA = kTRUE;
   if(fCorrPileUp && !mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) { 
-     fHistEventPileUp->Fill(RunId_Order + 1., 1);
+    // fHistEventPileUp->Fill(RunId_Order + 1., 1);
      doTrackQA = kFALSE;
      return kStOk;
   }

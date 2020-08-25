@@ -322,10 +322,14 @@ class StPicoTrackClusterQA : public StMaker {
   TH1F           *fHistTriggerIDs;//!
 
   //new 
-  
   TH1F *fEventStat;//!
   TH1F *fTrackStat;//!
   TH1F *fEventCent;//!
+
+  TH1F *frefMultHist;//!
+  TH1F *frefMultPileupHist;//!
+  TH1F *frefMultNoPileupHist;//!
+
   // event QA
   TH1F           *fHistZvtx;//!
   TH1F           *fHistZDCx;//!
