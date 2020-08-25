@@ -1259,6 +1259,11 @@ void StPicoTrackClusterQA::RunTrackQA()
     StPicoTrack *trk = static_cast<StPicoTrack*>(mPicoDst->track(iTracks));
     if(!trk) continue;
 
+
+    //Prithwish add cuts
+    if( trk->gMom().Mag() < 0.1 || TMath::Abs(trk->gDCAxy(mVertex.x(), mVertex.y()))>50. ) { continue; }
+  
+      fTrackStat->Fill(1);
     // USER may want this commented out if wanting to see *RAW* distributions
     // acceptance and kinematic quality cuts
     if(!AcceptTrack(trk, Bfield, mVertex)) { continue; }
@@ -1274,8 +1279,8 @@ void StPicoTrackClusterQA::RunTrackQA()
       mTrkMom = trk->gMom(mVertex, Bfield);
     }
 
-    //Prithwish add cuts
-    if( trk->gMom().Mag() < 0.1 || TMath::Abs(trk->gDCAxy(mVertex.x(), mVertex.y()))>50. ) { continue; }
+
+
     if(TMath::Abs(trk->gDCA(mVertex).Mag())> 3.) { continue; }
     if(mVertex.z() >40.) { continue; }
     //if( trk->isTofTrack() ){
@@ -1553,13 +1558,19 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
   TVector3 mTrkMom;
   if(doUsePrimTracks) {
     if(!(trk->isPrimary())) return kFALSE; // check if primary
+      fTrackStat->Fill(2);
     // get primary track vector
     mTrkMom = trk->pMom();
   } else {
     // get global track vector
     mTrkMom = trk->gMom(Vert, B);
   }
-  
+  if(nHitsFit < fTracknHitsFit)     return kFALSE;
+  fTrackStat->Fill(3);
+
+  if(TMath::Abs(trk->gDCA(Vert).Mag())>fTrackDCAcut) continue; //We can also use this cut //PT Jan15, 2018
+
+  fTrackStat->Fill(4);
   // track variables
   double pt = mTrkMom.Perp();
   double phi = mTrkMom.Phi();
@@ -1587,7 +1598,6 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
   fHistNTrackvsPhiTest->Fill(phi);
   // additional quality cuts for tracks
   if(dca > fTrackDCAcut)            return kFALSE;
-  if(nHitsFit < fTracknHitsFit)     return kFALSE;
   if((nHitsRatio < fTracknHitsRatio) || (nHitsRatio > fTracknHitsRatioMax)) return kFALSE;
   
   // selecting positive or negative tracks only
