@@ -892,18 +892,22 @@ int StChargedParticles::Make()
 
 
     // fill histograms
+  int refmult = mPicoEvent->refMult();
+  float ranking = mPicoEvent->ranking();
   fProfEventRefMult->Fill(RunId_Order + 1., refmult);
   fProfEventRanking->Fill(RunId_Order + 1., ranking);
-  fProfEventZvtx->Fill(RunId_Order + 1., fZVtx);
-  fProfEventZvtxZvpd->Fill(RunId_Order + 1., fZVtx - fVzVPD);
-  fProfEventYvtx->Fill(RunId_Order + 1., fYVtx);
-  fProfEventXvtx->Fill(RunId_Order + 1., fXVtx);
+  fProfEventZvtx->Fill(RunId_Order + 1., zVtx);
+  fProfEventZvtxZvpd->Fill(RunId_Order + 1., vDiff);
+  fProfEventYvtx->Fill(RunId_Order + 1., xVtx);
+  fProfEventXvtx->Fill(RunId_Order + 1., yVtx);
   //if(fVzVPD > -900.) fProfEventVzVPD->Fill(RunId_Order + 1., fVzVPD); // sometimes this is not set, don't include in average then
-  fProfEventVzVPD->Fill(RunId_Order + 1., fVzVPD); // sometimes this is not set, don't include in average then
+  fProfEventVzVPD->Fill(RunId_Order + 1., vzVPD); // sometimes this is not set, don't include in average then
+  float fZDCx = mPicoEvent->ZDCx();
+  float fBBCx = mPicoEvent->BBCx(); 
   fProfEventBBCx->Fill(RunId_Order + 1., fBBCx);
   fProfEventZDCx->Fill(RunId_Order + 1., fZDCx);
 
-  fProfEventnBemcMatch->Fill(RunId_Order + 1., nBemcMatch);
+  fProfEventnBemcMatch->Fill(RunId_Order + 1., mPicoEvent->nBEMCMatch());
   fProfEventnBtofMatch->Fill(RunId_Order + 1., nBtofMatch);
      // Track loop
   for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
@@ -1014,9 +1018,9 @@ int StChargedParticles::Make()
       fHistNTrackvsEta->Fill(gTrack->pMom().PseudoRapidity());
       fHistNTrackvsPhi->Fill(phi);
 
-      fProfEventTrackPt->Fill(RunId_Order + 1., pt);
+      fProfEventTrackPt->Fill(RunId_Order + 1., gTrack->gMom().Pt());
       fProfEventTrackPhi->Fill(RunId_Order + 1., phi);
-      fProfEventTrackEta->Fill(RunId_Order + 1., eta);
+      fProfEventTrackEta->Fill(RunId_Order + 1., gTrack->pMom().PseudoRapidity());
       fProfEventTracknHitsFit->Fill(RunId_Order + 1., nHitsFit);
       fProfEventTrackDca->Fill(RunId_Order + 1., dca);
     }

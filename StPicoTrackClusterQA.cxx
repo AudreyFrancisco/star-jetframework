@@ -509,6 +509,7 @@ void StPicoTrackClusterQA::DeclareHistograms() {
     fTrackStat->GetXaxis()->SetTitle("CutsId");
     fTrackStat->GetYaxis()->SetTitle("Counts");
 
+    fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
     // track histograms
     fHistNTrackvsPt = new TH1F("fHistNTrackvsPt", "Ntracks vs p_{T}", 300, 0., 30.);
     fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi", "Ntracks vs #phi", 144, -1., 3.0*pi);
@@ -1565,10 +1566,11 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
     // get global track vector
     mTrkMom = trk->gMom(Vert, B);
   }
+  int nHitsFit = trk->nHitsFit();
   if(nHitsFit < fTracknHitsFit)     return kFALSE;
   fTrackStat->Fill(3);
 
-  if(TMath::Abs(trk->gDCA(Vert).Mag())>fTrackDCAcut) continue; //We can also use this cut //PT Jan15, 2018
+  if(TMath::Abs(trk->gDCA(Vert).Mag())>fTrackDCAcut) return kFALSE; //We can also use this cut //PT Jan15, 2018
 
   fTrackStat->Fill(4);
   // track variables
@@ -1580,7 +1582,6 @@ Bool_t StPicoTrackClusterQA::AcceptTrack(StPicoTrack *trk, Float_t B, TVector3 V
   short charge = trk->charge();
   //double dca = (trk->dcaPoint() - mPicoEvent->primaryVertex()).mag();
   double dca = trk->gDCA(Vert).Mag();
-  int nHitsFit = trk->nHitsFit();
   int nHitsMax = trk->nHitsMax();
   double nHitsRatio = 1.0*nHitsFit/nHitsMax;
 
