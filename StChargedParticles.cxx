@@ -230,10 +230,13 @@ StChargedParticles::~StChargedParticles()
   	if(fPtdist[i])           delete fPtdist[i];
   	if(fVarPtdist[i])        delete fVarPtdist[i];
   }
-  if(fHistNTrackvsEta)		    delete fHistNTrackvsEta;
-  if(fHistNTrackvsPhi)		    delete fHistNTrackvsPhi;  
+  if(fHistNTrackvsEta)		 delete fHistNTrackvsEta;
+  if(fHistNTrackvsPhi)		 delete fHistNTrackvsPhi;  
+  if(fHistNTrackvsnHitsFit)	 delete fHistNTrackvsnHitsFit;  
+  if(fHistNTrackvsnHitsMax)	 delete fHistNTrackvsnHitsMax;  
+  if(fHistNTrackvsnHitsRatio)	 delete fHistNTrackvsnHitsRatio;  
   if(fEventCent)                 delete fEventCent;
-
+   
   if(frunidvsrefmult)            delete frunidvsrefmult;
   if(frunidvszdcand)             delete frunidvszdcand;
   if(frunidvstofmult)            delete frunidvstofmult;
@@ -261,6 +264,17 @@ StChargedParticles::~StChargedParticles()
   if(fProfEventVzVPD)        delete fProfEventVzVPD;
   if(fProfEventBBCx)         delete fProfEventBBCx;
   if(fProfEventZDCx)         delete fProfEventZDCx;
+  if(fProfEventTrackPt2)      delete fProfEventTrackPt2;
+  if(fProfEventTrackPhi2)     delete fProfEventTrackPhi2;
+  if(fProfEventRefMult2)      delete fProfEventRefMult2;
+  if(fProfEventRanking2)      delete fProfEventRanking2;
+  if(fProfEventZvtx2)         delete fProfEventZvtx2;
+  if(fProfEventZvtxZvpd2)     delete fProfEventZvtxZvpd2;
+  if(fProfEventYvtx2)         delete fProfEventYvtx2;
+  if(fProfEventXvtx2)         delete fProfEventXvtx2;
+  if(fProfEventVzVPD2)        delete fProfEventVzVPD2;
+  if(fProfEventBBCx2)         delete fProfEventBBCx2;
+  if(fProfEventZDCx2)         delete fProfEventZDCx2;
 }
 //
 //_____________________________________________________________________________
@@ -360,13 +374,13 @@ void StChargedParticles::DeclareHistograms() {
     Double_t edge[nedges];
     edge[0]=0.;
     Int_t x=0;
-    cout << "nedges " << nedges <<endl;
+    //cout << "nedges " << nedges <<endl;
     for (int i = 0; i < 6; ++i){
-        cout << " binWidth number " << i << " nbins " << nbins[i]<<endl;
+        //cout << " binWidth number " << i << " nbins " << nbins[i]<<endl;
 	 for (int bin = 0; bin < nbins[i]; ++bin) {
 		 x++;
 		 edge[x]=edge[x-1]+binW[i];
-		 cout << " bin : " << bin << " so : " << x << " edge = " << edge[x]<<endl;
+		// cout << " bin : " << bin << " so : " << x << " edge = " << edge[x]<<endl;
 	 }
     }
 
@@ -399,6 +413,9 @@ void StChargedParticles::DeclareHistograms() {
 
     fHistNTrackvsEta = new TH1F("fHistNTrackvsEta", "Ntracks vs #eta", 200, -1.1, 1.1);
     fHistNTrackvsPhi = new TH1F("fHistNTrackvsPhi","Ntracks vs #phi",200,0.,6.3);
+    fHistNTrackvsnHitsFit = new TH1F("fHistNTrackvsnHitsFit","Ntracks vs nHitsFit",200,0.,60);
+    fHistNTrackvsnHitsMax = new TH1F("fHistNTrackvsnHitsMax","Ntracks vs nHitsMax",200,0.,60);
+    fHistNTrackvsnHitsRatio = new TH1F("fHistNTrackvsnHitsRatio","Ntracks vs nHitsRatio",200,0.,1.1);
     fEventCent = new TH1F("EventCent","EventCent",10, -0.5, 9.5);
 
     fhNSigmaPion = new TH1F("hNSigmaPion", "n#sigma(#pi);n#sigma(#pi)",400, -10., 10.);
@@ -544,6 +561,24 @@ void StChargedParticles::DeclareHistograms() {
     frunidvstofmult->GetYaxis()->SetTitle("TOFMult");
     frunidvstofmult->Sumw2();
 
+
+    fProfEventTrackPt2 = new TProfile("fProfTrackPt2", "Event averaged track p_{T} 2", runbins, runmin, runmax);
+    fProfEventTrackPhi2 = new TProfile("fProfEventTrackPhi2", "Event averaged track #phi 2", runbins, runmin, runmax);
+    fProfEventTrackEta2 = new TProfile("fProfEventTrackEta2", "Event averaged track #eta 2", runbins, runmin, runmax);
+    fProfEventTracknHitsFit2 = new TProfile("fProfEventTracknHitsFit2", "Event averaged nHitsFit 2", runbins, runmin, runmax);
+    fProfEventTrackDca2 = new TProfile("fProfEventTrackDca2", "Event averaged DCA 2", runbins, runmin, runmax);
+    fProfEventRefMult2 = new TProfile("fProfEventRefMult2", "Event averaged refMult 2", runbins, runmin, runmax);
+    fProfEventRanking2 = new TProfile("fProfEventRanking2", "Event averaged vertex ranking 2", runbins, runmin, runmax);
+    fProfEventZvtx2 = new TProfile("fProfEventZvtx2", "Event averaged primary z-Vertex 2", runbins, runmin, runmax);
+    fProfEventZvtxZvpd2 = new TProfile("fProfEventZvtxZvpd2", "Event difference averaged primary z-Vertex vs VPD vertex 2", runbins, runmin, runmax);
+    fProfEventYvtx2 = new TProfile("fProfEventYvtx2", "Event averaged primary y-Vertex 2", runbins,runmin , runmax);
+    fProfEventXvtx2 = new TProfile("fProfEventXvtx2", "Event averaged primary x-Vertex 2", runbins, runmin, runmax);
+    fProfEventVzVPD2 = new TProfile("fProfEventVzVPD2", "Event averaged VzVPD 2", runbins, runmin, runmax);
+    fProfEventBBCx2 = new TProfile("fProfEventBBCx2", "Event averaged BBC coincidence rate 2", runbins, runmin, runmax);
+    fProfEventZDCx2 = new TProfile("fProfEventZDCx2", "Event averaged ZDC coincidence rate 2", runbins, runmin, runmax);
+    fProfEventnBemcMatch2 = new TProfile("fProfEventnBemcMatch2", "Event averaged nBEMC match 2", runbins, runmin, runmax);
+    fProfEventnBtofMatch2 = new TProfile("fProfEventnBtofMatch2", "Event averaged nBTOF match 2", runbins, runmin, runmax);
+
     fVzvsrefMult = new TProfile("VzvsrefMult","Vz-refMult",350,-35,35);
     fVzvsrefMult->GetXaxis()->SetTitle("Vz");
     fVzvsrefMult->GetYaxis()->SetTitle("refMult");
@@ -657,6 +692,9 @@ void StChargedParticles::WriteHistograms() {
   }
   fHistNTrackvsPhi->Write();
   fHistNTrackvsEta->Write();
+  fHistNTrackvsnHitsFit->Write();
+  fHistNTrackvsnHitsMax->Write();
+  fHistNTrackvsnHitsRatio->Write();
   fEventCent->Write();
 
   frunidvsrefmult->Write();
@@ -674,6 +712,7 @@ void StChargedParticles::WriteHistograms() {
   fHistEventPileUp->Write();
 
   //run-by-run
+
   fProfEventTrackPt->Write();
   fProfEventTrackPhi->Write();
   fProfEventTrackEta->Write();
@@ -690,6 +729,22 @@ void StChargedParticles::WriteHistograms() {
   fProfEventZDCx->Write();
   fProfEventnBemcMatch->Write();
   fProfEventnBtofMatch->Write();
+  fProfEventTrackPt2->Write();
+  fProfEventTrackPhi2->Write();
+  fProfEventTrackEta2->Write();
+  fProfEventTracknHitsFit2->Write();
+  fProfEventTrackDca2->Write();
+  fProfEventRefMult2->Write();
+  fProfEventRanking2->Write();
+  fProfEventZvtx2->Write();
+  fProfEventZvtxZvpd2->Write();
+  fProfEventYvtx2->Write();
+  fProfEventXvtx2->Write();
+  fProfEventVzVPD2->Write();
+  fProfEventBBCx2->Write();
+  fProfEventZDCx2->Write();
+  fProfEventnBemcMatch2->Write();
+  fProfEventnBtofMatch2->Write();
 }
 //
 //
@@ -894,6 +949,7 @@ int StChargedParticles::Make()
     // fill histograms
   int refmult = mPicoEvent->refMult();
   float ranking = mPicoEvent->ranking();
+  RunId_Order = mPicoEvent->runId() - 19084005;
   fProfEventRefMult->Fill(RunId_Order + 1., refmult);
   fProfEventRanking->Fill(RunId_Order + 1., ranking);
   fProfEventZvtx->Fill(RunId_Order + 1., zVtx);
@@ -909,7 +965,22 @@ int StChargedParticles::Make()
 
   fProfEventnBemcMatch->Fill(RunId_Order + 1., mPicoEvent->nBEMCMatch());
   fProfEventnBtofMatch->Fill(RunId_Order + 1., nBtofMatch);
-     // Track loop
+  
+
+  fProfEventRefMult2->Fill(mPicoEvent->runId(), refmult);
+  fProfEventRanking2->Fill(mPicoEvent->runId(), ranking);
+  fProfEventZvtx2->Fill(mPicoEvent->runId(), zVtx);
+  fProfEventZvtxZvpd2->Fill(mPicoEvent->runId(), vDiff);
+  fProfEventYvtx2->Fill(mPicoEvent->runId(), xVtx);
+  fProfEventXvtx2->Fill(mPicoEvent->runId(), yVtx);
+  fProfEventVzVPD2->Fill(mPicoEvent->runId(), vzVPD); // sometimes this is not set, don't include in average then
+  fProfEventBBCx2->Fill(mPicoEvent->runId(), fBBCx);
+  fProfEventZDCx2->Fill(mPicoEvent->runId(), fZDCx);
+
+  fProfEventnBemcMatch2->Fill(mPicoEvent->runId(), mPicoEvent->nBEMCMatch());
+  fProfEventnBtofMatch2->Fill(mPicoEvent->runId(), nBtofMatch);
+  // Track loop
+ 
   for(Int_t iTrk=0; iTrk<ntracks; iTrk++) {
 
     // Retrieve i-th pico track
@@ -1000,6 +1071,8 @@ int StChargedParticles::Make()
       if(phi > 2.0*pi) phi -= 2.0*pi;
       if((phi < fTrackPhiMinCut) || (phi > fTrackPhiMaxCut)) continue;
 
+      fTrackStat->Fill(5);
+
       double dca = gTrack->gDCA(mVertex).Mag();
       int nHitsFit = gTrack->nHitsFit();
       int nHitsMax = gTrack->nHitsMax();
@@ -1008,21 +1081,33 @@ int StChargedParticles::Make()
       if(nHitsFit < fTracknHitsFit)      continue;
       if((nHitsRatio < fTracknHitsRatio) || (nHitsRatio > fTracknHitsRatioMax))  continue;
       
+      fTrackStat->Fill(6);
+
       if((fTrackChargePos == 1) && (gTrack->charge() < 0) ) continue;
       if((fTrackChargePos == -1) && (gTrack->charge() > 0) ) continue;
   
+      fTrackStat->Fill(7);
+
       fIntPtdist->Fill(gTrack->gMom().Pt());
       fIntVarPtdist->Fill(gTrack->gMom().Pt());
       fPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       fVarPtdist[fmycentral]->Fill(gTrack->gMom().Pt()); ///------------ AUDREY
       fHistNTrackvsEta->Fill(gTrack->pMom().PseudoRapidity());
       fHistNTrackvsPhi->Fill(phi);
+      fHistNTrackvsnHitsFit->Fill(nHitsFit);
+      fHistNTrackvsnHitsMax->Fill(nHitsMax);
+      fHistNTrackvsnHitsRatio->Fill(nHitsRatio);
 
-      fProfEventTrackPt->Fill(RunId_Order + 1., gTrack->gMom().Pt());
-      fProfEventTrackPhi->Fill(RunId_Order + 1., phi);
-      fProfEventTrackEta->Fill(RunId_Order + 1., gTrack->pMom().PseudoRapidity());
-      fProfEventTracknHitsFit->Fill(RunId_Order + 1., nHitsFit);
-      fProfEventTrackDca->Fill(RunId_Order + 1., dca);
+      fProfEventTrackPt->Fill(mPicoEvent->runId(), gTrack->gMom().Pt());
+      fProfEventTrackPhi->Fill(mPicoEvent->runId(), phi);
+      fProfEventTrackEta->Fill(mPicoEvent->runId(), gTrack->pMom().PseudoRapidity());
+      fProfEventTracknHitsFit->Fill(mPicoEvent->runId(), nHitsFit);
+      fProfEventTrackDca->Fill(mPicoEvent->runId(), dca);
+      fProfEventTrackPt2->Fill(mPicoEvent->runId(), gTrack->gMom().Pt());
+      fProfEventTrackPhi2->Fill(mPicoEvent->runId(), phi);
+      fProfEventTrackEta2->Fill(mPicoEvent->runId(), gTrack->pMom().PseudoRapidity());
+      fProfEventTracknHitsFit2->Fill(mPicoEvent->runId(), nHitsFit);
+      fProfEventTrackDca2->Fill(mPicoEvent->runId(), dca);
     }
 
 

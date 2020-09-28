@@ -236,6 +236,9 @@ class StChargedParticles : public StMaker {
   TH1F *fVarPtdist[10];//!
   TH1F *fHistNTrackvsEta;//!
   TH1F *fHistNTrackvsPhi;//!
+  TH1F *fHistNTrackvsnHitsFit;//!
+  TH1F *fHistNTrackvsnHitsMax;//!
+  TH1F *fHistNTrackvsnHitsRatio;//!
   TH1F *fEventCent;//!
 
   TProfile *frunidvsrefmult;//!
@@ -268,6 +271,23 @@ class StChargedParticles : public StMaker {
   TProfile       *fProfEventZDCx;//!
   TProfile       *fProfEventnBemcMatch;//!
   TProfile       *fProfEventnBtofMatch;//!
+ 
+  TProfile       *fProfEventTrackPt2;//!
+  TProfile       *fProfEventTrackPhi2;//!
+  TProfile       *fProfEventTrackEta2;//!
+  TProfile       *fProfEventTracknHitsFit2;//!
+  TProfile       *fProfEventTrackDca2;//!
+  TProfile       *fProfEventRefMult2;//!
+  TProfile       *fProfEventRanking2;//!
+  TProfile       *fProfEventZvtx2;//!
+  TProfile       *fProfEventZvtxZvpd2;//!
+  TProfile       *fProfEventYvtx2;//!
+  TProfile       *fProfEventXvtx2;//!
+  TProfile       *fProfEventVzVPD2;//!
+  TProfile       *fProfEventBBCx2;//!
+  TProfile       *fProfEventZDCx2;//!
+  TProfile       *fProfEventnBemcMatch2;//!
+  TProfile       *fProfEventnBtofMatch2;//!
  
 
   StChargedParticles(const StChargedParticles&);            // not implemented
