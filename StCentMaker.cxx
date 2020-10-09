@@ -119,17 +119,21 @@ Int_t StCentMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P17id_VpdMB30 :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30 :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30_AllLumi :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
               //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
           default:
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
@@ -145,22 +149,30 @@ Int_t StCentMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
           case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx : 
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
               break;
           case StJetFrameworkPicoBase::kgrefmult_VpdMB30 : 
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
               break;
           default:
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
         }
         break;
 
     case StJetFrameworkPicoBase::Run17_pp510 : // Run17: 510 (500) GeV pp
         // this is the default for Run17 pp - don't set anything for pp
         break;
+	
+    case StJetFrameworkPicoBase::RunIsobar :
+	    grefmultCorr = CentralityMaker::instance()->getRefMultCorr();
+	break;
 
     default :
         // for any non specified Run, or any pp Run, this default is set and as such not used, as parameters are set to 0

@@ -400,7 +400,7 @@ Int_t StMyAnalysisMaker::Init() {
   // switch on Run Flag to look for firing trigger specifically requested for given run period
   switch(fRunFlag) {
     case StJetFrameworkPicoBase::Run14_AuAu200 : // Run14 AuAu
-        switch(fCentralityDef) {
+        /*switch(fCentralityDef) {
           case StJetFrameworkPicoBase::kgrefmult :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
@@ -420,9 +420,10 @@ Int_t StMyAnalysisMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
         }
         break;
-
+*/
+	    grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
     case StJetFrameworkPicoBase::Run16_AuAu200 : // Run16 AuAu
-        switch(fCentralityDef) {
+        /*switch(fCentralityDef) {
           case StJetFrameworkPicoBase::kgrefmult :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
@@ -439,7 +440,8 @@ Int_t StMyAnalysisMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
         }
         break;
-
+*/
+	grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
     default :
         grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
   }
@@ -1209,6 +1211,7 @@ Int_t StMyAnalysisMaker::Make() {
   //int refMult = mPicoEvent->refMult();
   Int_t centbin, cent9, cent16;
   Double_t refCorr2;
+  Double_t reweight = 1.;
 
   if(!doppAnalysis) {
     // initialize event-by-event by RunID
@@ -1216,6 +1219,8 @@ Int_t StMyAnalysisMaker::Make() {
     if(doUseBBCCoincidenceRate) { grefmultCorr->initEvent(grefMult, zVtx, fBBCCoincidenceRate); } // default
     else{ grefmultCorr->initEvent(grefMult, zVtx, fZDCCoincidenceRate); }
 
+    reweight = grefmultCorr->getWeight();
+    cout << "centrality reweighted : " << reweight <<endl;
     // get centrality bin: either 0-7 or 0-15
     cent16 = grefmultCorr->getCentralityBin16();
     cent9 = grefmultCorr->getCentralityBin9();

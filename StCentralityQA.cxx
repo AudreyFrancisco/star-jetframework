@@ -137,7 +137,8 @@ Int_t StCentralityQA::Init() {
     case StJetFrameworkPicoBase::Run14_AuAu200 : // Run14 AuAu
               grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr();
               //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
-              grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
+              grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               //grefmultCorrNEW = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30_AllLumi();
 
 /*
@@ -172,7 +173,7 @@ Int_t StCentralityQA::Init() {
           case StJetFrameworkPicoBase::kgrefmult :
               grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr();
               break;
-          case StJetFrameworkPicoBase::kgrefmult_P16id :
+         /* case StJetFrameworkPicoBase::kgrefmult_P16id :
               grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
           case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx : 
@@ -181,8 +182,10 @@ Int_t StCentralityQA::Init() {
           case StJetFrameworkPicoBase::kgrefmult_VpdMB30 : 
               grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
               break;
-          default:
-              grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr_P16id();
+          */
+	  default:
+              grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorrOLD = CentralityMaker::instance()->getgRefMultCorr_P16id();
         }
         break;
 

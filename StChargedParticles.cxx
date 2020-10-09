@@ -191,6 +191,9 @@ StChargedParticles::~StChargedParticles()
   if(fTOF_ZDCCoincidence)        delete fTOF_ZDCCoincidence;
   if(frefMult_ZDCCoincidence)    delete frefMult_ZDCCoincidence;
   if(fTOFMult_refMultHist)       delete fTOFMult_refMultHist;
+  if(fTOFMult_refMultHist_noPU)  delete fTOFMult_refMultHist_noPU;
+  if(fTOF_BEMC_noPU)             delete fTOF_BEMC_noPU;
+  if(fBEMC_refMultHist_noPU)     delete fBEMC_refMultHist_noPU;
   if(fTOF_BEMC)                  delete fTOF_BEMC;
   if(fBEMC_refMultHist)          delete fBEMC_refMultHist;
   if(fVz_rankVzHist)             delete fVz_rankVzHist;
@@ -201,6 +204,7 @@ StChargedParticles::~StChargedParticles()
 
 
   if(fTOF_refMultHist)           delete fTOF_refMultHist;
+  if(fTOF_refMultHist_noPU)      delete fTOF_refMultHist_noPU;
   if(fVz_vpdVzHist)              delete fVz_vpdVzHist;
   if(frefMult_ZDCHist)           delete frefMult_ZDCHist;
   if(fZDCEastWestHist)           delete fZDCEastWestHist;
@@ -496,6 +500,22 @@ void StChargedParticles::DeclareHistograms() {
     fTOF_BEMC->GetXaxis()->SetTitle("TOF Matched");
     fTOF_BEMC->GetYaxis()->SetTitle("BEMC Matched");
 
+    fTOFMult_refMultHist_noPU = new TH2F("TOFMult_refMult_noPU","TOFMult v.s. refMult - no PU",700,-0.5,3499.5,700,-0.5,699.5);
+    fTOFMult_refMultHist_noPU->GetXaxis()->SetTitle("TOFMult");
+    fTOFMult_refMultHist_noPU->GetYaxis()->SetTitle("refMult");
+
+    fTOF_refMultHist_noPU = new TH2F("TOF_refMult_noPU","TOF v.s. refMult - no PU",700,-0.5,699.5,700,-0.5,699.5);
+    fTOF_refMultHist_noPU->GetXaxis()->SetTitle("TOF Matched");
+    fTOF_refMultHist_noPU->GetYaxis()->SetTitle("refMult");
+
+    fBEMC_refMultHist_noPU = new TH2F("BEMC_refMult_noPU","BEMC v.s. refMult - no PU",700,-0.5,699.5,700,-0.5,699.5);
+    fBEMC_refMultHist_noPU->GetXaxis()->SetTitle("BEMC Matched");
+    fBEMC_refMultHist_noPU->GetYaxis()->SetTitle("refMult");
+
+    fTOF_BEMC_noPU = new TH2F("TOF_BEMC_noPU","TOF v.s. BEMC Matched - no PU",700,-0.5,699.5,700,-0.5,699.5);
+    fTOF_BEMC_noPU->GetXaxis()->SetTitle("TOF Matched");
+    fTOF_BEMC_noPU->GetYaxis()->SetTitle("BEMC Matched");
+
     frefMult_VzHist= new TH2F("refMult_Vz","refMult v.s Vz",700,-0.5,699.5,350,-35,35);
     frefMult_VzHist->GetXaxis()->SetTitle("refMult");
     frefMult_VzHist->GetYaxis()->SetTitle("Vz");
@@ -654,6 +674,9 @@ void StChargedParticles::WriteHistograms() {
   fTOFMult_refMultHist->Write();
   fTOF_BEMC->Write();
   fBEMC_refMultHist->Write();
+  fTOFMult_refMultHist_noPU->Write();
+  fTOF_BEMC_noPU->Write();
+  fBEMC_refMultHist_noPU->Write();
   fVz_rankVzHist->Write();
   fTOF_VzHist->Write();
   frefMult_VzHist->Write();
@@ -662,6 +685,7 @@ void StChargedParticles::WriteHistograms() {
 
 
   fTOF_refMultHist->Write();
+  fTOF_refMultHist_noPU->Write();
   fVz_vpdVzHist->Write();
   frefMult_ZDCHist->Write();
   fZDCEastWestHist->Write();
@@ -901,6 +925,10 @@ int StChargedParticles::Make()
     if(mCentMaker->Refmult_check(nBtofMatch,refCorr2,3,4)) {
       frefMultNoPileupHist->Fill(grefMult);
       doTrackQA = kTRUE;
+      fTOFMult_refMultHist_noPU->Fill(mPicoEvent->btofTrayMultiplicity(),grefMult);
+      fTOF_refMultHist_noPU->Fill(nBtofMatch,grefMult);
+      fTOF_BEMC_noPU->Fill(nBtofMatch,mPicoEvent->nBEMCMatch());
+      fBEMC_refMultHist_noPU->Fill(mPicoEvent->nBEMCMatch(),grefMult);
     }
     else{
       frefMultPileupHist->Fill(grefMult);

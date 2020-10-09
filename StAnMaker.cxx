@@ -154,14 +154,16 @@ Int_t StAnMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P17id_VpdMB30 :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P17id_VpdMB30();
               break;
           /*case StJetFrameworkPicoBase::kgrefmult_P18ih_VpdMB30 :
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P18ih_VpdMB30();
               break;i
 	  */
           case StJetFrameworkPicoBase::kgrefmult_P16id :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
           default: // this is the default for Run14
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
@@ -177,16 +179,20 @@ Int_t StAnMaker::Init() {
               grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
               break;
           case StJetFrameworkPicoBase::kgrefmult_P16id :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
               break;
           case StJetFrameworkPicoBase::kgrefmult_VpdMBnoVtx :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMBnoVtx();
               break;
           case StJetFrameworkPicoBase::kgrefmult_VpdMB30 :
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_VpdMB30();
               break;
           default:
-              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
+              grefmultCorr = CentralityMaker::instance()->getgRefMultCorr();
+              //grefmultCorr = CentralityMaker::instance()->getgRefMultCorr_P16id();
         }
         break;
 
@@ -322,6 +328,7 @@ Int_t StAnMaker::Make() {
   int refMult = mPicoEvent->refMult();
   Int_t centbin, cent9, cent16;
   Double_t refCorr2;
+  Double_t reweight=1.;
 
   if(!doppAnalysis) {
     // initialize event-by-event by RunID
@@ -329,6 +336,9 @@ Int_t StAnMaker::Make() {
     if(doUseBBCCoincidenceRate) { grefmultCorr->initEvent(grefMult, zVtx, fBBCCoincidenceRate); } // default
     else{ grefmultCorr->initEvent(grefMult, zVtx, fZDCCoincidenceRate); }
 
+    reweight = grefmultCorr->getWeight();
+    cout << "centrality reweighted : " << reweight <<endl;
+    
     // get centrality bin: either 0-7 or 0-15
     cent16 = grefmultCorr->getCentralityBin16();
     cent9 = grefmultCorr->getCentralityBin9();

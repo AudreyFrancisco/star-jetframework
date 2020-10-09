@@ -85,7 +85,7 @@ class StChargedParticles : public StMaker {
   virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
   virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
   virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
-  virtual void         SetTrackSign(int pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
+  virtual void         SetTrackSign(int pos)     { fTrackChargePos = pos   ; }//0 for negative tracks, 1 for positive, do not call for all
 
   //pt histos
   virtual void	       SetHistoPtMax(Double_t pt) 	  { ptmax = pt; }
@@ -199,8 +199,11 @@ class StChargedParticles : public StMaker {
   TH2F *fTOF_ZDCCoincidence;//!
   TH2F *frefMult_ZDCCoincidence;//!
   TH2F *fTOFMult_refMultHist;//!
+  TH2F *fTOFMult_refMultHist_noPU;//!
   TH2F *fTOF_BEMC;//!
+  TH2F *fTOF_BEMC_noPU;//!
   TH2F *fBEMC_refMultHist;//!
+  TH2F *fBEMC_refMultHist_noPU;//!
   TH2F *fVz_rankVzHist;//!
   TH2F *fTOF_VzHist;//!
   TH2F *frefMult_VzHist;//!
@@ -209,6 +212,7 @@ class StChargedParticles : public StMaker {
 
 
   TH2F *fTOF_refMultHist;//!
+  TH2F *fTOF_refMultHist_noPU;//!
   TH2F *fVz_vpdVzHist;//!
   TH2F *frefMult_ZDCHist;//!
   TH2F *fZDCEastWestHist;//!

@@ -121,7 +121,7 @@ class StPicoTrackClusterQA : public StMaker {
   virtual void         SetTracknHitsFit(Double_t h)       { fTracknHitsFit = h     ; }
   virtual void         SetTracknHitsRatio(Double_t r)     { fTracknHitsRatio = r   ; }
   virtual void         SetTracknHitsRatioMax(Double_t r)     { fTracknHitsRatioMax = r   ; }
-  virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; cout <<"selecting " << fTrackChargePos << "only "; }//0 for negative tracks, 1 for positive, do not call for all
+  virtual void         SetTrackSign(Bool_t pos)     { fTrackChargePos = pos   ; }//0 for negative tracks, 1 for positive, do not call for all
   virtual void         SetClusterPtRange(Double_t mi, Double_t ma) { fClusterPtMinCut = mi; fClusterPtMaxCut = ma; }
 
   // tower setters
